@@ -1,13 +1,40 @@
 <template>
     <div id="app">
-        <el-container  style="height: 100%">
+        <el-container style="height: 100%">
             <el-header class="showHeader">
-              <i class="el-icon-s-grid" style="font-size: 24px" @click="isCollapse=!isCollapse"></i>
+                <div style="position: absolute; left: 66px; top: 5px">
+                    <el-tooltip class="item" effect="dark" content="缩进工具栏" placement="top-start">
+                        <i class="el-icon-s-grid" style="font-size: 18px" @click="isCollapse=!isCollapse"></i>
+                    </el-tooltip>
+                </div>
+                <div style="position: absolute;right: 10px;top: 0px">
+                    <div class="fr" style="margin-top: 23px;margin-left: 20px">
+                        <i class="el-icon-warning-outline" style="font-size: 17px"></i>
+                    </div>
+                    <div class="fr" style="margin-top: 23px;">
+                        <i class="el-icon-set-up" style="font-size: 17px"></i>
+                    </div>
+                    <div class="fr" style="margin-top: 8px;margin-left: 20px">
+                        <el-badge is-dot class="item">
+                            <i class="el-icon-bell" style="font-size: 17px;"></i>
+                        </el-badge>
+                    </div>
+                    <div class="fr" style="margin-top: 21px;margin-left: 20px">
+                        <el-dropdown size="medium">
+                            <span class="el-dropdown-link">
+                                <i class="el-icon-s-custom el-icon--left"></i>用户切换
+                            </span>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item>aaaa</el-dropdown-item>
+                                <el-dropdown-item>bbbb</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </div>
+                </div>
             </el-header>
             <el-container direction="horizontal">
                 <el-aside width="66">
-                    <el-menu  class="el-menu-vertical-demo" @open="handleOpen"
-                             @close="handleClose"
+                    <el-menu class="el-menu-vertical-demo"
                              :collapse="isCollapse" style="margin-top: 60px">
                         <el-submenu index="1">
                             <template slot="title">
@@ -41,7 +68,9 @@
                         </el-menu-item>
                     </el-menu>
                 </el-aside>
-                <el-main>Main</el-main>
+                <el-main>
+                    Main
+                </el-main>
             </el-container>
         </el-container>
     </div>
@@ -54,21 +83,15 @@
         components: {},
         data: function () {
             return {
-                isCollapse: true
+                isCollapse: true,
+                activeIndex: '1'
             }
         },
         mounted() {
 
         },
         watch: {},
-        methods: {
-            handleOpen() {
-
-            },
-            handleClose() {
-
-            }
-        }
+        methods: {}
     }
 </script>
 
@@ -86,7 +109,6 @@
         top: 0;
         left: 0px;
         width: 100%;
-      line-height: 60px;
     }
 
     .showFooter {
@@ -111,11 +133,24 @@
     .el-main {
         background-color: #E9EEF3;
         color: #333;
-        line-height: 160px;
+
     }
 
     .el-menu-vertical-demo:not(.el-menu--collapse) {
         width: 200px;
         min-height: 400px;
+    }
+
+    .item {
+        margin-top: 15px;
+        margin-right: 20px;
+    }
+
+    .fl {
+        float: left;
+    }
+
+    .fr {
+        float: right;
     }
 </style>
