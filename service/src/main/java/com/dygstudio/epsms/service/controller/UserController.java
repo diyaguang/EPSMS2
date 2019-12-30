@@ -1,6 +1,7 @@
 package com.dygstudio.epsms.service.controller;
 
 import com.dygstudio.epsms.service.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,10 +21,11 @@ import javax.annotation.Resource;
 @RequestMapping(value = "/api/user")
 public class UserController {
 
-    @Resource
+    @Autowired
     UserService userService;
 
     @ResponseBody
+    @RequestMapping(value = "list")
     public String getUserList(){
         //return userService.
         return "ok";
