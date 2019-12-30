@@ -6,13 +6,12 @@
                  background-color="#545c64"
                  text-color="#fff"
                  :collapse="isCollapse" style="margin-top: 60px; border: 0px">
-          <nav-menu :navMenus="menuData"></nav-menu>
+          <nav-menu :navMenus="menuData" :collapse="isCollapse" @subClick="clickChildMenuItem"></nav-menu>
         </el-menu>
       </el-aside>
       <el-container>
         <el-header class="showHeader" style="height: 87px">
           <div class="showHeaderUp">
-
             <div style="position: absolute; left: 10px;">
               <el-tooltip class="item" effect="dark" content="缩进工具栏" placement="top-start">
                 <i :class="collapseClass" style="font-size: 18px" @click="isCollapse=!isCollapse"></i>
@@ -108,16 +107,16 @@
                     {id: '3', name: '标签三', type: 'info', url: '/item3', effect: 'light'}
                 ],
                 menuData: [
-                    {id: '1', name: '菜单1', index: '1', type: 'item', url: '/item1', icoName: ''},
-                    {id: '2', name: '菜单2', index: '2', type: 'item', url: '/item2', icoName: ''},
-                    {id: '3', name: '菜单3', index: '3', type: 'item', url: '/item3', icoName: ''},
+                    {id: '1', name: '菜单1', index: '1', type: 'item', url: '/item1', icoName: 'el-icon-menu'},
+                    {id: '2', name: '菜单2', index: '2', type: 'item', url: '/item2', icoName: 'el-icon-menu'},
+                    {id: '3', name: '菜单3', index: '3', type: 'item', url: '/item3', icoName: 'el-icon-menu'},
                     {
                         id: '4',
                         name: '菜单4',
                         index: '4',
                         type: 'sub',
                         url: '/item4',
-                        icoName: '',
+                        icoName: 'el-icon-menu',
                         childs: [
                             {
                                 id: '4-1',
@@ -125,7 +124,7 @@
                                 index: '4-1',
                                 type: 'item',
                                 url: '/item4',
-                                icoName: ''
+                                icoName: 'el-icon-menu'
                             },
                             {
                                 id: '4-2',
@@ -133,7 +132,7 @@
                                 index: '4-2',
                                 type: 'item',
                                 url: '/item4',
-                                icoName: ''
+                                icoName: 'el-icon-menu'
                             },
                             {
                                 id: '4-3',
@@ -141,12 +140,11 @@
                                 index: '4-3',
                                 type: 'item',
                                 url: '/item4',
-                                icoName: ''
+                                icoName: 'el-icon-menu'
                             }
                         ]
                     },
-
-                    {id: '5', name: '菜单5', index: '5', type: 'item', url: '/item5', icoName: ''}
+                    {id: '5', name: '菜单5', index: '5', type: 'item', url: '/item5', icoName: 'el-icon-menu'}
                 ]
             }
         },
@@ -155,6 +153,23 @@
         },
         watch: {},
         methods: {
+            clickChildMenuItem:function(menuItem){
+                console.log(menuItem.id);
+                let newTag = {'id':menuItem.id,'name':menuItem.name,'type':'info','url':menuItem.url,'effect':'light'};
+                var isAdd = true;
+                var opIndex = 0;
+                this.tags.forEach((item,index,array)=>{
+                    if(item.id === menuItem.id){
+                        isAdd = false;
+                        opIndex = index;
+                    }
+                });
+                if(isAdd){
+                    this.tags.push(newTag);
+                    opIndex = this.tags.length-1;
+                }
+                this.clickTag(this.tags[opIndex]);
+            },
             removeTag: function (tag) {
                 if (tag.id === this.currentTagId) {
                     var opIndex = this.tags.indexOf(tag);
@@ -176,20 +191,23 @@
 
             },
             clickTag: function (tag) {
-                this.currentTagId = tag.id;
-                this.tags.forEach((item, index, array) => {
-                    item.type = 'info';
-                    item.effect = 'light'
-                });
-                //index tag 的变化
-                this.indexTag.type = 'info';
-                this.indexTag.effect = 'light';
+                if(tag) {
+                    this.currentTagId = tag.id;
+                    this.tags.forEach((item, index, array) => {
+                        item.type = 'info';
+                        item.effect = 'light'
+                    });
+                    //index tag 的变化
+                    this.indexTag.type = 'info';
+                    this.indexTag.effect = 'light';
 
-                //tag 的变化
-                tag.type = '';
-                tag.effect = 'dark';
-                //跳转
-                this.$router.push(tag.url);
+                    //tag 的变化
+                    tag.type = '';
+                    tag.effect = 'dark';
+                    //跳转
+                    console.log(tag.url);
+                    this.$router.push(tag.url);
+                }
             },
             clickIndexTag: function () {
                 this.tags.forEach((item, index, array) => {

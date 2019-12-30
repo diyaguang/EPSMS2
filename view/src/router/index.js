@@ -39,6 +39,14 @@ export default new Router({
       component:(resolve)=>require(['../view/item3.vue'],resolve)
     },
     {
+      name:'404',
+      path:'/404',
+      meta:{
+        title:'404'
+      },
+      component:(resolve)=>require(['../view/page404.vue'],resolve)
+    },
+    {
       name:'default',
       path: '*',
       redirect: '/',
@@ -46,5 +54,6 @@ export default new Router({
         title: 'default'
       }
     }
+
   ]
 })
