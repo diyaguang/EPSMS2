@@ -6,6 +6,7 @@ import com.dygstudio.epsms.service.service.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 〈功能概述〉
@@ -28,5 +29,8 @@ public class UserServiceImpl implements UserService {
     }
     public User findUserByName(String name){
         return userMapper.findUserByName(name);
+    }
+    public List<User> findAllUser(){
+        return userMapper.findAllUser();
     }
 }
