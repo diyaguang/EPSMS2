@@ -2,6 +2,7 @@ package com.dygstudio.epsms.service.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
  * @date: 2019-12-30 16:04
  */
 @Controller
+
 public class BaseController {
     @ExceptionHandler(value = Exception.class)
     public void defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception{

@@ -20,14 +20,14 @@ import java.util.List;
  * @date: 2019-12-30 17:32
  */
 @RestController
-@RequestMapping(value = "/api/user")
-public class UserController {
+@RequestMapping("/api/user")
+public class UserController extends BaseController {
 
     @Autowired
     UserService userService;
 
     @ResponseBody
-    @RequestMapping(value = "list")
+    @RequestMapping(value = "/list")
     public List<User> getUserList(){
         List<User> result = userService.findAllUser();
         return result;

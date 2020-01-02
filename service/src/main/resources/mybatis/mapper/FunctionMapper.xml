@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dygstudio.epsms.service.mapper.FunctionMapper">
+    <select id="getFunctionById" parameterType="String" resultMap="FunctionResultMap">
+      SELECT * FROM Function WHERE ID=#{funcId}
+    </select>
+    <select id="getFunctionByParentId" parameterType="String" resultMap="FunctionResultMap">
+      SELECT * FROM Function WHERE parentId=#{funcId}
+    </select>
+    <select id="getFunctionByRoleId" parameterType="String" resultMap="FunctionResultMap">
+      SELECT f.* FROM Function f,FuncRoleLink link WHERE f.Id=link.FuncId AND link.RoleId=#{roleId}
+    </select>
+    <select id="getFunctionByUserId" parameterType="String" resultMap="FunctionResultMap">
+        SELECT f.* FROM Function f,FuncRoleLink frlink,UserRoleLink urlink
+        WHERE f.Id=frlink.FuncId and frlink.RoleId=urlink.RoleId
+        AND urlink.UserId=#{userId}
+    </select>
+
+    <resultMap id="FunctionResultMap" type="Function">
+        <id property="id" column="id"/>
+        <result property="parentId" column="parentId"/>
+        <result property="funcName" column="funcName"/>
+        <result property="funcCode" column="funcCode"/>
+        <result property="type" column="type"/>
+        <result property="level" column="level"/>
+        <result property="urlPath" column="urlPath"/>
+        <result property="sort" column="sort"/>
+        <result property="imagePath" column="imagePath"/>
+        <result property="iconName" column="iconName"/>
+        <association property="parent" column="parentId" javaType="com.dygstudio.epsms.service.entity.Function" select="com.dygstudio.epsms.service.mapper.FunctionMapper.getFunctionById"/>
+        <collection property="subFunction" ofType="com.dygstudio.epsms.service.entity.Function"
+                    column="id" select="com.dygstudio.epsms.service.mapper.FunctionMapper.getFunctionByParentId"/>
+    </resultMap>
+
+    <select id="getFunctionByConditions" parameterType="Function" resultMap="FunctionResultMap">
+        select * from Function
+        <where>
+            <if test="parentId != null">
+                AND parentId = #{parentId}
+            </if>
+            <if test="funcName != null and funcName!=''">
+                AND funcName like concat('%',#{funcName},'%')
+            </if>
+            <if test="funcCode != null">
+                AND funcCode = #{funcCode}
+            </if>
+            <if test="type != null">
+                AND type = #{type}
+            </if>
+            <if test="level !=0">
+                and level = #{level}
+            </if>
+        </where>
+        order by sort
+    </select>
+    <resultMap id="FunctionSimpleResultMap" type="Function">
+        <id property="id" column="id"/>
+        <result property="parentId" column="parentId"/>
+        <result property="funcName" column="funcName"/>
+        <result property="funcCode" column="funcCode"/>
+        <result property="type" column="type"/>
+        <result property="level" column="level"/>
+        <result property="urlPath" column="urlPath"/>
+        <result property="sort" column="sort"/>
+        <result property="imagePath" column="imagePath"/>
+        <result property="iconName" column="iconName"/>
+    </resultMap>
+</mapper>
