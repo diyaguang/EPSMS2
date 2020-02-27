@@ -15,6 +15,14 @@ export default new Router({
       component:(resolve)=>require(['../view/index.vue'],resolve)
     },
     {
+      name:'userList',
+      path:'/admin/user/list',
+      meta:{
+        title:'item1'
+      },
+      component:(resolve)=>require(['../view/admin/userList.vue'],resolve)
+    },
+    {
       name:'item1',
       path:'/item1',
       meta:{

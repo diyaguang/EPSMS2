@@ -28,7 +28,8 @@ import java.io.File;
  * @date: 2020/1/2 21:27
  */
 @Controller
-public class CommonController {
+public class
+CommonController {
 
     /**
      * 可以在参数中使用 @ModelAttribute 来使用实体对象来传入表单对象的方式。表单中元素的名称对应实体的属性。

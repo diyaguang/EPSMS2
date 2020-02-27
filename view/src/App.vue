@@ -102,47 +102,26 @@
                 currentTagId: '0',
                 indexTag: {id: '0', name: '首页', type: '', url: '/index', effect: 'dark'},
                 tags: [
-                    {id: '1', name: '标签一', type: 'info', url: '/item1', effect: 'light'},
-                    {id: '2', name: '标签二', type: 'info', url: '/item2', effect: 'light'},
-                    {id: '3', name: '标签三', type: 'info', url: '/item3', effect: 'light'}
+                    //{id: '1', name: '标签一', type: 'info', url: '/item1', effect: 'light'},
                 ],
                 menuData: [
-                    {id: '1', name: '菜单1', index: '1', type: 'item', url: '/item1', icoName: 'el-icon-menu'},
-                    {id: '2', name: '菜单2', index: '2', type: 'item', url: '/item2', icoName: 'el-icon-menu'},
-                    {id: '3', name: '菜单3', index: '3', type: 'item', url: '/item3', icoName: 'el-icon-menu'},
                     {
-                        id: '4',
-                        name: '菜单4',
-                        index: '4',
-                        type: 'sub',
-                        url: '/item4',
-                        icoName: 'el-icon-menu',
-                        childs: [
-                            {
-                                id: '4-1',
-                                name: '菜单4-1',
-                                index: '4-1',
-                                type: 'item',
-                                url: '/item4',
-                                icoName: 'el-icon-menu'
-                            },
-                            {
-                                id: '4-2',
-                                name: '菜单4-2',
-                                index: '4-2',
-                                type: 'item',
-                                url: '/item4',
-                                icoName: 'el-icon-menu'
-                            },
-                            {
-                                id: '4-3',
-                                name: '菜单4-3',
-                                index: '4-3',
-                                type: 'item',
-                                url: '/item4',
-                                icoName: 'el-icon-menu'
-                            }
-                        ]
+                      id: '1',
+                      name: '系统管理',
+                      index: '1',
+                      type: 'sub',
+                      url: '/admin',
+                      icoName: 'el-icon-menu',
+                      childs: [
+                        {
+                          id: '1-1',
+                          name: '用户管理',
+                          index: '1-1',
+                          type: 'item',
+                          url: '/admin/user/list',
+                          icoName: 'el-icon-s-custom'
+                        }
+                      ]
                     },
                     {id: '5', name: '菜单5', index: '5', type: 'item', url: '/item5', icoName: 'el-icon-menu'}
                 ]
@@ -280,7 +259,7 @@
     position: relative;
     background-color: #fff;
     color: #333;
-
+    padding: 10px;
   }
 
   .el-menu {
