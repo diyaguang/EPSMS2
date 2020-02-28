@@ -60,6 +60,7 @@
     },
     created: function () {
       this.initData();
+      console.log(this.$options.name);
     },
     methods:{
       initData(){
@@ -68,8 +69,8 @@
         var getMainDataUrl = "/userList";
         this.$ajax.get(getMainDataUrl)
           .then(function (response) {
+              _this.userData = response.data;
             console.log(response.data);
-
           })
           .catch(function (error) {
             console.log(error);

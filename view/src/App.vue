@@ -67,14 +67,17 @@
                     size="medium"
                     :effect="tag.effect"
                     @close="removeTag(tag)"
-                    @click="clickTag(tag)"
+                    @click="clickTag(tag,true)"
                     :type="tag.type">
               {{tag.name}}
             </el-tag>
           </div>
         </el-header>
         <el-main class="el-main">
-          <router-view></router-view>
+          <keep-alive>
+            <router-view v-if="isKeepAlive"></router-view>
+          </keep-alive>
+          <router-view v-if="!isKeepAlive"></router-view>
         </el-main>
       </el-container>
     </el-container>
@@ -98,32 +101,33 @@
         },
         data: function () {
             return {
+                isKeepAlive: false,
                 isCollapse: false,
                 currentTagId: '0',
-                indexTag: {id: '0', name: '首页', type: '', url: '/index', effect: 'dark'},
+                indexTag: {id: '0', name: '首页', type: '', url: '/index', effect: 'dark', isKeepAlive: false},
                 tags: [
                     //{id: '1', name: '标签一', type: 'info', url: '/item1', effect: 'light'},
                 ],
                 menuData: [
                     {
-                      id: '1',
-                      name: '系统管理',
-                      index: '1',
-                      type: 'sub',
-                      url: '/admin',
-                      icoName: 'el-icon-menu',
-                      childs: [
-                        {
-                          id: '1-1',
-                          name: '用户管理',
-                          index: '1-1',
-                          type: 'item',
-                          url: '/admin/user/list',
-                          icoName: 'el-icon-s-custom'
-                        }
-                      ]
+                        id: '1',
+                        name: '系统管理',
+                        index: '1',
+                        type: 'sub',
+                        url: '/admin',
+                        icoName: 'el-icon-menu',
+                        childs: [
+                            {
+                                id: '1-1',
+                                name: '用户管理',
+                                index: '1-1',
+                                type: 'item',
+                                url: '/admin/user/list',
+                                icoName: 'el-icon-s-custom'
+                            }
+                        ]
                     },
-                    {id: '5', name: '菜单5', index: '5', type: 'item', url: '/item5', icoName: 'el-icon-menu'}
+                    {id: '5', name: '菜单5', index: '5', type: 'item', url: '/item5', icoName: 'el-icon-menu',isKeepAlive:false}
                 ]
             }
         },
@@ -132,22 +136,29 @@
         },
         watch: {},
         methods: {
-            clickChildMenuItem:function(menuItem){
+            clickChildMenuItem: function (menuItem) {
                 console.log(menuItem.id);
-                let newTag = {'id':menuItem.id,'name':menuItem.name,'type':'info','url':menuItem.url,'effect':'light'};
+                let newTag = {
+                    'id': menuItem.id,
+                    'name': menuItem.name,
+                    'type': 'info',
+                    'url': menuItem.url,
+                    'effect': 'light'
+                };
                 var isAdd = true;
                 var opIndex = 0;
-                this.tags.forEach((item,index,array)=>{
-                    if(item.id === menuItem.id){
+                this.tags.forEach((item, index, array) => {
+                    if (item.id === menuItem.id) {
                         isAdd = false;
                         opIndex = index;
                     }
                 });
-                if(isAdd){
+                if (isAdd) {
                     this.tags.push(newTag);
-                    opIndex = this.tags.length-1;
+                    opIndex = this.tags.length - 1;
                 }
-                this.clickTag(this.tags[opIndex]);
+                
+                this.clickTag(this.tags[opIndex],false);
             },
             removeTag: function (tag) {
                 if (tag.id === this.currentTagId) {
@@ -169,8 +180,8 @@
                 }
 
             },
-            clickTag: function (tag) {
-                if(tag) {
+            clickTag: function (tag,isKeepAliveVal) {
+                if (tag) {
                     this.currentTagId = tag.id;
                     this.tags.forEach((item, index, array) => {
                         item.type = 'info';
@@ -185,6 +196,7 @@
                     tag.effect = 'dark';
                     //跳转
                     console.log(tag.url);
+                    this.isKeepAlive = isKeepAliveVal;
                     this.$router.push(tag.url);
                 }
             },
