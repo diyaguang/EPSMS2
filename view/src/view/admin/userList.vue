@@ -46,6 +46,15 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[10, 20, 30, 50]"
+        :page-size="10"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="currentTotal">
+      </el-pagination>
     </el-card>
   </div>
 </template>
@@ -55,6 +64,9 @@
     name: "userList.vue",
     data() {
       return {
+        currentPage:1,
+        currentPageSize:10,
+        currentTotal:0,
         userData:[]
       }
     },
@@ -62,6 +74,14 @@
       this.initData();
     },
     methods:{
+      handleSizeChange(val){
+        this.currentPageSize = val;
+        this.initData();
+      },
+      handleCurrentChange(val){
+        this.currentPage = val;
+        this.initData();
+      },
       initData(){
         var _this = this;
         var getMainDataUrl = "/user/list";
