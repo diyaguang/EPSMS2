@@ -84,7 +84,7 @@
       },
       initData(){
         var _this = this;
-        var getMainDataUrl = "/user/list";
+        var getMainDataUrl = "/user/list?page="+this.currentPage+"&pageSize="+this.currentPageSize;
         this.$ajax.get(getMainDataUrl)
           .then(function (response) {
               _this.userData = response.data;
