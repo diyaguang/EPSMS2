@@ -60,13 +60,11 @@
     },
     created: function () {
       this.initData();
-      console.log(this.$options.name);
     },
     methods:{
       initData(){
-        console.log("a");
         var _this = this;
-        var getMainDataUrl = "/userList";
+        var getMainDataUrl = "/user/list";
         this.$ajax.get(getMainDataUrl)
           .then(function (response) {
               _this.userData = response.data;

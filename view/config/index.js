@@ -6,15 +6,17 @@ const path = require('path')
 
 module.exports = {
   dev: {
-
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/userList':{
-        target:'http://localhost:8090/api/user/list',   // 要代理的接口地址
-        changeOrigin:true,                            // 允许跨域
-        pathRewrite:{'^/userList':''}            // 接口名重写
+      "/api": {
+        target: "http://localhost:8090",
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: {
+          "^/api": "/api"
+        }
       }
     },
 

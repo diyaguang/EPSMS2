@@ -74,10 +74,9 @@
           </div>
         </el-header>
         <el-main class="el-main">
-          <keep-alive>
-            <router-view v-if="isKeepAlive"></router-view>
+          <keep-alive :include="keepAliveComponents">
+            <router-view></router-view>
           </keep-alive>
-          <router-view v-if="!isKeepAlive"></router-view>
         </el-main>
       </el-container>
     </el-container>
@@ -101,10 +100,11 @@
         },
         data: function () {
             return {
+                keepAliveComponents:[],
                 isKeepAlive: false,
                 isCollapse: false,
                 currentTagId: '0',
-                indexTag: {id: '0', name: '首页', type: '', url: '/index', effect: 'dark', isKeepAlive: false},
+                indexTag: {id: '0', name: '首页', type: '', url: '/index', effect: 'dark', isKeepAlive: false,componentName:'index.vue'},
                 tags: [
                     //{id: '1', name: '标签一', type: 'info', url: '/item1', effect: 'light'},
                 ],
@@ -116,6 +116,7 @@
                         type: 'sub',
                         url: '/admin',
                         icoName: 'el-icon-menu',
+                        componentName:'index.vue',
                         childs: [
                             {
                                 id: '1-1',
@@ -123,7 +124,8 @@
                                 index: '1-1',
                                 type: 'item',
                                 url: '/admin/user/list',
-                                icoName: 'el-icon-s-custom'
+                                icoName: 'el-icon-s-custom',
+                                componentName:'userList.vue'
                             }
                         ]
                     },
@@ -137,13 +139,13 @@
         watch: {},
         methods: {
             clickChildMenuItem: function (menuItem) {
-                console.log(menuItem.id);
                 let newTag = {
                     'id': menuItem.id,
                     'name': menuItem.name,
                     'type': 'info',
                     'url': menuItem.url,
-                    'effect': 'light'
+                    'effect': 'light',
+                    'componentName':menuItem.componentName
                 };
                 var isAdd = true;
                 var opIndex = 0;
@@ -157,12 +159,17 @@
                     this.tags.push(newTag);
                     opIndex = this.tags.length - 1;
                 }
-                
+
                 this.clickTag(this.tags[opIndex],false);
+                if(this.keepAliveComponents.indexOf(this.tags[opIndex].componentName)<0){
+                  this.keepAliveComponents.push(this.tags[opIndex].componentName);
+                }
             },
             removeTag: function (tag) {
+              console.log(tag);
                 if (tag.id === this.currentTagId) {
                     var opIndex = this.tags.indexOf(tag);
+                    this.keepAliveComponents.splice(this.keepAliveComponents.indexOf(tag.componentName),1);
                     this.tags.splice(opIndex, 1);
                     //默认这个元素之后的tag被打开
                     var tag = this.tags[opIndex];
@@ -178,6 +185,8 @@
                 } else {
                     this.tags.splice(this.tags.indexOf(tag), 1);
                 }
+
+                console.log(this.keepAliveComponents);
 
             },
             clickTag: function (tag,isKeepAliveVal) {
@@ -195,7 +204,6 @@
                     tag.type = '';
                     tag.effect = 'dark';
                     //跳转
-                    console.log(tag.url);
                     this.isKeepAlive = isKeepAliveVal;
                     this.$router.push(tag.url);
                 }

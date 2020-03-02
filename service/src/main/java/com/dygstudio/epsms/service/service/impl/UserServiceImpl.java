@@ -6,6 +6,7 @@ import com.dygstudio.epsms.service.service.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -30,7 +31,20 @@ public class UserServiceImpl implements UserService {
     public User findUserByName(String name){
         return userMapper.findUserByName(name);
     }
-    public List<User> findAllUser(){
-        return userMapper.findAllUser();
+    public List<User> findAllUser(Integer page,Integer pageSize){
+        HashMap<String,Object> queryMap = new HashMap<>();
+        queryMap.put("pageStart",pageSize*(page-1));
+        queryMap.put("pageSize",pageSize);
+        return userMapper.findAllUser(queryMap);
+    }
+    public String countUser(){
+        return userMapper.countUser();
+    }
+    public List<User> findUserByObject(User queryItem,Integer page,Integer pageSize){
+        HashMap<String,Object> queryMap = new HashMap<>();
+        queryMap.put("pageStart",pageSize*(page-1));
+        queryMap.put("pageSize",pageSize);
+        queryMap.put("User",queryItem);
+        return userMapper.findUserByObject(queryMap);
     }
 }

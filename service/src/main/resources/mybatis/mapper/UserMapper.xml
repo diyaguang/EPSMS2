@@ -10,8 +10,23 @@
     <select id="findUserByName" resultMap="UserResultMap" parameterType="String">
         select * FROM User WHERE name=#{userId}
     </select>
-    <select id="findAllUser" resultMap="UserResultMap">
+    <select id="findAllUser" resultMap="UserResultMap" parameterType="Map">
+        select * FROM User limit #{pageStart},#{pageSize}
+    </select>
+    <select id="countUser" resultType="String">
+        select count(0) from User
+    </select>
+    <select id="findUserByObject" resultMap="UserResultMap" parameterType="Map">
         select * FROM User
+        <where>
+            <if test="User.id!=null and User.id.trim()!=''">
+                and id = #{User.id}
+            </if>
+            <if test="User.name!=null and User.name.trim()!=''">
+                and name = #{User.name}
+            </if>
+            limit #{pageStart},#{pageSize}
+        </where>
     </select>
     <resultMap id="UserResultMap" type="User">
         <id property="id" column="id"/>

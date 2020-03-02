@@ -8,7 +8,8 @@ import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios';
 import Vuex from 'vuex';
 
-//axios.defaults.baseURL="http://localhost:8090"
+axios.defaults.baseURL="/api"
+//axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 Vue.prototype.$ajax = axios
 Vue.use(ElementUI,{size:'mini'});
 Vue.config.productionTip = false;
