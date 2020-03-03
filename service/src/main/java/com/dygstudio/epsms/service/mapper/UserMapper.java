@@ -15,4 +15,8 @@ public interface UserMapper extends BaseMapper {
     List<User> findAllUser(HashMap<String,Object> queryItem);
     String countUser();
     List<User> findUserByObject(HashMap<String,Object> queryItem);
+    int insert(User user);
+    int insertList(List<User> userList);
+    int update(User user);
+    int deleteById(String userId);
 }

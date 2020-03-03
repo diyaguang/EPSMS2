@@ -4,13 +4,16 @@
       <div slot="header" class="clearfix" style="line-height: 39px;">
         <span>用户列表</span>
         <el-button-group style="float: right; padding: 5px 0; margin-right: 10px">
-          <el-button type="primary" icon="el-icon-document-add"></el-button>
-          <el-button type="primary" icon="el-icon-document-delete"></el-button>
+          <el-button type="primary" icon="el-icon-document-add" @click="handleAdd"></el-button>
+          <el-button type="primary" icon="el-icon-document-delete" @click="handleBatchDelete"></el-button>
           <el-button type="primary" icon="el-icon-document-copy"></el-button>
           <el-button type="primary" icon="el-icon-printer"></el-button>
         </el-button-group>
       </div>
       <el-table
+        ref="multipleTable"
+        @selection-change="handleSelectionChange"
+        v-loading="loading"
         :data="userData"
         style="width: 100%"
         height="250">
@@ -46,7 +49,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
+      <el-pagination style="margin-top: 10px"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
@@ -56,6 +59,21 @@
         :total="currentTotal">
       </el-pagination>
     </el-card>
+
+    <el-dialog :title="userInfoOpTitle" :visible.sync="userInfoFormVisible" width="500px">
+      <el-form :model="currentUser">
+        <el-form-item label="名称" :label-width="formLabelWidth">
+          <el-input v-model="currentUser.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" :label-width="formLabelWidth">
+          <el-input v-model="currentUser.password" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="userInfoFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleUserInfoOp">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -64,10 +82,17 @@
     name: "userList.vue",
     data() {
       return {
+        userInfoOpType:'',
+        userInfoOpTitle:'',
+        userInfoFormVisible:false,
+        loading:true,
         currentPage:1,
         currentPageSize:10,
         currentTotal:0,
-        userData:[]
+        userData:[],
+        currentUser:{},
+        formLabelWidth: '50px',
+        multipleSelection: []
       }
     },
     created: function () {
@@ -83,22 +108,165 @@
         this.initData();
       },
       initData(){
+        this.loading = true;
         var _this = this;
         var getMainDataUrl = "/user/list?page="+this.currentPage+"&pageSize="+this.currentPageSize;
         this.$ajax.get(getMainDataUrl)
           .then(function (response) {
-              _this.userData = response.data;
+              _this.userData = response.data.data;
+              _this.currentTotal = response.data.count;
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        this.loading = false;
+      },
+      handleUserInfoOp(){
+        if(this.userInfoOpType=="add"){
+          this.handleInsert();
+        }else if(this.userInfoOpType=="update"){
+          this.handleUpdate();
+        }
+      },
+      handleAdd(){
+        this.userInfoFormVisible = true;
+        this.currentUser = {};
+        this.userInfoOpType="add";
+        this.userInfoOpTitle = "添加用户";
+      },
+      handleEdit(index, row) {
+        this.userInfoFormVisible = true;
+        //this.currentUser = row;
+        //this.currentUser = Object.assign({}, row);  //对象进行浅复制(只复制属性和值) 这个处理对于嵌套的对象是不起作用的
+        this.currentUser = JSON.parse(JSON.stringify(row));  //对象进行浅复制(只复制属性和值)
+        this.userInfoOpType="update";
+        this.userInfoOpTitle="编辑用户信息";
+      },
+      handleDelete(index, row) {
+        this.$confirm('删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          var that = this;
+          var deleteDataUrl = "/user/delete?userId="+row.id;
+          this.$ajax.get(deleteDataUrl)
+            .then(function (response) {
+              if(response.data.code==0) {
+                that.$message({
+                  message: '数据删除成功!',
+                  type: 'success'
+                });
+                that.initData();
+              }else{
+                that.$message({
+                  message: '数据删除失败!'+response.data.msg,
+                  type: 'error'
+                });
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      },
+      handleSelectionChange(val){
+        this.multipleSelection = val;
+      },
+      handleBatchDelete(){
+        let size = this.multipleSelection.length;
+        this.$confirm('将删除选中的 '+size+' 条记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          //循环删除
+          this.multipleSelection.forEach((item, index, array) => {
+            var that = this;
+            var deleteDataUrl = "/user/delete?userId="+item.id;
+            this.$ajax.get(deleteDataUrl)
+              .then(function (response) {
+                if(response.data.code==0) {
+                }else{
+
+                }
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          });
+
+          //删除完成，清空选中的记录，刷新数据
+
+            this.$message({
+              message: '数据删除成功!',
+              type: 'success'
+            });
+
+
+          this.initData();
+          this.multipleSelection = [];
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      },
+      handleUpdate(){
+        var _this = this;
+        var updateDataUrl = "/user/update";
+        this.$ajax.post(updateDataUrl,this.currentUser)
+          .then(function (response) {
             console.log(response.data);
+            if(response.data.code==0){
+              _this.$message({
+                message: '数据更新成功!',
+                type: 'success'
+              });
+              _this.userInfoFormVisible = false;
+              _this.initData();
+            }else{
+              _this.$message({
+                message: '数据更新失败!'+response.data.msg,
+                type: 'error'
+              });
+            }
+
           })
           .catch(function (error) {
             console.log(error);
           });
       },
-      handleEdit(index, row) {
-        console.log(index, row);
-      },
-      handleDelete(index, row) {
-        console.log(index, row);
+      handleInsert(){
+        var _this = this;
+        var insertDataUrl = "/user/insert";
+        this.$ajax.post(insertDataUrl,this.currentUser)
+          .then(function (response) {
+            console.log(response.data);
+            if(response.data.code==0){
+              _this.$message({
+                message: '数据新增成功!',
+                type: 'success'
+              });
+              _this.userInfoFormVisible = false;
+              _this.initData();
+            }else{
+              _this.$message({
+                message: '数据新增失败!'+response.data.msg,
+                type: 'error'
+              });
+            }
+
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       }
     }
   }
@@ -135,5 +303,6 @@
 
   .el-card /deep/ .el-card__body {
     padding: 10px 10px 10px 20px;
+
   }
 </style>

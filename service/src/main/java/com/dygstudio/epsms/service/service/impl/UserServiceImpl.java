@@ -47,4 +47,16 @@ public class UserServiceImpl implements UserService {
         queryMap.put("User",queryItem);
         return userMapper.findUserByObject(queryMap);
     }
+    public int insert(User user){
+        return userMapper.insert(user);
+    }
+    public int insertList(List<User> userList){
+        return userMapper.insertList(userList);
+    }
+    public int update(User user){
+        return userMapper.update(user);
+    }
+    public int deleteById(String userId){
+        return userMapper.deleteById(userId);
+    }
 }

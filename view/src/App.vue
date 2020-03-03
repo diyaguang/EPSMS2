@@ -101,7 +101,6 @@
         data: function () {
             return {
                 keepAliveComponents:[],
-                isKeepAlive: false,
                 isCollapse: false,
                 currentTagId: '0',
                 indexTag: {id: '0', name: '首页', type: '', url: '/index', effect: 'dark', isKeepAlive: false,componentName:'index.vue'},
@@ -160,13 +159,12 @@
                     opIndex = this.tags.length - 1;
                 }
 
-                this.clickTag(this.tags[opIndex],false);
+                this.clickTag(this.tags[opIndex]);
                 if(this.keepAliveComponents.indexOf(this.tags[opIndex].componentName)<0){
                   this.keepAliveComponents.push(this.tags[opIndex].componentName);
                 }
             },
             removeTag: function (tag) {
-              console.log(tag);
                 if (tag.id === this.currentTagId) {
                     var opIndex = this.tags.indexOf(tag);
                     this.keepAliveComponents.splice(this.keepAliveComponents.indexOf(tag.componentName),1);
@@ -186,10 +184,8 @@
                     this.tags.splice(this.tags.indexOf(tag), 1);
                 }
 
-                console.log(this.keepAliveComponents);
-
             },
-            clickTag: function (tag,isKeepAliveVal) {
+            clickTag: function (tag) {
                 if (tag) {
                     this.currentTagId = tag.id;
                     this.tags.forEach((item, index, array) => {
@@ -204,7 +200,6 @@
                     tag.type = '';
                     tag.effect = 'dark';
                     //跳转
-                    this.isKeepAlive = isKeepAliveVal;
                     this.$router.push(tag.url);
                 }
             },

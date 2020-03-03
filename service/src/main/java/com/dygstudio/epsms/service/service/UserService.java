@@ -14,4 +14,8 @@ public interface UserService {
     List<User> findAllUser(Integer page,Integer pageSize);
     String countUser();
     List<User> findUserByObject(User queryItem,Integer page,Integer pageSize);
+    int insert(User user);
+    int insertList(List<User> userList);
+    int update(User user);
+    int deleteById(String userId);
 }

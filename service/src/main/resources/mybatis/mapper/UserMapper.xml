@@ -28,6 +28,45 @@
             limit #{pageStart},#{pageSize}
         </where>
     </select>
+    <update id="update" parameterType="User">
+        update User
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null">name = #{name},</if>
+            <if test="password!=null">password = #{password},</if>
+        </trim>
+        WHERE
+        (id = #{id});
+    </update>
+    <insert id="insert" parameterType="User">
+        insert into User
+        (
+            id,name,password
+        )
+        values
+        (
+            #{id},
+            #{name},
+            #{password}
+        )
+    </insert>
+    <!-- MySQL下批量保存，可以foreach遍历 mysql支持values(),(),()语法 -->
+    <insert id="insertList" parameterType="User">
+         insert into User
+        (
+            id,name,password
+        )
+        values
+        <foreach collection="userList" item="user" separator=",">
+            (
+            REPLACE(UUID(),"-",""),
+            #{user.name},
+            #{user.password}
+            )
+        </foreach>
+    </insert>
+    <delete id="deleteById" parameterType="String">
+        delete from User WHERE id=#{userId}
+    </delete>
     <resultMap id="UserResultMap" type="User">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
