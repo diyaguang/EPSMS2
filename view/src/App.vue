@@ -19,10 +19,7 @@
             </div>
             <div style="position: absolute; left: 60px; top: 18px">
               <el-breadcrumb separator="/">
-                <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-                <el-breadcrumb-item><a href="/">活动管理</a></el-breadcrumb-item>
-                <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-                <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+                <el-breadcrumb-item v-for="breadcrumbPath in breadcrumbPathItem" :key="breadcrumbPath.id"><a :href="breadcrumbPath.url">{{breadcrumbPath.name}}</a></el-breadcrumb-item>
               </el-breadcrumb>
             </div>
             <div style="position: absolute; right: 50px;">
@@ -107,6 +104,7 @@
                 tags: [
                     //{id: '1', name: '标签一', type: 'info', url: '/item1', effect: 'light'},
                 ],
+                breadcrumbPathItem:[{name:'首页',url:'/index'}],
                 menuData: [
                     {
                         id: '1',
@@ -116,19 +114,21 @@
                         url: '/admin',
                         icoName: 'el-icon-menu',
                         componentName:'index.vue',
+                        parentId:0,
                         childs: [
                             {
-                                id: '1-1',
+                                id: '1',
                                 name: '用户管理',
-                                index: '1-1',
+                                index: '1',
                                 type: 'item',
                                 url: '/admin/user/list',
                                 icoName: 'el-icon-s-custom',
-                                componentName:'userList.vue'
+                                componentName:'userList.vue',
+                                parentId:1
                             }
                         ]
                     },
-                    {id: '5', name: '菜单5', index: '5', type: 'item', url: '/item5', icoName: 'el-icon-menu',isKeepAlive:false}
+                    {id: '2', name: '菜单2', index: '2', type: 'item', url: '/item2', icoName: 'el-icon-menu',isKeepAlive:false,parentId:0}
                 ]
             }
         },
