@@ -19,7 +19,7 @@
             </div>
             <div style="position: absolute; left: 60px; top: 18px">
               <el-breadcrumb separator="/">
-                <el-breadcrumb-item v-for="breadcrumbPath in breadcrumbPathItem" :key="breadcrumbPath.id"><a :href="breadcrumbPath.url">{{breadcrumbPath.name}}</a></el-breadcrumb-item>
+                <el-breadcrumb-item v-for="breadcrumbPath in breadcrumbPathItem" :key="breadcrumbPath.sId"><a :href="breadcrumbPath.url">{{breadcrumbPath.name}}</a></el-breadcrumb-item>
               </el-breadcrumb>
             </div>
             <div style="position: absolute; right: 50px;">
@@ -104,31 +104,34 @@
                 tags: [
                     //{id: '1', name: '标签一', type: 'info', url: '/item1', effect: 'light'},
                 ],
-                breadcrumbPathItem:[{name:'首页',url:'/index'}],
+                breadcrumbPathItemTemp:{id:0,name:'首页',url:'/index'},
+                breadcrumbPathItem:[{id:0,name:'首页',url:'/index'}],
                 menuData: [
                     {
                         id: '1',
+                        sId:'1',
                         name: '系统管理',
                         index: '1',
+                        path:'1',
                         type: 'sub',
                         url: '/admin',
                         icoName: 'el-icon-menu',
                         componentName:'index.vue',
-                        parentId:0,
                         childs: [
                             {
                                 id: '1',
+                                sId:'2',
+                                path:'1-1',
                                 name: '用户管理',
                                 index: '1',
                                 type: 'item',
                                 url: '/admin/user/list',
                                 icoName: 'el-icon-s-custom',
-                                componentName:'userList.vue',
-                                parentId:1
+                                componentName:'userList.vue'
                             }
                         ]
                     },
-                    {id: '2', name: '菜单2', index: '2', type: 'item', url: '/item2', icoName: 'el-icon-menu',isKeepAlive:false,parentId:0}
+                    {id: '2', sId:'3',name: '菜单2',path:'2', index: '2', type: 'item', url: '/item2', icoName: 'el-icon-menu',isKeepAlive:false,parentId:0}
                 ]
             }
         },
@@ -137,10 +140,29 @@
         },
         watch: {},
         methods: {
+            //计算面包屑导航栏的函数
+            getBreadcrumbPath:function(menuData,currentMenu){
+              this.breadcrumbPathItem = [];
+              this.breadcrumbPathItem.push(this.breadcrumbPathItemTemp);
+              let ids = currentMenu.path.split("-");
+              var currentItem = menuData;
+              ids.forEach(id=>{
+                for(var i=0;i<currentItem.length;i++){
+                  if(currentItem[i].id==id){
+                    let newPath = {id:currentItem[i].id,name:currentItem[i].name,url:currentItem[i].url};
+                    this.breadcrumbPathItem.push(newPath);
+                    currentItem = currentItem[i].childs;
+                    break;
+                  }
+                }
+              });
+            },
+            //左侧菜单选择后触发的函数
             clickChildMenuItem: function (menuItem) {
                 let newTag = {
                     'id': menuItem.id,
                     'name': menuItem.name,
+                    'path':menuItem.path,
                     'type': 'info',
                     'url': menuItem.url,
                     'effect': 'light',
@@ -164,6 +186,7 @@
                   this.keepAliveComponents.push(this.tags[opIndex].componentName);
                 }
             },
+            //删除Tag标签的函数
             removeTag: function (tag) {
                 if (tag.id === this.currentTagId) {
                     var opIndex = this.tags.indexOf(tag);
@@ -185,6 +208,7 @@
                 }
 
             },
+            //单击 tag 标签的函数
             clickTag: function (tag) {
                 if (tag) {
                     this.currentTagId = tag.id;
@@ -201,8 +225,10 @@
                     tag.effect = 'dark';
                     //跳转
                     this.$router.push(tag.url);
+                  this.getBreadcrumbPath(this.menuData,tag);
                 }
             },
+            //单击 index 首页的 tag 触发的函数
             clickIndexTag: function () {
                 this.tags.forEach((item, index, array) => {
                     item.type = 'info';
@@ -212,6 +238,9 @@
                 this.indexTag.type = '';
                 this.indexTag.effect = 'dark';
                 this.currentTagId = this.indexTag.id;
+                //面包屑地址栏的变化
+                this.breadcrumbPathItem = [];
+                this.breadcrumbPathItem.push(this.breadcrumbPathItemTemp);
                 //跳转
                 this.$router.push(this.indexTag.url);
             }
