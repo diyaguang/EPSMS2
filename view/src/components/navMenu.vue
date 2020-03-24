@@ -3,12 +3,12 @@
       <label v-for="navMenu in navMenus" :key="navMenu.id">
         <el-menu-item v-if="navMenu.childs==null" :key="navMenu.id" :data="navMenu" :index="navMenu.index" @click="goto(navMenu)">
           <i :class="navMenu.icoName"></i>
-          <span slot="title" style="margin-left: 11px">{{ navMenu.name }}</span>
+          <span slot="title" style="margin-left: 11px" class="el-menu-item-font">{{ navMenu.name }}</span>
         </el-menu-item>
         <el-submenu v-if="navMenu.childs" :key="navMenu.id" :data="navMenu" :index="navMenu.index">
           <span slot="title">
             <i :class="navMenu.icoName"></i>
-            <span style="margin-left: 11px;" v-show="!collapse">{{ navMenu.name }}</span>
+            <span style="margin-left: 11px;" v-show="!collapse" class="el-menu-item-font">{{ navMenu.name }}</span>
           </span>
           <nav-Menu :navMenus="navMenu.childs" @subClick="goto"></nav-Menu>
         </el-submenu>
@@ -33,6 +33,25 @@
     }
 </script>
 
-<style scoped>
+<style>
 
+  .el-menu-item-font {
+    font-size: 9pt;
+
+  }
+  .el-menu-item {
+    height: 35px;
+    line-height: 35px;
+  }
+   {
+    height: 35px;
+    line-height: 35px;
+  }
+  .el-menu-item, .el-submenu__title {
+    height: 35px !important;
+    line-height: 35px !important;
+  }
+  .el-submenu__icon-arrow {
+    top:58%
+  }
 </style>

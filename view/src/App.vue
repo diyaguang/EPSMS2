@@ -117,6 +117,7 @@
                         url: '/admin',
                         icoName: 'el-icon-menu',
                         componentName:'index.vue',
+
                         childs: [
                             {
                                 id: '1',
@@ -311,7 +312,7 @@
   }
 
   .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 200px;
+    width: 180px;
     min-height: 400px;
   }
 
