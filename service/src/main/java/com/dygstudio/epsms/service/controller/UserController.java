@@ -1,7 +1,10 @@
 package com.dygstudio.epsms.service.controller;
 
+import com.baomidou.mybatisplus.core.conditions.interfaces.Func;
 import com.dygstudio.epsms.service.common.PageResult;
+import com.dygstudio.epsms.service.entity.Function;
 import com.dygstudio.epsms.service.entity.User;
+import com.dygstudio.epsms.service.service.FunctionService;
 import com.dygstudio.epsms.service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,7 +28,15 @@ public class UserController extends BaseController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    FunctionService functionService;
 
+    @ResponseBody
+    @RequestMapping(value = "/allfunction")
+    public PageResult<Function> getAllFunction(){
+        List<Function> result =functionService.getFunctionList();
+        return new PageResult<Function>(result.size(),result);
+    }
     @ResponseBody
     @RequestMapping(value = "/list")
     public PageResult<User> getUserList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize){

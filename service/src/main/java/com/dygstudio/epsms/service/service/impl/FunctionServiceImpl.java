@@ -1,6 +1,7 @@
 package com.dygstudio.epsms.service.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dygstudio.epsms.service.mapper.FunctionMapper;
 import com.dygstudio.epsms.service.entity.Function;
@@ -49,7 +50,8 @@ public class FunctionServiceImpl extends ServiceImpl<FunctionMapper, Function> i
     }
 
     public List<Function> getFunctionList() {
-        return functionMapper.selectList(new QueryWrapper<>());
+        Page page = new Page(0,2);
+        return functionMapper.selectPage(page,new QueryWrapper<>()).getRecords();
     }
 
     public Function getFunctionById(String functionId) {
