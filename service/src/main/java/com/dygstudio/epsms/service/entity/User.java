@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import java.util.Set;
+
 /**
  * 〈功能概述〉
  *
@@ -18,6 +20,8 @@ public class User {
     private String id;
     private String name;
     private String password;
+    @TableField(exist = false)
+    private Set<Role> roles;
 
     public String getId() {
         return id;
@@ -41,5 +45,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

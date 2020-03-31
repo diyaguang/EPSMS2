@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dygstudio.epsms.service.mapper.PermissionMapper">
-    <select id="getPermissionsByRoleId" resultMap="PermissionResultMap" parameterType="String">
-        SELECT * FROM Permission WHERE RoleId=#{roleId}
+    <select id="getPermissionsByRoleId" parameterType="String" resultMap="PermissionResultMap">
+        SELECT p.* FROM Permission p,PermissionRoleLink link WHERE p.Id=link.permissionId AND link.roleId=#{id}
     </select>
     <resultMap id="PermissionResultMap" type="Permission">
         <id property="id" column="id"/>
-        <result property="permission" column="permission"/>
-        <result property="roleId" column="roleId"/>
-        <association property="role" column="roleId" javaType="com.dygstudio.epsms.service.entity.Role" select="com.dygstudio.epsms.service.mapper.RoleMapper.findRolsById"/>
-    </resultMap>
+        <result property="permissionName" column="permissionName"/>
+     </resultMap>
 </mapper>

@@ -16,8 +16,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 public class Permission {
     @TableId()
     private String id;
-    private String permission;
-    private String roleId;
+    private String permissionName;
 
     @TableField(exist = false)
     private Role role;
@@ -30,27 +29,11 @@ public class Permission {
         this.id = id;
     }
 
-    public String getPermission() {
-        return permission;
+    public String getPermissionName() {
+        return permissionName;
     }
 
-    public void setPermission(String permission) {
-        this.permission = permission;
-    }
-
-    public String getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(String roleId) {
-        this.roleId = roleId;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
+    public void setPermissionName(String permissionName) {
+        this.permissionName = permissionName;
     }
 }

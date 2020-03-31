@@ -8,5 +8,4 @@ import java.util.List;
 
 @Mapper
 public interface PermissionMapper extends BaseMapper<Permission> {
-    List<Permission> getPermissionsByRoleId(String roleId);
 }

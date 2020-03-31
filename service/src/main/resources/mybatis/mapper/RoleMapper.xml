@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dygstudio.epsms.service.mapper.RoleMapper">
-    <select id="findRolesByUserId" resultMap="RolesResultMap" parameterType="String">
-        SELECT r.* FROM Role r,UserRoleLink link WHERE r.ID=link.RoleId and link.UserId=#{userId}
-    </select>
     <select id="findRolsById" resultMap="RolesResultMap" parameterType="String">
         SELECT * FROM Role WHERE id=#{roleId}
     </select>
@@ -13,13 +10,16 @@
     <delete id="deleteRoleFuncionLinkByRoleId" parameterType="String">
         delete from FuncRoleLink where RoleId = #{roldId}
     </delete>
+    <select id="findRolesByUserId" parameterType="String" resultMap="RolesResultMap">
+        SELECT r.* FROM Role r,UserRoleLink urlink
+        WHERE r.Id=urlink.roleId
+        AND urlink.UserId=#{id}
+    </select>
     <resultMap id="RolesResultMap" type="Role">
         <id property="id" column="id"/>
         <result property="roleName" column="roleName"/>
-        <result property="userId" column="userId"/>
-        <association property="user" column="userId" javaType="com.dygstudio.epsms.service.entity.User" select="com.dygstudio.epsms.service.mapper.UserMapper.findUserById"/>
-        <collection property="permissions" ofType="com.dygstudio.epsms.service.entity.Permission"
-                    column="id" select="com.dygstudio.epsms.service.mapper.PermissionMapper.getPermissionsByRoleId"/>
+        <!-- <collection property="permissions" ofType="com.dygstudio.epsms.service.entity.Permission"
+                    column="id" select="com.dygstudio.epsms.service.mapper.PermissionMapper.getPermissionsByRoleId"/> -->
         <collection property="functions" ofType="com.dygstudio.epsms.service.entity.Function"
                     column="id" select="com.dygstudio.epsms.service.mapper.FunctionMapper.getFunctionByRoleId"/>
     </resultMap>

@@ -19,10 +19,7 @@ public class Role {
     @TableId()
     private String id;
     private String roleName;
-    private String userId;
 
-    @TableField(exist = false)
-    private User user;
     @TableField(exist = false)
     private List<Permission> permissions;
     @TableField(exist = false)
@@ -42,22 +39,6 @@ public class Role {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public List<Permission> getPermissions() {
