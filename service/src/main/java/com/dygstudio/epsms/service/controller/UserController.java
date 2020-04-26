@@ -32,15 +32,16 @@ public class UserController extends BaseController {
     FunctionService functionService;
 
     @ResponseBody
-    @RequestMapping(value = "/allfunction")
-    public PageResult<Function> getAllFunction(){
-        List<Function> result =functionService.getFunctionList();
-        return new PageResult<Function>(result.size(),result);
+    @RequestMapping(value = "testError")
+    public String test(){
+        int a = 1/0;
+        return "test";
     }
+
     @ResponseBody
     @RequestMapping(value = "/list")
     public PageResult<User> getUserList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize){
-        List<User> result = userService.findAllUser(1,10);
+        List<User> result = userService.findAllUser(page,pageSize);
         Integer countUserSize = Integer.parseInt(userService.countUser());
         return new PageResult<User>(countUserSize,result);
     }

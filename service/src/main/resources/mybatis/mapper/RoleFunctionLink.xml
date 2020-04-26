@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dygstudio.epsms.service.mapper.RoleFunctionLinkMapper">
+    <insert id="insert" parameterType="RoleFunctionLink">
+        insert into FuncRoleLink
+        (
+            id,roleid,funcid
+        )
+        values
+        (
+            #{id},
+            #{userId},
+            #{roleId}
+        )
+    </insert>
+    <delete id="deleteByRoleId" parameterType="String">
+        delete from FuncRoleLink WHERE roleId=#{roleId}
+    </delete>
+    <delete id="deleteByFuncId" parameterType="String">
+        delete from FuncRoleLink WHERE funcid=#{funcId}
+    </delete>
+    <resultMap id="RoleFunctionLinkResultMap" type="RoleFunctionLink">
+        <id property="id" column="id"/>
+        <result property="roleId" column="roleId"/>
+        <result property="funcId" column="funcId"/>
+    </resultMap>
+</mapper>

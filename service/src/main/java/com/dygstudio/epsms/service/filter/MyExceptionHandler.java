@@ -17,7 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class MyExceptionHandler {
     @ExceptionHandler
     @ResponseBody
-    public String ErrorHandler(AuthorizationException e){
-        return "没有通过权限认证!";
+    public String ErrorHandler(Exception e){
+        if(e.getClass() == AuthorizationException.class)
+            return "没有通过权限认证!";
+        else
+            return "bad"+e.getMessage();
     }
 }

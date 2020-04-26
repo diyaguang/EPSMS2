@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,9 +49,8 @@ public class FunctionServiceImpl extends ServiceImpl<FunctionMapper, Function> i
         tmpSubFunctions.sort(Comparator.comparing(Function::getSort));
         root.setSubFunction(tmpSubFunctions);
     }
-
-    public List<Function> getFunctionList() {
-        Page page = new Page(0,2);
+    public List<Function> getFunctionListByPage(Integer currentPage,Integer pageSize){
+        Page page = new Page(currentPage,pageSize);
         return functionMapper.selectPage(page,new QueryWrapper<>()).getRecords();
     }
 

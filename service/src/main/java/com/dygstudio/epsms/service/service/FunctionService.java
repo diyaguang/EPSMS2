@@ -8,7 +8,7 @@ import java.util.List;
 public interface FunctionService extends IService<Function> {
     List<Function> getFunctionByUserId(String userId);
     List<Function> buildUserMenuFunctions(List<Function> userFunctions);
-    List<Function> getFunctionList();
+    List<Function> getFunctionListByPage(Integer currentPage,Integer pageSize);
     Function getFunctionById(String functionId);
     List<Function> getFunctionByConditions(Function function);
     List<Function> getFunctionByRoleId(String roleId);

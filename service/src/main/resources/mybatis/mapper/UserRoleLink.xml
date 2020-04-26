@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dygstudio.epsms.service.mapper.UserRoleLinkMapper">
+    <select id="findRoleByUserId" parameterType="String" resultMap="UserRoleLinkResultMap">
+        select * from UserRoleLink where userId=#{userId}
+    </select>
+    <insert id="insert" parameterType="UserRoleLink">
+        insert into UserRoleLink
+        (
+            id,userid,roleid
+        )
+        values
+        (
+            #{id},
+            #{userId},
+            #{roleId}
+        )
+    </insert>
+    <delete id="deleteByUserId" parameterType="String">
+        delete from UserRoleLink WHERE userId=#{userId}
+    </delete>
+    <delete id="deleteByRoleId" parameterType="String">
+        delete from UserRoleLink WHERE roleId=#{roleId}
+    </delete>
+    <resultMap id="UserRoleLinkResultMap" type="UserRoleLink">
+        <id property="id" column="id"/>
+        <result property="roleId" column="roleId"/>
+        <result property="userId" column="userId"/>
+    </resultMap>
+</mapper>
