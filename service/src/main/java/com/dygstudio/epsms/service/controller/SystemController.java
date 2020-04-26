@@ -1,13 +1,17 @@
 package com.dygstudio.epsms.service.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dygstudio.epsms.service.common.PageResult;
 import com.dygstudio.epsms.service.entity.Function;
+import com.dygstudio.epsms.service.entity.Role;
 import com.dygstudio.epsms.service.entity.User;
 import com.dygstudio.epsms.service.service.FunctionService;
+import com.dygstudio.epsms.service.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,8 +27,10 @@ import java.util.UUID;
 @RequestMapping(value = "/api/system")
 public class SystemController {
 
-    @Autowired
+    @Resource
     FunctionService functionService;
+    @Resource
+    RoleService roleService;
 
     @ResponseBody
     @RequestMapping(value = "/function/list")
@@ -91,4 +97,12 @@ public class SystemController {
         return result;
     }
 
+    @RequestMapping(value = "/role/list")
+    @ResponseBody
+    public PageResult<Role> getRoleList(@RequestParam("page") Integer currentPage, @RequestParam("pageSize") Integer pageSize){
+        Page page = new Page(currentPage,pageSize);
+        List<Role> result = roleService.page(page).getRecords();
+        int recordCount = roleService.count();
+        return new PageResult<Role>(recordCount,result);
+    }
 }
