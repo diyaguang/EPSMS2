@@ -7,6 +7,7 @@ import com.dygstudio.epsms.service.service.UserRoleLinkService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 〈功能概述〉
@@ -27,5 +28,17 @@ public class UserRoleLinkServiceImpl extends ServiceImpl<UserRoleLinkMapper, Use
     }
     public int deleteByRoleId(String roleId){
         return userRoleLinkMapper.deleteByRoleId(roleId);
+    }
+    public boolean addUserRoleLink(List<UserRoleLink> links){
+        int opResultCount = 0;
+        for(UserRoleLink link : links){
+            opResultCount+= userRoleLinkMapper.insert(link);
+        }
+        if(opResultCount==links.size())
+            return true;
+        return  false;
+    }
+    public List<UserRoleLink> getUserRoleLinkByUserId(String userId){
+        return userRoleLinkMapper.findRoleByUserId(userId);
     }
 }

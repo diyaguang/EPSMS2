@@ -1,7 +1,10 @@
 package com.dygstudio.epsms.service.service.impl;
 
+import com.dygstudio.epsms.service.common.CommonUtils;
 import com.dygstudio.epsms.service.entity.User;
+import com.dygstudio.epsms.service.entity.UserRoleLink;
 import com.dygstudio.epsms.service.mapper.UserMapper;
+import com.dygstudio.epsms.service.service.UserRoleLinkService;
 import com.dygstudio.epsms.service.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,9 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    UserRoleLinkService userRoleLinkService;
 
     public User findUserByNameAndPassword(String name, String password){
         return userMapper.findUserByNameAndPassword(name,password);
@@ -58,5 +64,18 @@ public class UserServiceImpl implements UserService {
     }
     public int deleteById(String userId){
         return userMapper.deleteById(userId);
+    }
+    public boolean modifyUserRoleLink(String userId, List<String> roleIds){
+        //先删除原有关联记录
+        userRoleLinkService.deleteByUserId(userId);
+        //插入新的关联关系
+        UserRoleLink link  = new UserRoleLink();
+        for(String roleId : roleIds){
+            link.setId(CommonUtils.GenerateId());
+            link.setUserId(userId);
+            link.setRoleId(roleId);
+            userRoleLinkService.save(link);
+        }
+        return true;
     }
 }

@@ -28,10 +28,38 @@ public class Function {
     private String imagePath;
     private String iconName;
 
+    private String sId;
+    private String path;
+    private String componentName;
+
     @TableField(exist = false)
     private Function parent;
     @TableField(exist = false)
     private List<Function> subFunction;
+
+    public String getsId() {
+        return sId;
+    }
+
+    public void setsId(String sId) {
+        this.sId = sId;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getComponentName() {
+        return componentName;
+    }
+
+    public void setComponentName(String componentName) {
+        this.componentName = componentName;
+    }
 
     public String getId() {
         return id;

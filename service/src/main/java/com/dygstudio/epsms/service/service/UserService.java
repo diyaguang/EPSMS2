@@ -1,6 +1,7 @@
 package com.dygstudio.epsms.service.service;
 
 import com.dygstudio.epsms.service.entity.User;
+import com.dygstudio.epsms.service.vo.MenuVo;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -18,4 +19,5 @@ public interface UserService {
     int insertList(List<User> userList);
     int update(User user);
     int deleteById(String userId);
+    boolean modifyUserRoleLink(String userId, List<String> roleIds);
 }

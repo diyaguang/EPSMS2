@@ -3,8 +3,12 @@ package com.dygstudio.epsms.service.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dygstudio.epsms.service.common.CommonUtils;
+import com.dygstudio.epsms.service.entity.RoleFunctionLink;
+import com.dygstudio.epsms.service.entity.UserRoleLink;
 import com.dygstudio.epsms.service.mapper.FunctionMapper;
 import com.dygstudio.epsms.service.entity.Function;
+import com.dygstudio.epsms.service.mapper.RoleFunctionLinkMapper;
 import com.dygstudio.epsms.service.service.FunctionService;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +30,8 @@ import java.util.stream.Collectors;
 public class FunctionServiceImpl extends ServiceImpl<FunctionMapper, Function> implements FunctionService {
     @Resource
     FunctionMapper functionMapper;
+    @Resource
+    RoleFunctionLinkMapper roleFunctionLinkMapper;
 
     public List<Function> getFunctionByUserId(String userId) {
         return functionMapper.getFunctionByUserId(userId);
@@ -65,4 +71,19 @@ public class FunctionServiceImpl extends ServiceImpl<FunctionMapper, Function> i
     public List<Function> getFunctionByRoleId(String roleId){
         return functionMapper.getFunctionByRoleId(roleId);
     }
+
+    public boolean modifyRoleFunctionLinkByRoleId(String roleId, List<String> funcIds){
+        //先删除原有关联记录
+        roleFunctionLinkMapper.deleteByRoleId(roleId);
+        //插入新的关联关系
+        RoleFunctionLink link  = new RoleFunctionLink();
+        for(String funcId : funcIds){
+            link.setId(CommonUtils.GenerateId());
+            link.setFuncId(funcId);
+            link.setRoleId(roleId);
+            roleFunctionLinkMapper.insert(link);
+        }
+        return true;
+    }
+
 }

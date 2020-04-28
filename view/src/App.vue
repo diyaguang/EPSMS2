@@ -19,7 +19,8 @@
             </div>
             <div style="position: absolute; left: 60px; top: 18px">
               <el-breadcrumb separator="/">
-                <el-breadcrumb-item v-for="breadcrumbPath in breadcrumbPathItem" :key="breadcrumbPath.sId"><a :href="breadcrumbPath.url">{{breadcrumbPath.name}}</a></el-breadcrumb-item>
+                <el-breadcrumb-item v-for="breadcrumbPath in breadcrumbPathItem" :key="breadcrumbPath.sId"><a
+                  :href="breadcrumbPath.urlPath">{{breadcrumbPath.funcName}}</a></el-breadcrumb-item>
               </el-breadcrumb>
             </div>
             <div style="position: absolute; right: 50px;">
@@ -54,19 +55,19 @@
                     style="cursor: pointer"
                     :type="indexTag.type"
                     :effect="indexTag.effect"
-                    @click="clickIndexTag">{{ this.indexTag.name }}
+                    @click="clickIndexTag">{{ this.indexTag.funcName }}
             </el-tag>
             <el-tag class="tagItem"
                     style="cursor: pointer"
                     v-for="tag in tags"
-                    :key="tag.name"
+                    :key="tag.funcName"
                     closable
                     size="medium"
                     :effect="tag.effect"
                     @close="removeTag(tag)"
                     @click="clickTag(tag,true)"
                     :type="tag.type">
-              {{tag.name}}
+              {{tag.funcName}}
             </el-tag>
           </div>
         </el-header>
@@ -81,172 +82,169 @@
 </template>
 
 <script>
-    import navMenu from "./components/navMenu";
+  import navMenu from "./components/navMenu";
 
-    export default {
-        name: 'app',
-        components: {navMenu},
-        computed: {
-            collapseClass: function () {
-                if (this.isCollapse) {
-                    return 'el-icon-s-unfold'
-                } else {
-                    return 'el-icon-s-fold';
-                }
-            }
-        },
-        data: function () {
-            return {
-                keepAliveComponents:[],
-                isCollapse: false,
-                currentTagId: '0',
-                indexTag: {id: '0', name: '首页', type: '', url: '/index', effect: 'dark', isKeepAlive: false,componentName:'index.vue'},
-                tags: [
-                    //{id: '1', name: '标签一', type: 'info', url: '/item1', effect: 'light'},
-                ],
-                breadcrumbPathItemTemp:{id:0,name:'首页',url:'/index'},
-                breadcrumbPathItem:[{id:0,name:'首页',url:'/index'}],
-                menuData: [
-                    {
-                        id: '1',
-                        sId:'1',
-                        name: '系统管理',
-                        index: '1',
-                        path:'1',
-                        type: 'sub',
-                        url: '/admin',
-                        icoName: 'el-icon-menu',
-                        componentName:'index.vue',
-
-                        childs: [
-                            {
-                                id: '1',
-                                sId:'2',
-                                path:'1-1',
-                                name: '用户管理',
-                                index: '1',
-                                type: 'item',
-                                url: '/admin/user/list',
-                                icoName: 'el-icon-s-custom',
-                                componentName:'userList.vue'
-                            }
-                        ]
-                    },
-                    {id: '2', sId:'3',name: '菜单2',path:'2', index: '2', type: 'item', url: '/item2', icoName: 'el-icon-menu',isKeepAlive:false,parentId:0}
-                ]
-            }
-        },
-        mounted() {
-
-        },
-        watch: {},
-        methods: {
-            //计算面包屑导航栏的函数
-            getBreadcrumbPath:function(menuData,currentMenu){
-              this.breadcrumbPathItem = [];
-              this.breadcrumbPathItem.push(this.breadcrumbPathItemTemp);
-              let ids = currentMenu.path.split("-");
-              var currentItem = menuData;
-              ids.forEach(id=>{
-                for(var i=0;i<currentItem.length;i++){
-                  if(currentItem[i].id==id){
-                    let newPath = {id:currentItem[i].id,name:currentItem[i].name,url:currentItem[i].url};
-                    this.breadcrumbPathItem.push(newPath);
-                    currentItem = currentItem[i].childs;
-                    break;
-                  }
-                }
-              });
-            },
-            //左侧菜单选择后触发的函数
-            clickChildMenuItem: function (menuItem) {
-                let newTag = {
-                    'id': menuItem.id,
-                    'name': menuItem.name,
-                    'path':menuItem.path,
-                    'type': 'info',
-                    'url': menuItem.url,
-                    'effect': 'light',
-                    'componentName':menuItem.componentName
-                };
-                var isAdd = true;
-                var opIndex = 0;
-                this.tags.forEach((item, index, array) => {
-                    if (item.id === menuItem.id) {
-                        isAdd = false;
-                        opIndex = index;
-                    }
-                });
-                if (isAdd) {
-                    this.tags.push(newTag);
-                    opIndex = this.tags.length - 1;
-                }
-
-                this.clickTag(this.tags[opIndex]);
-                if(this.keepAliveComponents.indexOf(this.tags[opIndex].componentName)<0){
-                  this.keepAliveComponents.push(this.tags[opIndex].componentName);
-                }
-            },
-            //删除Tag标签的函数
-            removeTag: function (tag) {
-                if (tag.id === this.currentTagId) {
-                    var opIndex = this.tags.indexOf(tag);
-                    this.keepAliveComponents.splice(this.keepAliveComponents.indexOf(tag.componentName),1);
-                    this.tags.splice(opIndex, 1);
-                    //默认这个元素之后的tag被打开
-                    var tag = this.tags[opIndex];
-                    if (tag) {
-                        this.clickTag(tag);
-                    } else {
-                        tag = this.tags[opIndex - 1];
-                        if (tag)
-                            this.clickTag(tag);
-                        else
-                            this.clickIndexTag();
-                    }
-                } else {
-                    this.tags.splice(this.tags.indexOf(tag), 1);
-                }
-
-            },
-            //单击 tag 标签的函数
-            clickTag: function (tag) {
-                if (tag) {
-                    this.currentTagId = tag.id;
-                    this.tags.forEach((item, index, array) => {
-                        item.type = 'info';
-                        item.effect = 'light'
-                    });
-                    //index tag 的变化
-                    this.indexTag.type = 'info';
-                    this.indexTag.effect = 'light';
-
-                    //tag 的变化
-                    tag.type = '';
-                    tag.effect = 'dark';
-                    //跳转
-                    this.$router.push(tag.url);
-                  this.getBreadcrumbPath(this.menuData,tag);
-                }
-            },
-            //单击 index 首页的 tag 触发的函数
-            clickIndexTag: function () {
-                this.tags.forEach((item, index, array) => {
-                    item.type = 'info';
-                    item.effect = 'light'
-                });
-                //index tag 的变化
-                this.indexTag.type = '';
-                this.indexTag.effect = 'dark';
-                this.currentTagId = this.indexTag.id;
-                //面包屑地址栏的变化
-                this.breadcrumbPathItem = [];
-                this.breadcrumbPathItem.push(this.breadcrumbPathItemTemp);
-                //跳转
-                this.$router.push(this.indexTag.url);
-            }
+  export default {
+    name: 'app',
+    components: {navMenu},
+    computed: {
+      collapseClass: function () {
+        if (this.isCollapse) {
+          return 'el-icon-s-unfold'
+        } else {
+          return 'el-icon-s-fold';
         }
+      }
+    },
+    data: function () {
+      return {
+        keepAliveComponents: [],
+        isCollapse: false,
+        currentTagId: '0',
+        indexTag: {
+          id: '0',
+          funcName: '首页',
+          type: '',
+          urlPath: '/index',
+          effect: 'dark',
+          isKeepAlive: false,
+          componentName: 'index.vue'
+        },
+        tags: [
+          //{id: '1', name: '标签一', type: 'info', url: '/item1', effect: 'light'},
+        ],
+        breadcrumbPathItemTemp: {id: 0, funcName: '首页', urlPath: '/index'},
+        breadcrumbPathItem: [{id: 0, funcName: '首页', urlPath: '/index'}],
+        tmpMenuData: [],
+        menuData:[]
+      }
+
+    },
+    mounted() {
+      this.getMenuData();
+    },
+    watch: {},
+    methods: {
+      //获取菜单menu的方法
+      getMenuData: function () {
+        var _this = this;
+        var getMenuDataUrl = "/user/userMenu?userId=7f9c095ee0ed43ba85d6f6b3d533AAAc";
+        this.$ajax.get(getMenuDataUrl)
+          .then(function (response) {
+            _this.menuData = response.data.data;
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
+      },
+      //计算面包屑导航栏的函数
+      getBreadcrumbPath: function (menuData, currentMenu) {
+        this.breadcrumbPathItem = [];
+        this.breadcrumbPathItem.push(this.breadcrumbPathItemTemp);
+        let ids = currentMenu.path.split("-");
+        var currentItem = menuData;
+        ids.forEach(id => {
+          for (var i = 0; i < currentItem.length; i++) {
+            if (currentItem[i].sId == id) {
+              let newPath = {id: currentItem[i].id, funcName: currentItem[i].funcName, urlPath: currentItem[i].urlPath};
+              this.breadcrumbPathItem.push(newPath);
+              currentItem = currentItem[i].subFunction;
+              break;
+            }
+          }
+        });
+      },
+      //左侧菜单选择后触发的函数
+      clickChildMenuItem: function (menuItem) {
+        let newTag = {
+          'id': menuItem.id,
+          'funcName': menuItem.funcName,
+          'path': menuItem.path,
+          'type': 'info',
+          'urlPath': menuItem.urlPath,
+          'effect': 'light',
+          'componentName': menuItem.componentName
+        };
+        var isAdd = true;
+        var opIndex = 0;
+        this.tags.forEach((item, index, array) => {
+          if (item.id === menuItem.id) {
+            isAdd = false;
+            opIndex = index;
+          }
+        });
+        if (isAdd) {
+          this.tags.push(newTag);
+          opIndex = this.tags.length - 1;
+        }
+
+        this.clickTag(this.tags[opIndex]);
+        if (this.keepAliveComponents.indexOf(this.tags[opIndex].componentName) < 0) {
+          this.keepAliveComponents.push(this.tags[opIndex].componentName);
+        }
+      },
+      //删除Tag标签的函数
+      removeTag: function (tag) {
+        if (tag.id === this.currentTagId) {
+          var opIndex = this.tags.indexOf(tag);
+          this.keepAliveComponents.splice(this.keepAliveComponents.indexOf(tag.componentName), 1);
+          this.tags.splice(opIndex, 1);
+          //默认这个元素之后的tag被打开
+          var tag = this.tags[opIndex];
+          if (tag) {
+            this.clickTag(tag);
+          } else {
+            tag = this.tags[opIndex - 1];
+            if (tag)
+              this.clickTag(tag);
+            else
+              this.clickIndexTag();
+          }
+        } else {
+          this.tags.splice(this.tags.indexOf(tag), 1);
+        }
+
+      },
+      //单击 tag 标签的函数
+      clickTag: function (tag) {
+        if (tag) {
+          this.currentTagId = tag.id;
+          this.tags.forEach((item, index, array) => {
+            item.type = 'info';
+            item.effect = 'light'
+          });
+          //index tag 的变化
+          this.indexTag.type = 'info';
+          this.indexTag.effect = 'light';
+
+          //tag 的变化
+          tag.type = '';
+          tag.effect = 'dark';
+          //跳转
+
+          this.$router.push(tag.urlPath);
+          this.getBreadcrumbPath(this.menuData, tag);
+        }
+      },
+      //单击 index 首页的 tag 触发的函数
+      clickIndexTag: function () {
+        this.tags.forEach((item, index, array) => {
+          item.type = 'info';
+          item.effect = 'light'
+        });
+        //index tag 的变化
+        this.indexTag.type = '';
+        this.indexTag.effect = 'dark';
+        this.currentTagId = this.indexTag.id;
+        //面包屑地址栏的变化
+        this.breadcrumbPathItem = [];
+        this.breadcrumbPathItem.push(this.breadcrumbPathItemTemp);
+        //跳转
+        this.$router.push(this.indexTag.urlPath);
+      }
     }
+  }
 </script>
 
 <style>

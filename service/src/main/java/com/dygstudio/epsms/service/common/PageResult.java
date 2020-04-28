@@ -11,7 +11,7 @@ import java.util.List;
  * @date: 2020/3/3 9:57
  */
 public class PageResult<T> {
-    private int code; //状态码, 0表示成功
+    private String code; //状态码, 0表示成功
     private String msg;  //提示信息
     private long count; // 总数量, bootstrapTable是total
     private List<T> data; // 当前数据, bootstrapTable是rows
@@ -21,22 +21,22 @@ public class PageResult<T> {
     public PageResult(List<T> rows) {
         this.data = rows;
         this.count = rows.size();
-        this.code = 0;
+        this.code = SysConstant.RESULT_CODE_SUCCESSFUL;
         this.msg = "";
     }
 
     public PageResult(long total, List<T> rows) {
         this.count = total;
         this.data = rows;
-        this.code = 0;
+        this.code = SysConstant.RESULT_CODE_SUCCESSFUL;
         this.msg = "";
     }
 
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(String code) {
         this.code = code;
     }
 

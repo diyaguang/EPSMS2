@@ -12,4 +12,5 @@ public interface FunctionService extends IService<Function> {
     Function getFunctionById(String functionId);
     List<Function> getFunctionByConditions(Function function);
     List<Function> getFunctionByRoleId(String roleId);
+    boolean modifyRoleFunctionLinkByRoleId(String roleId, List<String> funcIds);
 }
