@@ -21,7 +21,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -53,8 +55,8 @@ public class UserController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/get",method = RequestMethod.POST)
-    public User getUser(@RequestParam("userName") String userName,@RequestParam("password") String password){
-        return userService.findUserByNameAndPassword(userName,password);
+    public User getUser(@RequestBody Map<String,String> param){
+        return userService.findUserByNameAndPassword(param.get("userName"),param.get("password"));
     }
 
     @ResponseBody
