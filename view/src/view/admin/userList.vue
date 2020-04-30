@@ -152,7 +152,7 @@
           var deleteDataUrl = "/user/delete?userId="+row.id;
           this.$ajax.get(deleteDataUrl)
             .then(function (response) {
-              if(response.data.code==0) {
+              if(response.data.code==1) {
                 that.$message({
                   message: '数据删除成功!',
                   type: 'success'
@@ -180,28 +180,29 @@
       },
       handleBatchDelete(){
         let size = this.multipleSelection.length;
-        this.$confirm('将删除选中的 '+size+' 条记录, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          //循环删除
-          this.multipleSelection.forEach((item, index, array) => {
-            var that = this;
-            var deleteDataUrl = "/user/delete?userId="+item.id;
-            this.$ajax.get(deleteDataUrl)
-              .then(function (response) {
-                if(response.data.code==0) {
-                }else{
+        if(size>0) {
+          this.$confirm('将删除选中的 ' + size + ' 条记录, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            //循环删除
+            this.multipleSelection.forEach((item, index, array) => {
+              var that = this;
+              var deleteDataUrl = "/user/delete?userId=" + item.id;
+              this.$ajax.get(deleteDataUrl)
+                .then(function (response) {
+                  if (response.data.code == 1) {
+                  } else {
 
-                }
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-          });
+                  }
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
+            });
 
-          //删除完成，清空选中的记录，刷新数据
+            //删除完成，清空选中的记录，刷新数据
 
             this.$message({
               message: '数据删除成功!',
@@ -209,14 +210,20 @@
             });
 
 
-          this.initData();
-          this.multipleSelection = [];
-        }).catch(() => {
+            this.initData();
+            this.multipleSelection = [];
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            });
+          });
+        }else{
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            message: '请先选择要删除的记录'
           });
-        });
+        }
       },
       handleUpdate(){
         var _this = this;
@@ -224,7 +231,7 @@
         this.$ajax.post(updateDataUrl,this.currentUser)
           .then(function (response) {
             console.log(response.data);
-            if(response.data.code==0){
+            if(response.data.code==1){
               _this.$message({
                 message: '数据更新成功!',
                 type: 'success'
@@ -248,8 +255,7 @@
         var insertDataUrl = "/user/insert";
         this.$ajax.post(insertDataUrl,this.currentUser)
           .then(function (response) {
-            console.log(response.data);
-            if(response.data.code==0){
+            if(response.data.code==1){
               _this.$message({
                 message: '数据新增成功!',
                 type: 'success'

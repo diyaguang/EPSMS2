@@ -1,16 +1,19 @@
 package com.dygstudio.epsms.service.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dygstudio.epsms.service.common.CommonUtils;
 import com.dygstudio.epsms.service.entity.RoleFunctionLink;
+import com.dygstudio.epsms.service.entity.User;
 import com.dygstudio.epsms.service.entity.UserRoleLink;
 import com.dygstudio.epsms.service.mapper.FunctionMapper;
 import com.dygstudio.epsms.service.entity.Function;
 import com.dygstudio.epsms.service.mapper.RoleFunctionLinkMapper;
 import com.dygstudio.epsms.service.service.FunctionService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Comparator;
@@ -55,9 +58,10 @@ public class FunctionServiceImpl extends ServiceImpl<FunctionMapper, Function> i
         tmpSubFunctions.sort(Comparator.comparing(Function::getSort));
         root.setSubFunction(tmpSubFunctions);
     }
-    public List<Function> getFunctionListByPage(Integer currentPage,Integer pageSize){
+
+    public IPage<Function> getFunctionListByPage(Integer currentPage, Integer pageSize){
         Page page = new Page(currentPage,pageSize);
-        return functionMapper.selectPage(page,new QueryWrapper<>()).getRecords();
+        return functionMapper.selectPage(page,new QueryWrapper<>());
     }
 
     public Function getFunctionById(String functionId) {
@@ -84,6 +88,24 @@ public class FunctionServiceImpl extends ServiceImpl<FunctionMapper, Function> i
             roleFunctionLinkMapper.insert(link);
         }
         return true;
+    }
+
+    @Transactional
+    public Integer deleteFunctionById(String functionId){
+        Integer result = functionMapper.deleteById(functionId);
+        if(result==1){
+            roleFunctionLinkMapper.deleteByFuncId(functionId);
+        }
+        return result;
+    }
+
+    @Transactional
+    public Integer deleteFunctionList(List<Function> functionList){
+        Integer resultCount = 0;
+        for(Function function : functionList){
+            resultCount+=deleteFunctionById(function.getId());
+        }
+        return resultCount;
     }
 
 }

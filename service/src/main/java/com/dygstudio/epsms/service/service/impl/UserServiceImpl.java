@@ -1,5 +1,11 @@
 package com.dygstudio.epsms.service.service.impl;
 
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dygstudio.epsms.service.common.CommonUtils;
 import com.dygstudio.epsms.service.entity.User;
 import com.dygstudio.epsms.service.entity.UserRoleLink;
@@ -7,6 +13,7 @@ import com.dygstudio.epsms.service.mapper.UserMapper;
 import com.dygstudio.epsms.service.service.UserRoleLinkService;
 import com.dygstudio.epsms.service.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -21,7 +28,7 @@ import java.util.List;
  * @date: 2019-12-30 17:28
  */
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements UserService {
     @Resource
     private UserMapper userMapper;
 
@@ -29,40 +36,65 @@ public class UserServiceImpl implements UserService {
     UserRoleLinkService userRoleLinkService;
 
     public User findUserByNameAndPassword(String name, String password){
-        return userMapper.findUserByNameAndPassword(name,password);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("Name",name);
+        queryWrapper.eq("Password",password);
+        return userMapper.selectOne(queryWrapper);
     }
     public User findUserById(String userId){
-        return userMapper.findUserById(userId);
+        return userMapper.selectById(userId);
     }
     public User findUserByName(String name){
-        return userMapper.findUserByName(name);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("Name",name);
+        return userMapper.selectOne(queryWrapper);
     }
-    public List<User> findAllUser(Integer page,Integer pageSize){
-        HashMap<String,Object> queryMap = new HashMap<>();
-        queryMap.put("pageStart",pageSize*(page-1));
-        queryMap.put("pageSize",pageSize);
-        return userMapper.findAllUser(queryMap);
+    public IPage<User> findAllUser(Integer page,Integer pageSize){
+        IPage queryPage = new Page(page,pageSize);
+        return userMapper.selectPage(queryPage,new QueryWrapper<User>());
     }
-    public String countUser(){
-        return userMapper.countUser();
+    public Integer countUser(){
+        return userMapper.selectCount(new QueryWrapper<User>());
     }
-    public List<User> findUserByObject(User queryItem,Integer page,Integer pageSize){
-        HashMap<String,Object> queryMap = new HashMap<>();
-        queryMap.put("pageStart",pageSize*(page-1));
-        queryMap.put("pageSize",pageSize);
-        queryMap.put("User",queryItem);
-        return userMapper.findUserByObject(queryMap);
+    public IPage<User>  findUserByObject(User queryItem,Integer page,Integer pageSize){
+        IPage queryPage = new Page(page,pageSize);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        if(!StrUtil.isBlank(queryItem.getName())){
+            queryWrapper.eq("Name",queryItem.getName());
+        }
+        return userMapper.selectPage(queryPage,queryWrapper);
     }
-    public int insert(User user){
+    public Integer insert(User user){
         return userMapper.insert(user);
     }
-    public int insertList(List<User> userList){
-        return userMapper.insertList(userList);
+
+    @Transactional
+    public Integer insertList(List<User> userList){
+        Integer resultCount = 0;
+        for(User user : userList){
+            resultCount+=insert(user);
+        }
+        return resultCount;
     }
-    public int update(User user){
-        return userMapper.update(user);
+
+    @Transactional
+    public Integer deleteUserList(List<User> userList){
+        Integer resultCount = 0;
+        for(User user : userList){
+            resultCount+=deleteById(user.getId());
+        }
+        return resultCount;
     }
-    public int deleteById(String userId){
+    public Integer update(User user){
+        return userMapper.updateById(user);
+    }
+
+    @Transactional
+    public Integer deleteById(String userId){
+        Integer result = userMapper.deleteById(userId);
+        if(result==1){
+            userRoleLinkService.deleteByUserId(userId);
+        }
         return userMapper.deleteById(userId);
     }
     public boolean modifyUserRoleLink(String userId, List<String> roleIds){

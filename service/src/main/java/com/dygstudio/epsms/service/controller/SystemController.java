@@ -1,5 +1,7 @@
 package com.dygstudio.epsms.service.controller;
 
+import com.baomidou.mybatisplus.core.conditions.interfaces.Func;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dygstudio.epsms.service.common.CommonUtils;
 import com.dygstudio.epsms.service.common.PageResult;
@@ -49,8 +51,8 @@ public class SystemController {
     @ResponseBody
     @RequestMapping(value = "/function/list")
     public PageResult<Function> getFunctionList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize){
-        List<Function> result =functionService.getFunctionListByPage(page,pageSize);
-        return new PageResult<Function>(result.size(),result);
+        IPage<Function> result =functionService.getFunctionListByPage(page,pageSize);
+        return new PageResult<Function>(result.getTotal(),result.getRecords());
     }
 
     @ResponseBody
@@ -96,8 +98,8 @@ public class SystemController {
     @RequestMapping(value = "/function/delete")
     public PageResult<Function> deleteFunction(@RequestParam("functionId") String functionId){
         PageResult<Function> result = new PageResult<>();
-        boolean opResult = functionService.removeById(functionId);
-        if(opResult){
+        Integer opResult = functionService.deleteFunctionById(functionId);
+        if(opResult>0){
             result.setCode(SysConstant.RESULT_CODE_SUCCESSFUL);
             result.setMsg(SysConstant.RESULT_MSG_SUCCESSFUL);
             result.setData(null);
@@ -163,8 +165,8 @@ public class SystemController {
     @RequestMapping(value = "/role/delete")
     public PageResult<Role> deleteRole(@RequestParam("roleId") String roleId){
         PageResult<Role> result = new PageResult<>();
-        boolean opResult = roleService.removeById(roleId);
-        if(opResult){
+        Integer opResult = roleService.deleteById(roleId);
+        if(opResult>0){
             result.setCode(SysConstant.RESULT_CODE_SUCCESSFUL);
             result.setMsg(SysConstant.RESULT_MSG_SUCCESSFUL);
             result.setData(null);

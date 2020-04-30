@@ -10,7 +10,7 @@
     <delete id="deleteRoleFuncionLinkByRoleId" parameterType="String">
         delete from FuncRoleLink where RoleId = #{roldId}
     </delete>
-    <select id="findRolesByUserId" parameterType="String" resultMap="RolesResultMap">
+    <select id="findRolesByUserId" parameterType="String"  resultType="Role">
         SELECT r.* FROM Role r,UserRoleLink urlink
         WHERE r.Id=urlink.roleId
         AND urlink.UserId=#{id}

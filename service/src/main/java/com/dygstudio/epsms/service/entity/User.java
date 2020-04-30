@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -22,6 +23,61 @@ public class User {
     private String password;
     @TableField(exist = false)
     private Set<Role> roles;
+
+    private String opUserId;
+    private Date opDate;
+    private Integer status;
+    private Integer isDel;
+    private String description;
+    private String companyId;
+
+    public String getOpUserId() {
+        return opUserId;
+    }
+
+    public void setOpUserId(String opUserId) {
+        this.opUserId = opUserId;
+    }
+
+    public Date getOpDate() {
+        return opDate;
+    }
+
+    public void setOpDate(Date opDate) {
+        this.opDate = opDate;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Integer getIsDel() {
+        return isDel;
+    }
+
+    public void setIsDel(Integer isDel) {
+        this.isDel = isDel;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
 
     public String getId() {
         return id;

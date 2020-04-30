@@ -3,6 +3,7 @@ package com.dygstudio.epsms.service.controller;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.interfaces.Func;
 import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dygstudio.epsms.service.common.CommonUtils;
 import com.dygstudio.epsms.service.common.PageResult;
@@ -53,9 +54,8 @@ public class UserController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/list")
     public PageResult<User> getUserList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize){
-        List<User> result = userService.findAllUser(page,pageSize);
-        Integer countUserSize = Integer.parseInt(userService.countUser());
-        return new PageResult<User>(countUserSize,result);
+        IPage<User> result = userService.findAllUser(page,pageSize);
+        return new PageResult<User>(result.getTotal(),result.getRecords());
     }
 
     @ResponseBody

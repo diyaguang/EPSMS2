@@ -10,15 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 @Mapper
-public interface UserMapper extends BaseMapper {
-    User findUserByNameAndPassword(String name, String password);
-    User findUserById(String userId);
-    User findUserByName(String name);
-    List<User> findAllUser(HashMap<String,Object> queryItem);
-    String countUser();
-    List<User> findUserByObject(HashMap<String,Object> queryItem);
-    int insert(User user);
-    int insertList(List<User> userList);
-    int update(User user);
-    int deleteById(String userId);
+public interface UserMapper extends BaseMapper<User> {
+
 }

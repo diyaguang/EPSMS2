@@ -1,5 +1,7 @@
 package com.dygstudio.epsms.service.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.dygstudio.epsms.service.entity.User;
 import com.dygstudio.epsms.service.vo.MenuVo;
 import org.springframework.stereotype.Service;
@@ -8,16 +10,17 @@ import java.util.HashMap;
 import java.util.List;
 
 @Service
-public interface UserService {
+public interface UserService extends IService<User> {
     User findUserByNameAndPassword(String name, String password);
     User findUserById(String userId);
     User findUserByName(String name);
-    List<User> findAllUser(Integer page,Integer pageSize);
-    String countUser();
-    List<User> findUserByObject(User queryItem,Integer page,Integer pageSize);
-    int insert(User user);
-    int insertList(List<User> userList);
-    int update(User user);
-    int deleteById(String userId);
+    IPage<User> findAllUser(Integer page, Integer pageSize);
+    Integer countUser();
+    IPage<User> findUserByObject(User queryItem,Integer page,Integer pageSize);
+    Integer insert(User user);
+    Integer insertList(List<User> userList);
+    Integer update(User user);
+    Integer deleteById(String userId);
+    Integer deleteUserList(List<User> userList);
     boolean modifyUserRoleLink(String userId, List<String> roleIds);
 }
