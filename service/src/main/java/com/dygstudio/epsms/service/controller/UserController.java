@@ -52,6 +52,12 @@ public class UserController extends BaseController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/get",method = RequestMethod.POST)
+    public User getUser(@RequestParam("userName") String userName,@RequestParam("password") String password){
+        return userService.findUserByNameAndPassword(userName,password);
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/list")
     public PageResult<User> getUserList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize){
         IPage<User> result = userService.findAllUser(page,pageSize);

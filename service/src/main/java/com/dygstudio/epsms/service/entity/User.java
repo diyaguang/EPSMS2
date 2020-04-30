@@ -30,6 +30,24 @@ public class User {
     private Integer isDel;
     private String description;
     private String companyId;
+    private String Code;
+    private Integer sort;
+
+    public String getCode() {
+        return Code;
+    }
+
+    public void setCode(String code) {
+        Code = code;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
 
     public String getOpUserId() {
         return opUserId;

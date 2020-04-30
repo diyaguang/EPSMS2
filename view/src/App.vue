@@ -98,6 +98,7 @@
     },
     data: function () {
       return {
+        currentUser:{},
         keepAliveComponents: [],
         isCollapse: false,
         currentTagId: '0',
@@ -121,10 +122,24 @@
 
     },
     mounted() {
+      this.getCurrentUserInfo();
       this.getMenuData();
     },
     watch: {},
     methods: {
+      getCurrentUserInfo:function(){
+        var _this = this;
+        var getCurrentUserDataUrl = "/user/get";
+        var data = {userName:'diyaguang',password:'96777'};
+        this.$ajax.post(getCurrentUserDataUrl,data)
+          .then(function (response) {
+            _this.currentUser = response.data;
+            console.log(_this.currentUser);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      },
       //获取菜单menu的方法
       getMenuData: function () {
         var _this = this;
@@ -136,7 +151,6 @@
           .catch(function (error) {
             console.log(error);
           });
-
       },
       //计算面包屑导航栏的函数
       getBreadcrumbPath: function (menuData, currentMenu) {

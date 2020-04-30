@@ -22,10 +22,9 @@
           width="55">
         </el-table-column>
         <el-table-column
-          fixed
-          prop="id"
-          label="ID"
-          width="350">
+          prop="code"
+          label="用户编号"
+          width="120">
         </el-table-column>
         <el-table-column
           prop="name"
@@ -35,6 +34,21 @@
         <el-table-column
           prop="password"
           label="密码"
+          width="120">
+        </el-table-column>
+        <el-table-column
+          prop="description"
+          label="描述"
+          width="120">
+        </el-table-column>
+        <el-table-column
+          prop="sort"
+          label="用户排序"
+          width="120">
+        </el-table-column>
+        <el-table-column
+          prop="status"
+          label="当前状态"
           width="120">
         </el-table-column>
         <el-table-column label="操作">
@@ -62,11 +76,20 @@
 
     <el-dialog :title="userInfoOpTitle" :visible.sync="userInfoFormVisible" width="500px">
       <el-form :model="currentUser">
+        <el-form-item label="用户编号" :label-width="formLabelWidth">
+          <el-input v-model="currentUser.code" autocomplete="off"></el-input>
+        </el-form-item>
         <el-form-item label="名称" :label-width="formLabelWidth">
           <el-input v-model="currentUser.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="密码" :label-width="formLabelWidth">
           <el-input v-model="currentUser.password" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="描述" :label-width="formLabelWidth">
+          <el-input v-model="currentUser.description" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="排序" :label-width="formLabelWidth">
+          <el-input v-model="currentUser.sort" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -152,7 +175,7 @@
           var deleteDataUrl = "/user/delete?userId="+row.id;
           this.$ajax.get(deleteDataUrl)
             .then(function (response) {
-              if(response.data.code==1) {
+              if(response.data.code==200) {
                 that.$message({
                   message: '数据删除成功!',
                   type: 'success'
@@ -231,7 +254,7 @@
         this.$ajax.post(updateDataUrl,this.currentUser)
           .then(function (response) {
             console.log(response.data);
-            if(response.data.code==1){
+            if(response.data.code==200){
               _this.$message({
                 message: '数据更新成功!',
                 type: 'success'
@@ -255,7 +278,7 @@
         var insertDataUrl = "/user/insert";
         this.$ajax.post(insertDataUrl,this.currentUser)
           .then(function (response) {
-            if(response.data.code==1){
+            if(response.data.code==200){
               _this.$message({
                 message: '数据新增成功!',
                 type: 'success'
