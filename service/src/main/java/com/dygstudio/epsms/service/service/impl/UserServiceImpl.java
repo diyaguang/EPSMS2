@@ -95,7 +95,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
         if(result==1){
             userRoleLinkService.deleteByUserId(userId);
         }
-        return userMapper.deleteById(userId);
+        return result;
     }
     public boolean modifyUserRoleLink(String userId, List<String> roleIds){
         //先删除原有关联记录

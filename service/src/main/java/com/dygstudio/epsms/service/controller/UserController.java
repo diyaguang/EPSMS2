@@ -21,10 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 〈功能概述〉
@@ -71,6 +68,7 @@ public class UserController extends BaseController {
     public PageResult<User> insertUser(@RequestBody User user){
         PageResult<User> result = new PageResult<>();
         user.setId(UUID.randomUUID().toString().replaceAll("-",""));  //设置对象新的GUID
+        user.setOpDate(new Date());
         int opResult = userService.insert(user);
         if(opResult>0){
             result.setCode(SysConstant.RESULT_CODE_SUCCESSFUL);
@@ -90,6 +88,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/update",method = RequestMethod.POST)
     public PageResult<User> updateUser(@RequestBody User user){
         PageResult<User> result = new PageResult<>();
+        user.setOpDate(new Date());
         int opResult = userService.update(user);
         if(opResult>0){
             result.setCode(SysConstant.RESULT_CODE_SUCCESSFUL);

@@ -1,5 +1,7 @@
 package com.dygstudio.epsms.service.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+
 /**
  * 〈功能概述〉
  *
@@ -8,6 +10,7 @@ package com.dygstudio.epsms.service.entity;
  * @author: diyaguang
  * @date: 2020/1/2 20:34
  */
+@TableName("DictInfo")
 public class DictInfo {
     public String getId() {
         return id;

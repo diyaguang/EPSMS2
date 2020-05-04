@@ -101,6 +101,8 @@
 </template>
 
 <script>
+  import Vue from 'vue';
+
   export default {
     name: "userList.vue",
     data() {
@@ -251,6 +253,9 @@
       handleUpdate(){
         var _this = this;
         var updateDataUrl = "/user/update";
+        //添加更新信息
+        this.currentUser.opUserId = Vue.prototype.CurrentUser.id;
+        this.currentUser.companyId = Vue.prototype.CurrentUser.companyId;
         this.$ajax.post(updateDataUrl,this.currentUser)
           .then(function (response) {
             console.log(response.data);
@@ -276,6 +281,9 @@
       handleInsert(){
         var _this = this;
         var insertDataUrl = "/user/insert";
+        this.currentUser.opUserId = Vue.prototype.CurrentUser.id;
+        this.currentUser.isDel=0
+        this.currentUser.companyId = Vue.prototype.CurrentUser.companyId;
         this.$ajax.post(insertDataUrl,this.currentUser)
           .then(function (response) {
             if(response.data.code==200){

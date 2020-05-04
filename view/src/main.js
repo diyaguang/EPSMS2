@@ -15,6 +15,7 @@ Vue.use(ElementUI,{size:'mini'});
 Vue.config.productionTip = false;
 
 Vue.use(Vuex);
+Vue.prototype.CurrentUser={};
 //Vue.use(axios);
 
 

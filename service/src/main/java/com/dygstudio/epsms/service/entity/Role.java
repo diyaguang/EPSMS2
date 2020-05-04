@@ -2,6 +2,7 @@ package com.dygstudio.epsms.service.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.util.Date;
@@ -25,6 +26,8 @@ public class Role {
     private String opUserId;
     private Date opDate;
     private Integer status;
+
+    @TableLogic
     private Integer isDel;
     private String description;
     private String companyId;

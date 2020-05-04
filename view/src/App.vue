@@ -82,6 +82,7 @@
 </template>
 
 <script>
+  import Vue from 'vue';
   import navMenu from "./components/navMenu";
 
   export default {
@@ -98,7 +99,6 @@
     },
     data: function () {
       return {
-        currentUser:{},
         keepAliveComponents: [],
         isCollapse: false,
         currentTagId: '0',
@@ -133,8 +133,9 @@
         var data = {userName:'diyaguang',password:'96777'};
         this.$ajax.post(getCurrentUserDataUrl,data)
           .then(function (response) {
-            _this.currentUser = response.data;
-            console.log(_this.currentUser);
+            Vue.prototype.CurrentUser = response.data;
+            //_this.currentUser = response.data;
+            console.log(Vue.prototype.CurrentUser);
           })
           .catch(function (error) {
             console.log(error);
