@@ -23,7 +23,7 @@
         </el-table-column>
         <el-table-column
           prop="code"
-          label="用户编号"
+          label="编号"
           width="120">
         </el-table-column>
         <el-table-column
@@ -43,13 +43,20 @@
         </el-table-column>
         <el-table-column
           prop="sort"
-          label="用户排序"
+          label="排序"
           width="120">
         </el-table-column>
         <el-table-column
-          prop="status"
-          label="当前状态"
+          prop="statusVo.name"
+          label="状态"
           width="120">
+        </el-table-column>
+        <el-table-column label="角色" width="120">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              @click="handleRoleEdit(scope.$index, scope.row)">配置</el-button>
+          </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -73,7 +80,6 @@
         :total="currentTotal">
       </el-pagination>
     </el-card>
-
     <el-dialog :title="userInfoOpTitle" :visible.sync="userInfoFormVisible" width="500px">
       <el-form :model="currentUser">
         <el-form-item label="用户编号" :label-width="formLabelWidth">
@@ -97,6 +103,12 @@
         <el-button type="primary" @click="handleUserInfoOp">确 定</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="用户角色配置" :visible.sync="userRoleFormVisible" width="500px">
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="userRoleFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleRoleUpdate">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -110,12 +122,15 @@
         userInfoOpType:'',
         userInfoOpTitle:'',
         userInfoFormVisible:false,
+        userRoleFormVisible:false,
         loading:true,
         currentPage:1,
         currentPageSize:10,
         currentTotal:0,
         userData:[],
         currentUser:{},
+        baseRoles:[],
+        currentUserRoles:[],
         formLabelWidth: '50px',
         multipleSelection: []
       }
@@ -135,7 +150,7 @@
       initData(){
         this.loading = true;
         var _this = this;
-        var getMainDataUrl = "/user/list?page="+this.currentPage+"&pageSize="+this.currentPageSize;
+        var getMainDataUrl = "/user/listShow?page="+this.currentPage+"&pageSize="+this.currentPageSize;
         this.$ajax.get(getMainDataUrl)
           .then(function (response) {
               _this.userData = response.data.data;
@@ -152,6 +167,44 @@
         }else if(this.userInfoOpType=="update"){
           this.handleUpdate();
         }
+      },
+      handleRoleUpdate(){
+        var _this = this;
+        var updateDataUrl = "/user/update";
+        //添加更新信息
+        this.currentUser.opUserId = Vue.prototype.CurrentUser.id;
+        this.currentUser.companyId = Vue.prototype.CurrentUser.companyId;
+        var postData = {
+          userId:'xxxxxx',
+          roles:[]
+        };
+        this.$ajax.post(updateDataUrl,postData)
+          .then(function (response) {
+            console.log(response.data);
+            if(response.data.code==200){
+              _this.$message({
+                message: '角色配置成功!',
+                type: 'success'
+              });
+              _this.userInfoFormVisible = false;
+              _this.initData();
+            }else{
+              _this.$message({
+                message: '角色配置失败!'+response.data.msg,
+                type: 'error'
+              });
+            }
+
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      },
+      handleRoleEdit(index, row){
+        console.log(row);
+        this.userRoleFormVisible = true;
+        //从后台获取角色数据列表 循环遍历为 key，label，disabled 数组
+        //获取当前用户的角色列表，循环key 为 数组，表示已选
       },
       handleAdd(){
         this.userInfoFormVisible = true;

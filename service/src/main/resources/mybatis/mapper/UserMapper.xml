@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dygstudio.epsms.service.mapper.UserMapper">
+    <select id="findAllUserForShow" resultMap="UserResultMap">
+        select * from User
+    </select>
+
     <resultMap id="UserResultMap" type="User">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="password" column="password"/>
-        <collection property="roles" ofType="com.dygstudio.epsms.service.entity.Role" column="id"
+        <association property="opUserVo" column="opUserId" select="com.dygstudio.epsms.service.mapper.UserMapper.selectById"
+                     javaType="User" />
+        <association property="statusVo" column="status" select="com.dygstudio.epsms.service.mapper.DictInfoMapper.findByValue"
+                     javaType="DictInfo" />
+        <collection property="roles" ofType="Role" column="id"
                     select="com.dygstudio.epsms.service.mapper.RoleMapper.findRolesByUserId"/>
     </resultMap>
 </mapper>

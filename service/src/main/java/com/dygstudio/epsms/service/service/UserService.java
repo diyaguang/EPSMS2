@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dygstudio.epsms.service.entity.User;
 import com.dygstudio.epsms.service.vo.MenuVo;
+import javafx.scene.control.Pagination;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -15,6 +16,7 @@ public interface UserService extends IService<User> {
     User findUserById(String userId);
     User findUserByName(String name);
     IPage<User> findAllUser(Integer page, Integer pageSize);
+    IPage<User> findAllUserForShow(Integer page, Integer pageSize);
     Integer countUser();
     IPage<User> findUserByObject(User queryItem,Integer page,Integer pageSize);
     Integer insert(User user);

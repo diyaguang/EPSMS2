@@ -45,6 +45,14 @@ public class User {
     private String Code;
     private Integer sort;
 
+    public User getOpUserVo() {
+        return opUserVo;
+    }
+
+    public void setOpUserVo(User opUserVo) {
+        this.opUserVo = opUserVo;
+    }
+
     public DictInfo getStatusVo() {
         return statusVo;
     }

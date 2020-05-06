@@ -64,6 +64,13 @@ public class UserController extends BaseController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/listShow")
+    public PageResult<User> getUserListShow(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize){
+        IPage<User> result = userService.findAllUserForShow(page,pageSize);
+        return new PageResult<User>(result.getTotal(),result.getRecords());
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/insert",method = RequestMethod.POST)
     public PageResult<User> insertUser(@RequestBody User user){
         PageResult<User> result = new PageResult<>();

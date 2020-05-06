@@ -6,4 +6,5 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface DictInfoMapper extends BaseMapper<DictInfo> {
+    DictInfo findByValue(String value);
 }
