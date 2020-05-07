@@ -11,7 +11,7 @@
       SELECT f.* FROM Function f,FuncRoleLink link WHERE f.Id=link.FuncId AND link.RoleId=#{roleId}
     </select>
     <select id="getFunctionByUserId" parameterType="String" resultMap="FunctionNoParentResultMap">
-        SELECT f.* FROM Function f,FuncRoleLink frlink,UserRoleLink urlink
+        SELECT distinct  f.* FROM Function f,FuncRoleLink frlink,UserRoleLink urlink
         WHERE f.Id=frlink.FuncId and frlink.RoleId=urlink.RoleId
         AND urlink.UserId=#{userId}
     </select>

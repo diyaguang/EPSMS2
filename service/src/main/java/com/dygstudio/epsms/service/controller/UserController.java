@@ -150,7 +150,8 @@ public class UserController extends BaseController {
     }
 
     /**
-     * 功能描述:
+     * 功能描述:获取用户与角色的关联关系（列表）
+     * 没有用到，因为直接在用户管理中，返回的 用户信息中，关联了 角色列表
      * @Param: [userId]
      * @Return: com.dygstudio.epsms.service.common.PageResult<com.dygstudio.epsms.service.entity.UserRoleLink>
      * @Author: diyaguang
@@ -165,7 +166,8 @@ public class UserController extends BaseController {
     }
 
     /**
-     * 功能描述:
+     * 功能描述:返回指定用户的 菜单功能项。
+     * 返回 Function对象列表，前端组装使用。
      * @Param: [userId]
      * @Return: com.dygstudio.epsms.service.common.PageResult<com.dygstudio.epsms.service.entity.Function>
      * @Author: diyaguang

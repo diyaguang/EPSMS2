@@ -18,17 +18,17 @@ export default new Router({
       name:'userList',
       path:'/admin/user/list',
       meta:{
-        title:'item1'
+        title:'用户管理'
       },
       component:(resolve)=>require(['../view/admin/userList.vue'],resolve)
     },
     {
-      name:'item1',
-      path:'/item1',
+      name:'roleList',
+      path:'/admin/sys/roles',
       meta:{
-        title:'item1'
+        title:'角色管理'
       },
-      component:(resolve)=>require(['../view/item1.vue'],resolve)
+      component:(resolve)=>require(['../view/admin/roleList.vue'],resolve)
     },
     {
       name:'item2',
