@@ -7,6 +7,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios';
 import Vuex from 'vuex';
+import vConsole from 'vconsole'
 
 axios.defaults.baseURL="/api"
 //axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';

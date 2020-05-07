@@ -11,11 +11,13 @@ import com.dygstudio.epsms.service.service.FunctionService;
 import com.dygstudio.epsms.service.service.RoleFunctionLinkService;
 import com.dygstudio.epsms.service.service.RoleService;
 import com.dygstudio.epsms.service.service.UserRoleLinkService;
+import com.dygstudio.epsms.service.vo.RoleVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -120,6 +122,21 @@ public class SystemController {
         List<Role> result = roleService.page(page).getRecords();
         int recordCount = roleService.count();
         return new PageResult<Role>(recordCount,result);
+    }
+
+    @RequestMapping(value = "/role/listForOp")
+    @ResponseBody
+    public List<RoleVo> getRoleListForOp(){
+        List<RoleVo> result = new ArrayList<>();
+        List<Role> roles = roleService.list();
+        for(Role item : roles){
+            RoleVo vo = new RoleVo();
+            vo.setKey(item.getId());
+            vo.setLabel(item.getRoleName());
+            vo.setDisabled(false);
+            result.add(vo);
+        }
+        return result;
     }
 
     @ResponseBody

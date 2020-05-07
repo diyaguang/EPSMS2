@@ -107,12 +107,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
         //先删除原有关联记录
         userRoleLinkService.deleteByUserId(userId);
         //插入新的关联关系
-        UserRoleLink link  = new UserRoleLink();
-        for(String roleId : roleIds){
-            link.setId(CommonUtils.GenerateId());
-            link.setUserId(userId);
-            link.setRoleId(roleId);
-            userRoleLinkService.save(link);
+        if(roleIds.size()>0){
+            UserRoleLink link  = new UserRoleLink();
+            for(String roleId : roleIds){
+                link.setId(CommonUtils.GenerateId());
+                link.setUserId(userId);
+                link.setRoleId(roleId);
+                userRoleLinkService.save(link);
+            }
         }
         return true;
     }
