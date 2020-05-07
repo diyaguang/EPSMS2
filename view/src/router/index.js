@@ -31,22 +31,6 @@ export default new Router({
       component:(resolve)=>require(['../view/admin/roleList.vue'],resolve)
     },
     {
-      name:'item2',
-      path:'/item2',
-      meta:{
-        title:'item2'
-      },
-      component:(resolve)=>require(['../view/item2.vue'],resolve)
-    },
-    {
-      name:'item3',
-      path:'/item3',
-      meta:{
-        title:'item3'
-      },
-      component:(resolve)=>require(['../view/item3.vue'],resolve)
-    },
-    {
       name:'404',
       path:'/404',
       meta:{
