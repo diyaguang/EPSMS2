@@ -124,6 +124,10 @@ public class SystemController {
         return new PageResult<Role>(recordCount,result);
     }
 
+    public PageResult<Role> getRoleListForShow(@RequestParam("page") Integer currentPage, @RequestParam("pageSize") Integer pageSize){
+
+    }
+
     @RequestMapping(value = "/role/listForOp")
     @ResponseBody
     public List<RoleVo> getRoleListForOp(){

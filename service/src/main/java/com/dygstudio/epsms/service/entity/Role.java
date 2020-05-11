@@ -33,9 +33,29 @@ public class Role {
     private String companyId;
 
     @TableField(exist = false)
-    private List<Permission> permissions;
+    private DictInfo statusVo;
+
+    @TableField(exist = false)
+    private User opUserVo;
+
     @TableField(exist = false)
     private List<Function> functions;
+
+    public DictInfo getStatusVo() {
+        return statusVo;
+    }
+
+    public void setStatusVo(DictInfo statusVo) {
+        this.statusVo = statusVo;
+    }
+
+    public User getOpUserVo() {
+        return opUserVo;
+    }
+
+    public void setOpUserVo(User opUserVo) {
+        this.opUserVo = opUserVo;
+    }
 
     public String getCompanyId() {
         return companyId;
@@ -107,14 +127,6 @@ public class Role {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
-    }
-
-    public List<Permission> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(List<Permission> permissions) {
-        this.permissions = permissions;
     }
 
     public List<Function> getFunctions() {

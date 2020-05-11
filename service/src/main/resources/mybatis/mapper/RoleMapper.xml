@@ -15,11 +15,16 @@
         WHERE r.Id=urlink.roleId
         AND urlink.UserId=#{id}
     </select>
+    <select id="findAllRoleForShow" resultMap="RolesResultMap">
+        select * from Role
+    </select>
     <resultMap id="RolesResultMap" type="Role">
         <id property="id" column="id"/>
         <result property="roleName" column="roleName"/>
-        <!-- <collection property="permissions" ofType="com.dygstudio.epsms.service.entity.Permission"
-                    column="id" select="com.dygstudio.epsms.service.mapper.PermissionMapper.getPermissionsByRoleId"/> -->
+        <association property="opUserVo" column="opUserId" select="com.dygstudio.epsms.service.mapper.UserMapper.selectById"
+                     javaType="User" />
+        <association property="statusVo" column="status" select="com.dygstudio.epsms.service.mapper.DictInfoMapper.findByValue"
+                     javaType="DictInfo" />
         <collection property="functions" ofType="com.dygstudio.epsms.service.entity.Function"
                     column="id" select="com.dygstudio.epsms.service.mapper.FunctionMapper.getFunctionByRoleId"/>
     </resultMap>
