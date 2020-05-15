@@ -183,14 +183,14 @@
           .then(function (response) {
             if (response.data.code == 200) {
               that.$message({
-                message: '功能关联保存成功!',
+                message: '配置功能成功!',
                 type: 'success'
               });
               that.initData();
               that.userRoleFormVisible = false;
             } else {
               that.$message({
-                message: '功能关联保存失败!' + response.data.msg,
+                message: '配置功能失败!' + response.data.msg,
                 type: 'error'
               });
             }
