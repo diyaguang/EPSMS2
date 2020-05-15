@@ -1,5 +1,6 @@
 package com.dygstudio.epsms.service.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dygstudio.epsms.service.entity.Role;
 import com.dygstudio.epsms.service.entity.User;
@@ -11,4 +12,5 @@ import java.util.List;
 public interface RoleService extends IService<Role> {
     Integer deleteById(String roleId);
     Integer deleteRoleList(List<Role> roleList);
+    IPage<Role> findAllRoleForShow(Integer page, Integer pageSize);
 }

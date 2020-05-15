@@ -11,6 +11,7 @@ import com.dygstudio.epsms.service.service.FunctionService;
 import com.dygstudio.epsms.service.service.RoleFunctionLinkService;
 import com.dygstudio.epsms.service.service.RoleService;
 import com.dygstudio.epsms.service.service.UserRoleLinkService;
+import com.dygstudio.epsms.service.vo.FunctionVo;
 import com.dygstudio.epsms.service.vo.RoleVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,8 +19,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * 〈功能概述〉
@@ -55,6 +58,37 @@ public class SystemController {
     public PageResult<Function> getFunctionList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize){
         IPage<Function> result =functionService.getFunctionListByPage(page,pageSize);
         return new PageResult<Function>(result.getTotal(),result.getRecords());
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/function/listForOp")
+    public List<FunctionVo> getFunctionListForOp(){
+        List<FunctionVo> result = new ArrayList<>();
+        List<Function> sources = functionService.list();
+        List<Function> topFunction = sources.stream().filter(a -> a.getLevel() == 1).collect(Collectors.toList());
+        for(Function tmpSubItem : topFunction){
+            FunctionVo tmpItem = new FunctionVo();
+            tmpItem.setKey(tmpSubItem.getId());
+            tmpItem.setLabel(tmpSubItem.getFuncName());
+            tmpItem.setDisabled(false);
+            result.add(tmpItem);
+            buildChildren(tmpItem, sources);
+        }
+        return result;
+    }
+
+    private void buildChildren(FunctionVo funcItem,List<Function> sources){
+        List<Function> tmpSubFunctions = sources.stream().filter(a -> a.getParentId() != null && a.getParentId().equals(funcItem.getKey())).collect(Collectors.toList());
+        List<FunctionVo> tmpChildren = new ArrayList<>();
+        for (Function tmpSubItem : tmpSubFunctions) {
+            FunctionVo tmpItem = new FunctionVo();
+            tmpItem.setKey(tmpSubItem.getId());
+            tmpItem.setLabel(tmpSubItem.getFuncName());
+            tmpItem.setDisabled(false);
+            tmpChildren.add(tmpItem);
+            buildChildren(tmpItem, sources);
+        }
+        funcItem.setChildren(tmpChildren);
     }
 
     @ResponseBody
@@ -124,8 +158,11 @@ public class SystemController {
         return new PageResult<Role>(recordCount,result);
     }
 
+    @RequestMapping(value = "/role/listShow")
+    @ResponseBody
     public PageResult<Role> getRoleListForShow(@RequestParam("page") Integer currentPage, @RequestParam("pageSize") Integer pageSize){
-
+        IPage<Role> result = roleService.findAllRoleForShow(currentPage,pageSize);
+        return new PageResult<Role>(result.getTotal(),result.getRecords());
     }
 
     @RequestMapping(value = "/role/listForOp")
@@ -148,6 +185,7 @@ public class SystemController {
     public PageResult<Role> insertRole(@RequestBody Role role){
         PageResult<Role> result = new PageResult<>();
         role.setId(CommonUtils.GenerateId());
+        role.setOpDate(new Date());
         boolean opResult = roleService.save(role);
         if(opResult){
             result.setCode(SysConstant.RESULT_CODE_SUCCESSFUL);

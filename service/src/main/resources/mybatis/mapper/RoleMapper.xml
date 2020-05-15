@@ -16,16 +16,20 @@
         AND urlink.UserId=#{id}
     </select>
     <select id="findAllRoleForShow" resultMap="RolesResultMap">
-        select * from Role
+        select * from Role where isDel=0
     </select>
     <resultMap id="RolesResultMap" type="Role">
         <id property="id" column="id"/>
+        <result property="code" column="code"/>
         <result property="roleName" column="roleName"/>
+        <result property="description" column="description"/>
+
         <association property="opUserVo" column="opUserId" select="com.dygstudio.epsms.service.mapper.UserMapper.selectById"
                      javaType="User" />
         <association property="statusVo" column="status" select="com.dygstudio.epsms.service.mapper.DictInfoMapper.findByValue"
                      javaType="DictInfo" />
         <collection property="functions" ofType="com.dygstudio.epsms.service.entity.Function"
                     column="id" select="com.dygstudio.epsms.service.mapper.FunctionMapper.getFunctionByRoleId"/>
+
     </resultMap>
 </mapper>

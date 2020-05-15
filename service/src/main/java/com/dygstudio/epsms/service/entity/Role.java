@@ -29,6 +29,7 @@ public class Role {
 
     @TableLogic
     private Integer isDel;
+
     private String description;
     private String companyId;
 

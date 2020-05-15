@@ -16,7 +16,7 @@
         v-loading="loading"
         :data="userData"
         style="width: 100%"
-        height="250">
+        :height="tableHeight">
         <el-table-column
           type="selection"
           width="55">
@@ -140,11 +140,19 @@
         currentUserRoles: [],
         currentOpUserId: '',
         formLabelWidth: '50px',
-        multipleSelection: []
+        multipleSelection: [],
+        tableHeight:250
       }
     },
     created: function () {
       this.initData();
+    },
+    mounted:function(){
+      setTimeout(() => {
+        this.tableHeight = window.innerHeight - this.$refs.multipleTable.$el.offsetTop-150;
+      },100)
+      //此处需要通过延迟方法来设置值，不然会出现值已更新，但页面没更新的问题
+      //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
     },
     methods: {
       handleSizeChange(val) {
@@ -237,15 +245,13 @@
         row.roles.forEach((item, index, array) => {
           this.currentUserRoles.push(item.id);
         });
-      }
-      ,
+      },
       handleAdd() {
         this.userInfoFormVisible = true;
         this.currentUser = {};
         this.userInfoOpType = "add";
         this.userInfoOpTitle = "添加用户";
-      }
-      ,
+      },
       handleEdit(index, row) {
         this.userInfoFormVisible = true;
         //this.currentUser = row;
@@ -253,8 +259,7 @@
         this.currentUser = JSON.parse(JSON.stringify(row));  //对象进行浅复制(只复制属性和值)
         this.userInfoOpType = "update";
         this.userInfoOpTitle = "编辑用户信息";
-      }
-      ,
+      },
       handleDelete(index, row) {
         this.$confirm('删除该记录, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -287,12 +292,10 @@
             message: '已取消删除'
           });
         });
-      }
-      ,
+      },
       handleSelectionChange(val) {
         this.multipleSelection = val;
-      }
-      ,
+      },
       handleBatchDelete() {
         let size = this.multipleSelection.length;
         if (size > 0) {
@@ -339,8 +342,7 @@
             message: '请先选择要删除的记录'
           });
         }
-      }
-      ,
+      },
       handleUpdate() {
         var _this = this;
         var updateDataUrl = "/user/update";
@@ -368,8 +370,7 @@
           .catch(function (error) {
             console.log(error);
           });
-      }
-      ,
+      },
       handleInsert() {
         var _this = this;
         var insertDataUrl = "/user/insert";

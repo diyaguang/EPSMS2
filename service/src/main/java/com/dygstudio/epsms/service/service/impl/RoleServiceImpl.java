@@ -1,9 +1,12 @@
 package com.dygstudio.epsms.service.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dygstudio.epsms.service.entity.Function;
 import com.dygstudio.epsms.service.entity.Role;
 import com.dygstudio.epsms.service.entity.RoleFunctionLink;
+import com.dygstudio.epsms.service.entity.User;
 import com.dygstudio.epsms.service.mapper.RoleFunctionLinkMapper;
 import com.dygstudio.epsms.service.mapper.RoleMapper;
 import com.dygstudio.epsms.service.mapper.UserRoleLinkMapper;
@@ -49,5 +52,12 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
             resultCount+=deleteById(role.getId());
         }
         return resultCount;
+    }
+
+    public IPage<Role> findAllRoleForShow(Integer page, Integer pageSize){
+        Page<Role> queryPage = new Page(page,pageSize);
+        List<Role> result = roleMapper.findAllRoleForShow(queryPage);
+        queryPage.setRecords(result);
+        return queryPage;
     }
 }
