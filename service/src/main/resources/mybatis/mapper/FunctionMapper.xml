@@ -15,6 +15,30 @@
         WHERE f.Id=frlink.FuncId and frlink.RoleId=urlink.RoleId
         AND urlink.UserId=#{userId}
     </select>
+    <select id="findAllFunctionForShow" resultMap="FunctionForShowResultMap">
+        select * from Function where isDel=0
+    </select>
+    <resultMap id="FunctionForShowResultMap" type="Function">
+        <id property="id" column="id"/>
+        <result property="parentId" column="parentId"/>
+        <result property="funcName" column="funcName"/>
+        <result property="funcCode" column="funcCode"/>
+        <result property="type" column="type"/>
+        <result property="level" column="level"/>
+        <result property="urlPath" column="urlPath"/>
+        <result property="sort" column="sort"/>
+        <result property="imagePath" column="imagePath"/>
+        <result property="iconName" column="iconName"/>
+        <result property="parentId" column="parentId"/>
+        <result property="sId" column="sId"/>
+        <result property="path" column="path"/>
+        <result property="status" column="status"/>
+        <result property="componentName" column="componentName"/>
+        <association property="opUserVo" column="opUserId" select="com.dygstudio.epsms.service.mapper.UserMapper.selectById"
+                     javaType="User" />
+        <association property="statusVo" column="status" select="com.dygstudio.epsms.service.mapper.DictInfoMapper.findByValue"
+                     javaType="DictInfo" />
+    </resultMap>
 
     <resultMap id="FunctionNoParentResultMap" type="Function">
         <id property="id" column="id"/>

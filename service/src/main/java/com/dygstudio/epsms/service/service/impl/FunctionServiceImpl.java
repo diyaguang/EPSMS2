@@ -5,11 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dygstudio.epsms.service.common.CommonUtils;
-import com.dygstudio.epsms.service.entity.RoleFunctionLink;
-import com.dygstudio.epsms.service.entity.User;
-import com.dygstudio.epsms.service.entity.UserRoleLink;
+import com.dygstudio.epsms.service.entity.*;
 import com.dygstudio.epsms.service.mapper.FunctionMapper;
-import com.dygstudio.epsms.service.entity.Function;
 import com.dygstudio.epsms.service.mapper.RoleFunctionLinkMapper;
 import com.dygstudio.epsms.service.service.FunctionService;
 import org.springframework.stereotype.Service;
@@ -106,6 +103,13 @@ public class FunctionServiceImpl extends ServiceImpl<FunctionMapper, Function> i
             resultCount+=deleteFunctionById(function.getId());
         }
         return resultCount;
+    }
+
+    public IPage<Function> findAllFunctionForShow(Integer page, Integer pageSize){
+        Page<Function> queryPage = new Page(page,pageSize);
+        List<Function> result = functionMapper.findAllFunctionForShow(queryPage);
+        queryPage.setRecords(result);
+        return queryPage;
     }
 
 }

@@ -77,6 +77,13 @@ public class SystemController {
         return result;
     }
 
+    @RequestMapping(value = "/function/listShow")
+    @ResponseBody
+    public PageResult<Function> getFunctionListForShow(@RequestParam("page") Integer currentPage, @RequestParam("pageSize") Integer pageSize){
+        IPage<Function> result = functionService.findAllFunctionForShow(currentPage,pageSize);
+        return new PageResult<Function>(result.getTotal(),result.getRecords());
+    }
+
     private void buildChildren(FunctionVo funcItem,List<Function> sources){
         List<Function> tmpSubFunctions = sources.stream().filter(a -> a.getParentId() != null && a.getParentId().equals(funcItem.getKey())).collect(Collectors.toList());
         List<FunctionVo> tmpChildren = new ArrayList<>();

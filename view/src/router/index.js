@@ -31,6 +31,14 @@ export default new Router({
       component:(resolve)=>require(['../view/admin/roleList.vue'],resolve)
     },
     {
+      name:'functionList',
+      path:'/admin/sys/functions',
+      meta:{
+        title:'功能管理'
+      },
+      component:(resolve)=>require(['../view/admin/functionList.vue'],resolve)
+    },
+    {
       name:'404',
       path:'/404',
       meta:{

@@ -38,8 +38,16 @@ public class Function {
     private Date opDate;
     private Integer status;
 
+    @TableField(exist = false)
+    private DictInfo statusVo;
+
+    @TableField(exist = false)
+    private User opUserVo;
+
     @TableLogic
     private Integer isDel;
+
+
 
     private String description;
     private String companyId;
@@ -48,6 +56,22 @@ public class Function {
     private Function parent;
     @TableField(exist = false)
     private List<Function> subFunction;
+
+    public DictInfo getStatusVo() {
+        return statusVo;
+    }
+
+    public void setStatusVo(DictInfo statusVo) {
+        this.statusVo = statusVo;
+    }
+
+    public User getOpUserVo() {
+        return opUserVo;
+    }
+
+    public void setOpUserVo(User opUserVo) {
+        this.opUserVo = opUserVo;
+    }
 
     public String getOpUserId() {
         return opUserId;

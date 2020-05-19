@@ -15,7 +15,7 @@
         :height="tableHeight"
         @selection-change="handleSelectionChange"
         v-loading="loading"
-        :data="roleData"
+        :data="functionData"
         style="width: 100%"
       >
         <el-table-column
@@ -23,35 +23,61 @@
           width="55">
         </el-table-column>
         <el-table-column
-          fixed
-          prop="code"
-          label="Code"
-          width="120">
+          prop="funcCode"
+          label="编号"
+          width="80">
         </el-table-column>
         <el-table-column
-          prop="roleName"
-          label="角色名称"
-          width="120">
+          prop="funcName"
+          label="功能名称"
+          width="100">
         </el-table-column>
         <el-table-column
-          prop="description"
-          label="描述"
-          width="320">
+          prop="type"
+          label="类型"
+          width="50">
+        </el-table-column>
+        <el-table-column
+          prop="urlPath"
+          label="映射路径"
+          width="160">
+        </el-table-column>
+        <el-table-column
+          prop="sort"
+          label="排序"
+          width="50">
+        </el-table-column>
+        <el-table-column
+          prop="iconName"
+          label="图标名称"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="sId"
+          label="组件ID"
+          width="60">
+        </el-table-column>
+        <el-table-column
+          prop="path"
+          label="组件路径"
+          width="80">
+        </el-table-column>
+        <el-table-column
+          prop="componentName"
+          label="组件名称"
+          width="120">
         </el-table-column>
         <el-table-column
           prop="statusVo.name"
           label="状态"
           width="120">
         </el-table-column>
-        <el-table-column label="功能" width="120">
-          <template slot-scope="scope">
-            <el-button
-              size="mini"
-              @click="handleFunctionEdit(scope.$index, scope.row)">配置
-            </el-button>
-          </template>
+        <el-table-column
+          prop="description"
+          label="描述"
+          width="120">
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="180">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -76,38 +102,64 @@
       </el-pagination>
     </el-card>
 
-    <el-dialog :title="roleInfoOpTitle" :visible.sync="roleInfoFormVisible" width="500px">
-      <el-form :model="currentRole">
-        <el-form-item label="编号" :label-width="formLabelWidth">
-          <el-input v-model="currentRole.code" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="名称" :label-width="formLabelWidth">
-          <el-input v-model="currentRole.roleName" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="描述" :label-width="formLabelWidth">
-          <el-input v-model="currentRole.description" autocomplete="off"></el-input>
-        </el-form-item>
+    <el-dialog :title="functionInfoOpTitle" :visible.sync="functionInfoFormVisible" width="800px">
+      <el-form :model="currentFunction">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="编号" :label-width="formLabelWidth">
+              <el-input v-model="currentFunction.funcCode" autocomplete="off" style="width: 150px"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="名称" :label-width="formLabelWidth">
+              <el-input v-model="currentFunction.funcName" autocomplete="off" style="width: 150px"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="类型" :label-width="formLabelWidth">
+              <el-input v-model="currentFunction.type" autocomplete="off" style="width: 150px"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8"><el-form-item label="映射路径" :label-width="formLabelWidth">
+            <el-input v-model="currentFunction.urlPath" autocomplete="off" style="width: 150px"></el-input>
+          </el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="排序" :label-width="formLabelWidth">
+            <el-input v-model="currentFunction.sort" autocomplete="off" style="width: 150px"></el-input>
+          </el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="图标名称" :label-width="formLabelWidth">
+            <el-input v-model="currentFunction.iconName" autocomplete="off" style="width: 150px"></el-input>
+          </el-form-item></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8"><el-form-item label="组件ID" :label-width="formLabelWidth">
+            <el-input v-model="currentFunction.sId" autocomplete="off" style="width: 150px"></el-input>
+          </el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="组件路径" :label-width="formLabelWidth">
+            <el-input v-model="currentFunction.path" autocomplete="off" style="width: 150px"></el-input>
+          </el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="组件名称" :label-width="formLabelWidth">
+            <el-input v-model="currentFunction.componentName" autocomplete="off" style="width: 150px"></el-input>
+          </el-form-item></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24"><el-form-item label="状态" :label-width="formLabelWidth">
+            <el-radio-group v-model="currentFunction.status" size="mini">
+              <el-radio :label="1" border>启用</el-radio>
+              <el-radio :label="2" border>禁用</el-radio>
+            </el-radio-group>
+          </el-form-item></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24"><el-form-item label="描述" :label-width="formLabelWidth">
+            <el-input type="textarea" :rows="2" v-model="currentFunction.description" autocomplete="off" style="width: 95%"></el-input>
+          </el-form-item></el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="roleInfoFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleRoleInfoOp">确 定</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog title="角色功能配置" :visible.sync="roleFunctionFormVisible" width="550px">
-      <div id="div">
-        <el-tree
-          ref="tree"
-          :data="baseFunctionData"
-          show-checkbox
-          :default-checked-keys="currentRoleFunctions"
-          :default-expand-all="true"
-          :props="defaultProps"
-          node-key="key">
-        </el-tree>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="roleFunctionFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleRoleFunctionSave">确 定</el-button>
+        <el-button @click="functionInfoFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleFunctionInfoOp">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -115,31 +167,23 @@
 
 <script>
   import Vue from "vue";
-
   export default {
-    name: "roleList.vue",
+    name: "functionList.vue",
     data() {
       return {
-        roleInfoOpType: '',
-        roleInfoOpTitle: '',
-        roleInfoFormVisible: false,
-        roleFunctionFormVisible: false,
+        functionInfoOpType: '',
+        functionInfoOpTitle: '',
+        functionInfoFormVisible: false,
+        functionData:[],
         loading: true,
         currentPage: 1,
         currentPageSize: 10,
         currentTotal: 0,
-        baseFunctionData: [],
-        currentRoleFunctions: [],
-        currentRole: {},
-        formLabelWidth: '50px',
+        formLabelWidth: '70px',
         multipleSelection: [],
-        tableHeight: 250,
-        currentOpRoleId: '',
-        roleData: [],
-        defaultProps: {
-          children: 'children',
-          label: 'label'
-        }
+        currentOpFunctionId: '',
+        currentFunction: {},
+        tableHeight: 250
       }
     },
     created: function () {
@@ -153,81 +197,6 @@
       //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
     },
     methods: {
-      handleRoleFunctionSave() {
-        //获取选择的子节点
-        var dataNode = this.$refs.tree.getCheckedKeys(true);
-        //获取选中（半选中）的父节点
-        /*var dataHalfNode = this.$refs.tree.getHalfCheckedKeys();
-        dataNode = dataNode.concat(dataHalfNode);*/
-        console.log(dataNode);
-
-        if (dataNode.length == 0){
-          this.$confirm('已选功能为空, 是否继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.updateRoleFunctionLink(dataNode);
-          }).catch(() => {
-
-          });
-        }else {
-          this.updateRoleFunctionLink(dataNode);
-        }
-
-      },
-      updateRoleFunctionLink(data) {
-        var that = this;
-        var saveLinkUrl = "/system/role/roleFunctionLink/modify?roleId=" + that.currentOpRoleId;
-        /*     var data = {
-               funcIds: data
-             };*/
-
-        this.$ajax.post(saveLinkUrl, data)
-          .then(function (response) {
-            if (response.data.code == 200) {
-              that.$message({
-                message: '配置功能成功!',
-                type: 'success'
-              });
-              that.initData();
-              that.userRoleFormVisible = false;
-            } else {
-              that.$message({
-                message: '配置功能失败!' + response.data.msg,
-                type: 'error'
-              });
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-        this.roleFunctionFormVisible = false;
-      },
-      handleRoleInfoOp() {
-        if (this.roleInfoOpType == "add") {
-          this.handleInsert();
-        } else if (this.roleInfoOpType == "update") {
-          this.handleUpdate();
-        }
-      },
-      handleFunctionEdit(index, row) {
-        //获取当前用户的角色列表，循环key 为 数组，表示已选
-        this.currentOpRoleId = row.id;
-        this.currentRoleFunctions = [];
-        row.functions.forEach((item, index, array) => {
-          this.currentRoleFunctions.push(item.id);
-        });
-        /*
-        说明：以后this.$refs为undefined的时候，不妨考虑下是不是真实dom还没有形成
-        可以用 this.$nextTick包裹一下试试，这也是 this.$nextTick我目前使用到的地方，
-        大致来说就是一个虚拟dom变成真实之后的一个回调，只有在回调里面才能获取到$refs，问题自然就解决了
-        */
-        this.$nextTick(() => {
-          this.$refs.tree.setCheckedKeys(this.currentRoleFunctions);
-        })
-        this.roleFunctionFormVisible = true;
-      },
       handleSizeChange(val) {
         this.currentPageSize = val;
         this.initData();
@@ -236,50 +205,43 @@
         this.currentPage = val;
         this.initData();
       },
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+      },
       initData() {
         this.loading = true;
         var _this = this;
-        var getMainDataUrl = "/system/role/listShow?page=" + this.currentPage + "&pageSize=" + this.currentPageSize;
+        var getMainDataUrl = "/system/function/listShow?page=" + this.currentPage + "&pageSize=" + this.currentPageSize;
         this.$ajax.get(getMainDataUrl)
           .then(function (response) {
-            _this.roleData = response.data.data;
+            _this.functionData = response.data.data;
             _this.currentTotal = response.data.count;
           })
           .catch(function (error) {
             console.log(error);
           });
         this.loading = false;
-        //获取功能菜单基础数据
-        var getFunctionDataUrl = "/system/function/listForOp";
-        this.$ajax.get(getFunctionDataUrl)
-          .then(function (response) {
-            _this.baseFunctionData = response.data;
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
       },
-      handleRoleInfoOp() {
-        if (this.roleInfoOpType == "add") {
+      handleFunctionInfoOp() {
+        if (this.functionInfoOpType == "add") {
           this.handleInsert();
-        } else if (this.roleInfoOpType == "update") {
+        } else if (this.functionInfoOpType == "update") {
           this.handleUpdate();
         }
       },
       handleAdd() {
-        this.roleInfoFormVisible = true;
-        this.currentRole = {};
-        this.roleInfoOpType = "add";
-        this.roleInfoOpTitle = "添加角色";
+        this.functionInfoFormVisible = true;
+        this.currentFunction = {};
+        this.functionInfoOpType = "add";
+        this.functionInfoOpTitle = "添加功能";
       },
       handleEdit(index, row) {
-        this.roleInfoFormVisible = true;
+        this.functionInfoFormVisible = true;
         //this.currentUser = row;
         //this.currentUser = Object.assign({}, row);  //对象进行浅复制(只复制属性和值) 这个处理对于嵌套的对象是不起作用的
-        this.currentRole = JSON.parse(JSON.stringify(row));  //对象进行浅复制(只复制属性和值)
-        this.roleInfoOpType = "update";
-        this.roleInfoOpTitle = "编辑角色信息";
+        this.currentFunction = JSON.parse(JSON.stringify(row));  //对象进行浅复制(只复制属性和值)
+        this.functionInfoOpType = "update";
+        this.functionInfoOpTitle = "编辑功能信息";
       },
       handleDelete(index, row) {
         this.$confirm('删除该记录, 是否继续?', '提示', {
@@ -288,7 +250,7 @@
           type: 'warning'
         }).then(() => {
           var that = this;
-          var deleteDataUrl = "/system/role/delete?roleId=" + row.id;
+          var deleteDataUrl = "/system/function/delete?functionId=" + row.id;
           this.$ajax.get(deleteDataUrl)
             .then(function (response) {
               if (response.data.code == "200") {
@@ -314,9 +276,6 @@
           });
         });
       },
-      handleSelectionChange(val) {
-        this.multipleSelection = val;
-      },
       handleBatchDelete() {
         let size = this.multipleSelection.length;
         if (size > 0) {
@@ -328,7 +287,7 @@
             //循环删除
             this.multipleSelection.forEach((item, index, array) => {
               var that = this;
-              var deleteDataUrl = "/system/role/delete?roleId=" + item.id;
+              var deleteDataUrl = "/system/function/delete?functionId=" + item.id;
               this.$ajax.get(deleteDataUrl)
                 .then(function (response) {
                   if (response.data.code == 1) {
@@ -364,11 +323,11 @@
       },
       handleUpdate() {
         var _this = this;
-        var updateDataUrl = "/system/role/update";
+        var updateDataUrl = "/system/function/update";
         //添加更新信息
-        this.currentRole.opUserId = Vue.prototype.CurrentUser.id;
-        this.currentRole.companyId = Vue.prototype.CurrentUser.companyId;
-        this.$ajax.post(updateDataUrl, this.currentRole)
+        this.currentFunction.opUserId = Vue.prototype.CurrentUser.id;
+        this.currentFunction.companyId = Vue.prototype.CurrentUser.companyId;
+        this.$ajax.post(updateDataUrl, this.currentFunction)
           .then(function (response) {
             console.log(response.data);
             if (response.data.code == "200") {
@@ -376,7 +335,7 @@
                 message: '数据更新成功!',
                 type: 'success'
               });
-              _this.roleInfoFormVisible = false;
+              _this.functionInfoFormVisible = false;
               _this.initData();
             } else {
               _this.$message({
@@ -392,10 +351,10 @@
       },
       handleInsert() {
         var _this = this;
-        var insertDataUrl = "/system/role/insert";
-        this.currentRole.opUserId = Vue.prototype.CurrentUser.id;
-        this.currentRole.isDel = 0
-        this.currentRole.companyId = Vue.prototype.CurrentUser.companyId;
+        var insertDataUrl = "/system/function/insert";
+        this.currentFunction.opUserId = Vue.prototype.CurrentUser.id;
+        this.currentFunction.isDel = 0
+        this.currentFunction.companyId = Vue.prototype.CurrentUser.companyId;
         this.$ajax.post(insertDataUrl, this.currentRole)
           .then(function (response) {
             if (response.data.code == "200") {
@@ -403,7 +362,7 @@
                 message: '数据新增成功!',
                 type: 'success'
               });
-              _this.roleInfoFormVisible = false;
+              _this.functionInfoFormVisible = false;
               _this.initData();
             } else {
               _this.$message({
@@ -419,6 +378,7 @@
       }
     }
   }
+
 </script>
 
 <style scoped>

@@ -12,8 +12,8 @@
         values
         (
             #{id},
-            #{userId},
-            #{roleId}
+            #{roleId},
+            #{funcId}
         )
     </insert>
     <delete id="deleteByRoleId" parameterType="String">

@@ -3,6 +3,7 @@ package com.dygstudio.epsms.service.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dygstudio.epsms.service.entity.Function;
+import com.dygstudio.epsms.service.entity.Role;
 
 import java.util.List;
 
@@ -16,4 +17,5 @@ public interface FunctionService extends IService<Function> {
     Integer deleteFunctionById(String functionId);
     Integer deleteFunctionList(List<Function> functionList);
     boolean modifyRoleFunctionLinkByRoleId(String roleId, List<String> funcIds);
+    IPage<Function> findAllFunctionForShow(Integer page, Integer pageSize);
 }
