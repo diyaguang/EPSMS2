@@ -56,6 +56,13 @@ public class UserController extends BaseController {
         return userService.findUserByNameAndPassword(param.get("userName"),param.get("password"));
     }
 
+    /**
+     * 功能描述: 获取用户列表，基础信息，没有表关联
+     * @Param: [page, pageSize]
+     * @Return: com.dygstudio.epsms.service.common.PageResult<com.dygstudio.epsms.service.entity.User>
+     * @Author: diyaguang
+     * @Date: 2020/5/20 15:02
+     */
     @ResponseBody
     @RequestMapping(value = "/list")
     public PageResult<User> getUserList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize){
@@ -63,6 +70,13 @@ public class UserController extends BaseController {
         return new PageResult<User>(result.getTotal(),result.getRecords());
     }
 
+    /**
+     * 功能描述: 前端 用户列表显示，Show表示有对象关联
+     * @Param: [page, pageSize]
+     * @Return: com.dygstudio.epsms.service.common.PageResult<com.dygstudio.epsms.service.entity.User>
+     * @Author: diyaguang
+     * @Date: 2020/5/20 15:01
+     */
     @ResponseBody
     @RequestMapping(value = "/listShow")
     public PageResult<User> getUserListShow(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize){
@@ -130,6 +144,13 @@ public class UserController extends BaseController {
         return result;
     }
 
+    /**
+     * 功能描述: 修改用户和角色的关联关系
+     * @Param: [userId, roleIds]
+     * @Return: com.dygstudio.epsms.service.common.PageResult<com.dygstudio.epsms.service.entity.UserRoleLink>
+     * @Author: diyaguang
+     * @Date: 2020/5/20 15:03
+     */
     @ResponseBody
     @RequestMapping(value = "/userRoleLink/modify",method = RequestMethod.POST)
     public PageResult<UserRoleLink> modifyUserRoleLink(@RequestParam("userId") String userId, @RequestBody List<String> roleIds){

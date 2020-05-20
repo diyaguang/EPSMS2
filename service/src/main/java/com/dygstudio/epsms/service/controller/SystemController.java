@@ -1,5 +1,7 @@
 package com.dygstudio.epsms.service.controller;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.interfaces.Func;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -42,8 +44,7 @@ public class SystemController {
     RoleService roleService;
     @Resource
     RoleFunctionLinkService roleFunctionLinkService;
-    @Resource
-    UserRoleLinkService userRoleLinkService;
+
 
     /**
      * 功能描述:
@@ -99,10 +100,61 @@ public class SystemController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/function/listForList")
+    public List<FunctionVo> getFunctionListForList(){
+        List<FunctionVo> result = new ArrayList<>();
+        FunctionVo topFunction = new FunctionVo();
+        topFunction.setKey("");
+        topFunction.setLabel("顶级目录");
+        result.add(topFunction);
+        List<Function> sources = functionService.list();
+        List<Function> topFunctions = sources.stream().filter(a -> a.getLevel() == 1).collect(Collectors.toList());
+        for(Function tmpSubItem : topFunctions){
+            FunctionVo tmpItem = new FunctionVo();
+            tmpItem.setKey(tmpSubItem.getId());
+            tmpItem.setLabel(tmpSubItem.getFuncName());
+            tmpItem.setDisabled(false);
+            result.add(tmpItem);
+            result.addAll(buildChildrenForList(tmpItem, sources));
+        }
+        return result;
+    }
+
+    private List<FunctionVo> buildChildrenForList(FunctionVo funcItem,List<Function> sources){
+        List<FunctionVo> result = new ArrayList<>();
+        List<Function> tmpSubFunctions = sources.stream().filter(a -> a.getParentId() != null && a.getParentId().equals(funcItem.getKey())).collect(Collectors.toList());
+        for (Function tmpSubItem : tmpSubFunctions) {
+            FunctionVo tmpItem = new FunctionVo();
+            tmpItem.setKey(tmpSubItem.getId());
+            String labelName = tmpSubItem.getFuncName();
+            if(tmpSubItem.getLevel() == 2)
+                labelName = "-->"+labelName;
+            else if(tmpSubItem.getLevel() == 3)
+                labelName = "---->"+labelName;
+            tmpItem.setLabel(labelName);
+            tmpItem.setDisabled(false);
+            result.add(tmpItem);
+            result.addAll(buildChildrenForList(tmpItem, sources));
+        }
+        return result;
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/function/insert",method = RequestMethod.POST)
     public PageResult<Function> insertFunction(@RequestBody Function function){
         PageResult<Function> result = new PageResult<>();
         function.setId(UUID.randomUUID().toString().replaceAll("-",""));  //设置对象新的GUID
+        //设置父对象
+        if(StrUtil.isBlank(function.getParentId())){
+            function.setLevel(1);
+        }else{
+            Function parentItem = functionService.getFunctionById(function.getParentId());
+            if(parentItem!=null){
+                function.setLevel(parentItem.getLevel()+1);
+            }else {
+                function.setLevel(1);
+            }
+        }
         boolean opResult = functionService.save(function);
         if(opResult){
             result.setCode(SysConstant.RESULT_CODE_SUCCESSFUL);
@@ -122,6 +174,17 @@ public class SystemController {
     @RequestMapping(value = "/function/update",method = RequestMethod.POST)
     public PageResult<Function> updateFunction(@RequestBody Function function){
         PageResult<Function> result = new PageResult<>();
+        //设置父对象
+        if(StrUtil.isBlank(function.getParentId())){
+            function.setLevel(1);
+        }else{
+            Function parentItem = functionService.getFunctionById(function.getParentId());
+            if(parentItem!=null){
+                function.setLevel(parentItem.getLevel()+1);
+            }else {
+                function.setLevel(1);
+            }
+        }
         boolean opResult = functionService.updateById(function);
         if(opResult){
             result.setCode(SysConstant.RESULT_CODE_SUCCESSFUL);

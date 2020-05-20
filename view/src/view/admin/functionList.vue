@@ -122,39 +122,68 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8"><el-form-item label="映射路径" :label-width="formLabelWidth">
-            <el-input v-model="currentFunction.urlPath" autocomplete="off" style="width: 150px"></el-input>
-          </el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="排序" :label-width="formLabelWidth">
-            <el-input v-model="currentFunction.sort" autocomplete="off" style="width: 150px"></el-input>
-          </el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="图标名称" :label-width="formLabelWidth">
-            <el-input v-model="currentFunction.iconName" autocomplete="off" style="width: 150px"></el-input>
-          </el-form-item></el-col>
+          <el-col :span="8">
+            <el-form-item label="映射路径" :label-width="formLabelWidth">
+              <el-input v-model="currentFunction.urlPath" autocomplete="off" style="width: 150px"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="排序" :label-width="formLabelWidth">
+              <el-input v-model="currentFunction.sort" autocomplete="off" style="width: 150px"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="图标名称" :label-width="formLabelWidth">
+              <el-input v-model="currentFunction.iconName" autocomplete="off" style="width: 150px"></el-input>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8"><el-form-item label="组件ID" :label-width="formLabelWidth">
-            <el-input v-model="currentFunction.sId" autocomplete="off" style="width: 150px"></el-input>
-          </el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="组件路径" :label-width="formLabelWidth">
-            <el-input v-model="currentFunction.path" autocomplete="off" style="width: 150px"></el-input>
-          </el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="组件名称" :label-width="formLabelWidth">
-            <el-input v-model="currentFunction.componentName" autocomplete="off" style="width: 150px"></el-input>
-          </el-form-item></el-col>
+          <el-col :span="8">
+            <el-form-item label="组件ID" :label-width="formLabelWidth">
+              <el-input v-model="currentFunction.sId" autocomplete="off" style="width: 150px"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="组件路径" :label-width="formLabelWidth">
+              <el-input v-model="currentFunction.path" autocomplete="off" style="width: 150px"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="组件名称" :label-width="formLabelWidth">
+              <el-input v-model="currentFunction.componentName" autocomplete="off" style="width: 150px"></el-input>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
-          <el-col :span="24"><el-form-item label="状态" :label-width="formLabelWidth">
-            <el-radio-group v-model="currentFunction.status" size="mini">
-              <el-radio :label="1" border>启用</el-radio>
-              <el-radio :label="2" border>禁用</el-radio>
-            </el-radio-group>
-          </el-form-item></el-col>
+          <el-col :span="12">
+            <el-form-item label="状态" :label-width="formLabelWidth">
+              <el-radio-group v-model="currentFunction.status" size="mini">
+                <el-radio :label="1" border>启用</el-radio>
+                <el-radio :label="2" border>禁用</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="父级" :label-width="formLabelWidth">
+              <el-select v-model="currentFunction.parentId" placeholder="请选择">
+                <el-option
+                  v-for="item in baseFunctionData"
+                  :key="item.key"
+                  :label="item.label"
+                  :value="item.key">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
-          <el-col :span="24"><el-form-item label="描述" :label-width="formLabelWidth">
-            <el-input type="textarea" :rows="2" v-model="currentFunction.description" autocomplete="off" style="width: 95%"></el-input>
-          </el-form-item></el-col>
+          <el-col :span="24">
+            <el-form-item label="描述" :label-width="formLabelWidth">
+              <el-input type="textarea" :rows="2" v-model="currentFunction.description" autocomplete="off"
+                        style="width: 95%"></el-input>
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -167,6 +196,7 @@
 
 <script>
   import Vue from "vue";
+
   export default {
     name: "functionList.vue",
     data() {
@@ -174,7 +204,8 @@
         functionInfoOpType: '',
         functionInfoOpTitle: '',
         functionInfoFormVisible: false,
-        functionData:[],
+        functionData: [],
+        baseFunctionData:[],
         loading: true,
         currentPage: 1,
         currentPageSize: 10,
@@ -221,6 +252,15 @@
             console.log(error);
           });
         this.loading = false;
+        //baseFunctionData 并操作数据是
+        var getFunctionDataUrl = "/system/function/listForList";
+        this.$ajax.get(getFunctionDataUrl)
+          .then(function (response) {
+            _this.baseFunctionData = response.data;
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       },
       handleFunctionInfoOp() {
         if (this.functionInfoOpType == "add") {
@@ -353,9 +393,9 @@
         var _this = this;
         var insertDataUrl = "/system/function/insert";
         this.currentFunction.opUserId = Vue.prototype.CurrentUser.id;
-        this.currentFunction.isDel = 0
+        this.currentFunction.isDel = 0;
         this.currentFunction.companyId = Vue.prototype.CurrentUser.companyId;
-        this.$ajax.post(insertDataUrl, this.currentRole)
+        this.$ajax.post(insertDataUrl, this.currentFunction)
           .then(function (response) {
             if (response.data.code == "200") {
               _this.$message({

@@ -1,5 +1,6 @@
 package com.dygstudio.epsms.service.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -13,9 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -38,11 +41,22 @@ public class FunctionServiceImpl extends ServiceImpl<FunctionMapper, Function> i
     }
 
     public List<Function> buildUserMenuFunctions(List<Function> userFunctions) {
-        //组织功能菜单
-        List<Function> menuFunctions = userFunctions.stream().filter(a -> a.getLevel() == 1).collect(Collectors.toList());
+        List<Function> menuFunctions = new ArrayList<>();
+        //从数据库中拿出一级菜单
+        QueryWrapper query = new QueryWrapper();
+        query.eq("level",1);
+        List<Function> topMenuFunctions = functionMapper.selectList(query);
+        for(Function topItem : topMenuFunctions){
+            if(userFunctions.stream().filter(a->a.getParentId()!=null && a.getParentId().equals(topItem.getId())).collect(Collectors.toList()).size()>0){
+                buildSubFunctions(topItem, userFunctions);
+                menuFunctions.add(topItem);
+            }
+        }
+        /*//组织功能菜单
+        menuFunctions = userFunctions.stream().filter(a -> a.getLevel() == 1).collect(Collectors.toList());
         for (Function tmpMainItem : menuFunctions) {
             buildSubFunctions(tmpMainItem, userFunctions);
-        }
+        }*/
         menuFunctions.sort(Comparator.comparing(Function::getSort));
         return menuFunctions;
     }
