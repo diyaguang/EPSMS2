@@ -100,6 +100,12 @@
         <el-form-item label="排序" :label-width="formLabelWidth">
           <el-input v-model="currentUser.sort" autocomplete="off"></el-input>
         </el-form-item>
+        <el-form-item label="状态" :label-width="formLabelWidth">
+          <el-radio-group v-model="currentUser.status" size="mini">
+            <el-radio :label="1" border>启用</el-radio>
+            <el-radio :label="2" border>禁用</el-radio>
+          </el-radio-group>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="userInfoFormVisible = false">取 消</el-button>
@@ -139,7 +145,7 @@
         baseRoles: [],
         currentUserRoles: [],
         currentOpUserId: '',
-        formLabelWidth: '50px',
+        formLabelWidth: '100px',
         multipleSelection: [],
         tableHeight:250
       }
@@ -176,15 +182,6 @@
             console.log(error);
           });
         this.loading = false;
-        //获取角色数据
-        var getRoleDataUrl = "/system/role/listForOp";
-        this.$ajax.get(getRoleDataUrl)
-          .then(function (response) {
-            _this.baseRoles = response.data;
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
       },
       handleUserInfoOp() {
         if (this.userInfoOpType == "add") {
@@ -238,13 +235,24 @@
           });
       },
       handleRoleEdit(index, row) {
-        this.userRoleFormVisible = true;
-        //获取当前用户的角色列表，循环key 为 数组，表示已选
-        this.currentOpUserId = row.id;
-        this.currentUserRoles = [];
-        row.roles.forEach((item, index, array) => {
-          this.currentUserRoles.push(item.id);
-        });
+        //获取角色数据
+        var _this = this;
+        var getRoleDataUrl = "/system/role/listForOp";
+        this.$ajax.get(getRoleDataUrl)
+          .then(function (response) {
+            _this.baseRoles = response.data;
+            //获取完成后，更新状态
+            _this.userRoleFormVisible = true;
+            //获取当前用户的角色列表，循环key 为 数组，表示已选
+            _this.currentOpUserId = row.id;
+            _this.currentUserRoles = [];
+            row.roles.forEach((item, index, array) => {
+              _this.currentUserRoles.push(item.id);
+            });
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       },
       handleAdd() {
         this.userInfoFormVisible = true;
@@ -257,6 +265,7 @@
         //this.currentUser = row;
         //this.currentUser = Object.assign({}, row);  //对象进行浅复制(只复制属性和值) 这个处理对于嵌套的对象是不起作用的
         this.currentUser = JSON.parse(JSON.stringify(row));  //对象进行浅复制(只复制属性和值)
+
         this.userInfoOpType = "update";
         this.userInfoOpTitle = "编辑用户信息";
       },

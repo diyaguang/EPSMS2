@@ -87,6 +87,12 @@
         <el-form-item label="描述" :label-width="formLabelWidth">
           <el-input v-model="currentRole.description" autocomplete="off"></el-input>
         </el-form-item>
+        <el-form-item label="状态" :label-width="formLabelWidth">
+          <el-radio-group v-model="currentRole.status" size="mini">
+            <el-radio :label="1" border>启用</el-radio>
+            <el-radio :label="2" border>禁用</el-radio>
+          </el-radio-group>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="roleInfoFormVisible = false">取 消</el-button>
@@ -212,21 +218,33 @@
         }
       },
       handleFunctionEdit(index, row) {
-        //获取当前用户的角色列表，循环key 为 数组，表示已选
-        this.currentOpRoleId = row.id;
-        this.currentRoleFunctions = [];
-        row.functions.forEach((item, index, array) => {
-          this.currentRoleFunctions.push(item.id);
-        });
-        /*
-        说明：以后this.$refs为undefined的时候，不妨考虑下是不是真实dom还没有形成
-        可以用 this.$nextTick包裹一下试试，这也是 this.$nextTick我目前使用到的地方，
-        大致来说就是一个虚拟dom变成真实之后的一个回调，只有在回调里面才能获取到$refs，问题自然就解决了
-        */
-        this.$nextTick(() => {
-          this.$refs.tree.setCheckedKeys(this.currentRoleFunctions);
-        })
-        this.roleFunctionFormVisible = true;
+        var _this = this;
+        //获取功能菜单基础数据
+        var getFunctionDataUrl = "/system/function/listForOp";
+        this.$ajax.get(getFunctionDataUrl)
+          .then(function (response) {
+            _this.baseFunctionData = response.data;
+
+            //获取当前用户的角色列表，循环key 为 数组，表示已选
+            _this.currentOpRoleId = row.id;
+            _this.currentRoleFunctions = [];
+            row.functions.forEach((item, index, array) => {
+              _this.currentRoleFunctions.push(item.id);
+            });
+            /*
+            说明：以后this.$refs为undefined的时候，不妨考虑下是不是真实dom还没有形成
+            可以用 this.$nextTick包裹一下试试，这也是 this.$nextTick我目前使用到的地方，
+            大致来说就是一个虚拟dom变成真实之后的一个回调，只有在回调里面才能获取到$refs，问题自然就解决了
+            */
+            _this.$nextTick(() => {
+              _this.$refs.tree.setCheckedKeys(_this.currentRoleFunctions);
+            })
+            _this.roleFunctionFormVisible = true;
+
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       },
       handleSizeChange(val) {
         this.currentPageSize = val;
@@ -249,16 +267,6 @@
             console.log(error);
           });
         this.loading = false;
-        //获取功能菜单基础数据
-        var getFunctionDataUrl = "/system/function/listForOp";
-        this.$ajax.get(getFunctionDataUrl)
-          .then(function (response) {
-            _this.baseFunctionData = response.data;
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
       },
       handleRoleInfoOp() {
         if (this.roleInfoOpType == "add") {
