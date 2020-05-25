@@ -1,6 +1,9 @@
 package com.dygstudio.epsms.service.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.util.List;
 
 /**
  * 〈功能概述〉
@@ -49,4 +52,15 @@ public class DictInfo {
     private String name;
     private String parentId;
     private String value;
+
+    @TableField(exist = false)
+    private List<DictInfo> childs;
+
+    public List<DictInfo> getChilds() {
+        return childs;
+    }
+
+    public void setChilds(List<DictInfo> childs) {
+        this.childs = childs;
+    }
 }

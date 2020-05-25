@@ -89,8 +89,8 @@
         </el-form-item>
         <el-form-item label="状态" :label-width="formLabelWidth">
           <el-radio-group v-model="currentRole.status" size="mini">
-            <el-radio :label="1" border>启用</el-radio>
-            <el-radio :label="2" border>禁用</el-radio>
+            <el-radio :label="101" border>启用</el-radio>
+            <el-radio :label="102" border>禁用</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>

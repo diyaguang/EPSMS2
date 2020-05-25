@@ -17,9 +17,27 @@
         <result property="Code" column="Code"/>
         <result property="description" column="description"/>
         <result property="sort" column="sort"/>
+        <result property="age" column="age"/>
+        <result property="birthday" column="birthday"/>
+        <result property="phone" column="phone"/>
+        <result property="iDCard" column="iDCard"/>
+        <result property="address" column="address"/>
+        <result property="email" column="email"/>
+        <result property="userName" column="userName"/>
+        <result property="PostCode" column="PostCode"/>
+        <result property="type" column="type"/>
+        <result property="position" column="position"/>
+        <result property="department" column="department"/>
+        <result property="isAdmin" column="isAdmin"/>
         <association property="opUserVo" column="opUserId" select="com.dygstudio.epsms.service.mapper.UserMapper.selectById"
                      javaType="User" />
         <association property="statusVo" column="status" select="com.dygstudio.epsms.service.mapper.DictInfoMapper.findByValue"
+                     javaType="DictInfo" />
+        <association property="departmentVo" column="department" select="com.dygstudio.epsms.service.mapper.DictInfoMapper.findByValue"
+                     javaType="DictInfo" />
+        <association property="typeVo" column="type" select="com.dygstudio.epsms.service.mapper.DictInfoMapper.findByValue"
+                     javaType="DictInfo" />
+        <association property="positionVo" column="position" select="com.dygstudio.epsms.service.mapper.DictInfoMapper.findByValue"
                      javaType="DictInfo" />
         <collection property="roles" ofType="Role" column="id"
                     select="com.dygstudio.epsms.service.mapper.RoleMapper.findRolesByUserId"/>

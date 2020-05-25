@@ -4,4 +4,19 @@
     <select id="findByValue"  resultType="DictInfo">
         select * from DictInfo p where p.value=#{value}
     </select>
+    <select id="findByParentId"  resultType="DictInfo">
+        select * from DictInfo p where p.parentId=#{value}
+    </select>
+
+    <select id="findObjectAndChildByValue" resultMap="ObjectAndChildMap" parameterType="String">
+        select * from DictInfo p where p.value=#{value}
+    </select>
+    <resultMap id="ObjectAndChildMap" type="DictInfo">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="parentId" column="parentId"/>
+        <result property="value" column="value"/>
+        <collection property="childs" ofType="DictInfo" column="parentId"
+                    select="com.dygstudio.epsms.service.mapper.DictInfoMapper.findByParentId"/>
+    </resultMap>
 </mapper>

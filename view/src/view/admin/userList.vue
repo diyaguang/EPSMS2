@@ -83,29 +83,105 @@
                      :total="currentTotal">
       </el-pagination>
     </el-card>
-    <el-dialog :title="userInfoOpTitle" :visible.sync="userInfoFormVisible" width="500px">
+    <el-dialog :title="userInfoOpTitle" :visible.sync="userInfoFormVisible" width="850px">
       <el-form :model="currentUser">
-        <el-form-item label="用户编号" :label-width="formLabelWidth">
-          <el-input v-model="currentUser.code" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="名称" :label-width="formLabelWidth">
-          <el-input v-model="currentUser.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" :label-width="formLabelWidth">
-          <el-input v-model="currentUser.password" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="描述" :label-width="formLabelWidth">
-          <el-input v-model="currentUser.description" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="排序" :label-width="formLabelWidth">
-          <el-input v-model="currentUser.sort" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="状态" :label-width="formLabelWidth">
-          <el-radio-group v-model="currentUser.status" size="mini">
-            <el-radio :label="1" border>启用</el-radio>
-            <el-radio :label="2" border>禁用</el-radio>
-          </el-radio-group>
-        </el-form-item>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="用户编号" :label-width="formLabelWidth">
+              <el-input v-model="currentUser.code" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="名称" :label-width="formLabelWidth">
+              <el-input v-model="currentUser.name" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="密码" :label-width="formLabelWidth">
+              <el-input v-model="currentUser.password" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="年龄" :label-width="formLabelWidth">
+              <el-input v-model="currentUser.age" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="生日" :label-width="formLabelWidth">
+              <el-input v-model="currentUser.birthday" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="电话" :label-width="formLabelWidth">
+              <el-input v-model="currentUser.phone" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="身份证" :label-width="formLabelWidth">
+              <el-input v-model="currentUser.iDCard" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="职位" :label-width="formLabelWidth">
+              <el-input v-model="currentUser.position" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="邮箱" :label-width="formLabelWidth">
+              <el-input v-model="currentUser.email" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="姓名" :label-width="formLabelWidth">
+              <el-input v-model="currentUser.userName" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="邮政编码" :label-width="formLabelWidth">
+              <el-input v-model="currentUser.PostCode" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="部门" :label-width="formLabelWidth">
+              <el-input v-model="currentUser.department" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="排序" :label-width="formLabelWidth">
+              <el-input v-model="currentUser.sort" autocomplete="off" style="width: 100px"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="状态" :label-width="formLabelWidth">
+              <el-radio-group v-model="currentUser.status" size="mini">
+                <el-radio :label="101" border>启用</el-radio>
+                <el-radio :label="102" border>禁用</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="联系地址" :label-width="formLabelWidth">
+              <el-input v-model="currentUser.address" autocomplete="off" size="9"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="描述" :label-width="formLabelWidth">
+              <el-input type="textarea" :rows="2" v-model="currentUser.description" autocomplete="off" size="9"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="userInfoFormVisible = false">取 消</el-button>
@@ -147,7 +223,9 @@
         currentOpUserId: '',
         formLabelWidth: '100px',
         multipleSelection: [],
-        tableHeight:250
+        tableHeight:250,
+        dictDepartment:[],
+        dictPosition:[]
       }
     },
     created: function () {
@@ -176,6 +254,7 @@
         this.$ajax.get(getMainDataUrl)
           .then(function (response) {
             _this.userData = response.data.data;
+            console.log(response.data.data);
             _this.currentTotal = response.data.count;
           })
           .catch(function (error) {
@@ -264,7 +343,12 @@
         this.userInfoFormVisible = true;
         //this.currentUser = row;
         //this.currentUser = Object.assign({}, row);  //对象进行浅复制(只复制属性和值) 这个处理对于嵌套的对象是不起作用的
-        this.currentUser = JSON.parse(JSON.stringify(row));  //对象进行浅复制(只复制属性和值)
+        //this.currentUser = JSON.parse(JSON.stringify(row));  //对象进行浅复制(只复制属性和值)
+        //从数组中根据条件查找对象
+        this.currentUser = this.userData.find(function (x) {
+          return x.id=row.id;
+        });
+
 
         this.userInfoOpType = "update";
         this.userInfoOpTitle = "编辑用户信息";
@@ -330,12 +414,10 @@
             });
 
             //删除完成，清空选中的记录，刷新数据
-
             this.$message({
               message: '数据删除成功!',
               type: 'success'
             });
-
 
             this.initData();
             this.multipleSelection = [];

@@ -45,6 +45,127 @@ public class User {
     private String Code;
     private Integer sort;
 
+    private Integer age;
+    private Date birthday;
+    private String phone;
+    private String iDCard;
+    private String address;
+    private String email;
+    private String userName;
+    private String PostCode;
+    private Integer department;
+
+    @TableField(exist = false)
+    private DictInfo departmentVo;
+
+    private Integer type;
+
+    @TableField(exist = false)
+    private DictInfo typeVo;
+
+    private Integer position;
+
+    @TableField(exist = false)
+    private DictInfo positionVo;
+
+    private Integer isAdmin;
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getiDCard() {
+        return iDCard;
+    }
+
+    public void setiDCard(String iDCard) {
+        this.iDCard = iDCard;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPostCode() {
+        return PostCode;
+    }
+
+    public void setPostCode(String postCode) {
+        PostCode = postCode;
+    }
+
+    public Integer getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Integer department) {
+        this.department = department;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
+    }
+
+    public Integer getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(Integer isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+
     public User getOpUserVo() {
         return opUserVo;
     }
@@ -131,6 +252,30 @@ public class User {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public DictInfo getDepartmentVo() {
+        return departmentVo;
+    }
+
+    public void setDepartmentVo(DictInfo departmentVo) {
+        this.departmentVo = departmentVo;
+    }
+
+    public DictInfo getTypeVo() {
+        return typeVo;
+    }
+
+    public void setTypeVo(DictInfo typeVo) {
+        this.typeVo = typeVo;
+    }
+
+    public DictInfo getPositionVo() {
+        return positionVo;
+    }
+
+    public void setPositionVo(DictInfo positionVo) {
+        this.positionVo = positionVo;
     }
 
     public String getName() {

@@ -9,10 +9,8 @@ import com.dygstudio.epsms.service.common.CommonUtils;
 import com.dygstudio.epsms.service.common.PageResult;
 import com.dygstudio.epsms.service.common.SysConstant;
 import com.dygstudio.epsms.service.entity.*;
-import com.dygstudio.epsms.service.service.FunctionService;
-import com.dygstudio.epsms.service.service.RoleFunctionLinkService;
-import com.dygstudio.epsms.service.service.RoleService;
-import com.dygstudio.epsms.service.service.UserRoleLinkService;
+import com.dygstudio.epsms.service.service.*;
+import com.dygstudio.epsms.service.vo.DictVo;
 import com.dygstudio.epsms.service.vo.FunctionVo;
 import com.dygstudio.epsms.service.vo.RoleVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +42,8 @@ public class SystemController {
     RoleService roleService;
     @Resource
     RoleFunctionLinkService roleFunctionLinkService;
+    @Resource
+    DictInfoService dictInfoService;
 
 
     /**
@@ -333,6 +333,17 @@ public class SystemController {
     public PageResult<RoleFunctionLink> getRoleFunctionLinkByRoleId(@RequestParam("roleId") String roleId){
         List<RoleFunctionLink> result = roleFunctionLinkService.getRoleFunctionLinkByRoleId(roleId);
         return new PageResult<RoleFunctionLink>(result.size(),result);
+    }
+
+    public List<DictVo> getDictForValue(@RequestParam("value") String value){
+        List<DictVo> result = new ArrayList<>();
+        DictInfo dictInfo = dictInfoService.findObjectAndChildByValue(value);
+
+        return result;
+    }
+
+    public void buildDictChild(DictVo item,DictInfo dictInfo){
+
     }
 
 }
