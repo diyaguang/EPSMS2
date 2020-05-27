@@ -10,7 +10,43 @@
           <el-button type="primary" icon="el-icon-printer"></el-button>
         </el-button-group>
       </div>
-      <el-table
+      <div style="height: 30px; margin-bottom: 15px; margin-left: 20px">
+        <el-form :inline="true" :model="queryUserInfo" size="mini">
+          <el-form-item label="用户名称">
+            <el-input v-model="queryUserInfo.name" placeholder="用户名称" style="width: 100px"></el-input>
+          </el-form-item>
+          <el-form-item label="姓名">
+            <el-input v-model="queryUserInfo.userName" placeholder="姓名" style="width: 100px"></el-input>
+          </el-form-item>
+          <el-form-item label="电话">
+            <el-input v-model="queryUserInfo.phone" placeholder="电话" style="width: 120px"></el-input>
+          </el-form-item>
+          <el-form-item label="部门">
+            <el-select v-model="queryUserInfo.department" placeholder="请选择" style="width: 100px" clearable>
+              <el-option
+                v-for="item in dictDepartment"
+                :key="item.key"
+                :label="item.label"
+                :value="item.key">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="职位">
+            <el-select v-model="queryUserInfo.position" placeholder="请选择" style="width: 100px" clearable>
+              <el-option
+                v-for="item in dictPosition"
+                :key="item.key"
+                :label="item.label"
+                :value="item.key">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item >
+            <el-button type="primary" icon="el-icon-search">查询</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <el-table size="mini"
         ref="multipleTable"
         @selection-change="handleSelectionChange"
         v-loading="loading"
@@ -28,7 +64,7 @@
         </el-table-column>
         <el-table-column
           prop="name"
-          label="姓名"
+          label="用户名"
           width="120">
         </el-table-column>
         <el-table-column
@@ -62,12 +98,12 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
-              size="mini"
+              size="mini" type="text"
               @click="handleEdit(scope.$index, scope.row)">编辑
             </el-button>
             <el-button
               size="mini"
-              type="danger"
+              type="text"
               @click="handleDelete(scope.$index, scope.row)">删除
             </el-button>
           </template>
@@ -127,7 +163,14 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="职位" :label-width="formLabelWidth">
-              <el-input v-model="currentUser.position" autocomplete="off"></el-input>
+              <el-select v-model="currentUser.position" placeholder="请选择">
+                <el-option
+                  v-for="item in dictPosition"
+                  :key="item.key"
+                  :label="item.label"
+                  :value="item.key">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -149,7 +192,14 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="部门" :label-width="formLabelWidth">
-              <el-input v-model="currentUser.department" autocomplete="off"></el-input>
+              <el-select v-model="currentUser.department" placeholder="请选择">
+                <el-option
+                  v-for="item in dictDepartment"
+                  :key="item.key"
+                  :label="item.label"
+                  :value="item.key">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -178,7 +228,8 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="描述" :label-width="formLabelWidth">
-              <el-input type="textarea" :rows="2" v-model="currentUser.description" autocomplete="off" size="9"></el-input>
+              <el-input type="textarea" :rows="2" v-model="currentUser.description" autocomplete="off"
+                        size="9"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -223,18 +274,19 @@
         currentOpUserId: '',
         formLabelWidth: '100px',
         multipleSelection: [],
-        tableHeight:250,
-        dictDepartment:[],
-        dictPosition:[]
+        tableHeight: 250,
+        dictDepartment: [],
+        dictPosition: [],
+        queryUserInfo:{}
       }
     },
     created: function () {
       this.initData();
     },
-    mounted:function(){
+    mounted: function () {
       setTimeout(() => {
-        this.tableHeight = window.innerHeight - this.$refs.multipleTable.$el.offsetTop-150;
-      },100)
+        this.tableHeight = window.innerHeight - this.$refs.multipleTable.$el.offsetTop - 150;
+      }, 100)
       //此处需要通过延迟方法来设置值，不然会出现值已更新，但页面没更新的问题
       //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
     },
@@ -254,12 +306,31 @@
         this.$ajax.get(getMainDataUrl)
           .then(function (response) {
             _this.userData = response.data.data;
-            console.log(response.data.data);
             _this.currentTotal = response.data.count;
           })
           .catch(function (error) {
             console.log(error);
           });
+
+        //获取下拉列表数据(部门)
+        var getDictDeprmentDataUrl = "/system/dict/objectAndChildForValue?value=200";
+        this.$ajax.get(getDictDeprmentDataUrl)
+          .then(function (response) {
+            _this.dictDepartment = response.data.children;
+            //获取下拉列表数据（职位）
+            var getDictPositionDataUrl = "/system/dict/objectAndChildForValue?value=300";
+            _this.$ajax.get(getDictPositionDataUrl)
+              .then(function (response) {
+                _this.dictPosition = response.data.children;
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
         this.loading = false;
       },
       handleUserInfoOp() {
@@ -287,7 +358,7 @@
           this.updateRole();
         }
       },
-      updateRole(){
+      updateRole() {
         var that = this;
         var saveRoleUrl = "/user/userRoleLink/modify?userId=" + that.currentOpUserId;
         var data = {
@@ -340,16 +411,16 @@
         this.userInfoOpTitle = "添加用户";
       },
       handleEdit(index, row) {
-        this.userInfoFormVisible = true;
+
         //this.currentUser = row;
         //this.currentUser = Object.assign({}, row);  //对象进行浅复制(只复制属性和值) 这个处理对于嵌套的对象是不起作用的
         //this.currentUser = JSON.parse(JSON.stringify(row));  //对象进行浅复制(只复制属性和值)
         //从数组中根据条件查找对象
         this.currentUser = this.userData.find(function (x) {
-          return x.id=row.id;
+          return x.id = row.id;
         });
-
-
+        //准备好数据后执行显示
+        this.userInfoFormVisible = true;
         this.userInfoOpType = "update";
         this.userInfoOpTitle = "编辑用户信息";
       },

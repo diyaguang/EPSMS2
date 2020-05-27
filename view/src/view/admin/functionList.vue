@@ -77,15 +77,15 @@
           label="描述"
           width="120">
         </el-table-column>
-        <el-table-column label="操作" width="180">
+        <el-table-column label="操作" width="180" fixed="right">
           <template slot-scope="scope">
             <el-button
-              size="mini"
+              size="mini" type="text"
               @click="handleEdit(scope.$index, scope.row)">编辑
             </el-button>
             <el-button
               size="mini"
-              type="danger"
+              type="text"
               @click="handleDelete(scope.$index, scope.row)">删除
             </el-button>
           </template>

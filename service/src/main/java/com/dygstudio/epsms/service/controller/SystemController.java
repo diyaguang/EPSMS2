@@ -335,15 +335,40 @@ public class SystemController {
         return new PageResult<RoleFunctionLink>(result.size(),result);
     }
 
-    public List<DictVo> getDictForValue(@RequestParam("value") String value){
-        List<DictVo> result = new ArrayList<>();
+    /**
+     * 功能描述: 根据传入的 Dict-value 来获取子对象值。
+     * http://localhost:8090/api/system/dict/objectAndChildForValue?value=200
+     * @Param: [value]
+     * @Return: com.dygstudio.epsms.service.vo.DictVo
+     * @Author: diyaguang
+     * @Date: 2020/5/26 10:28
+     */
+    @ResponseBody
+    @RequestMapping(value = "/dict/objectAndChildForValue")
+    public DictVo getDictForValue(@RequestParam("value") String value){
         DictInfo dictInfo = dictInfoService.findObjectAndChildByValue(value);
-
-        return result;
+        DictVo dictInfoVo = new DictVo();
+        dictInfoVo.setKey(dictInfo.getValue());
+        dictInfoVo.setLabel(dictInfo.getName());
+        dictInfoVo.setDisabled(false);
+        dictInfoVo.setChildren(buildDictChild(dictInfo));
+        return dictInfoVo;
     }
 
-    public void buildDictChild(DictVo item,DictInfo dictInfo){
-
+    public List<DictVo> buildDictChild(DictInfo dictInfo){
+        List<DictVo> result = null;
+        if(dictInfo.getChilds() !=null ) {
+            result = new ArrayList<>();
+            for (DictInfo childItem : dictInfo.getChilds()) {
+                DictVo dictInfoVo = new DictVo();
+                dictInfoVo.setKey(childItem.getValue());
+                dictInfoVo.setLabel(childItem.getName());
+                dictInfoVo.setDisabled(false);
+                dictInfoVo.setChildren(buildDictChild(childItem));
+                result.add(dictInfoVo);
+            }
+        }
+        return result;
     }
 
 }

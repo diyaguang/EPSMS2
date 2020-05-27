@@ -16,7 +16,7 @@
         <result property="name" column="name"/>
         <result property="parentId" column="parentId"/>
         <result property="value" column="value"/>
-        <collection property="childs" ofType="DictInfo" column="parentId"
+        <collection property="childs" ofType="DictInfo" column="id"
                     select="com.dygstudio.epsms.service.mapper.DictInfoMapper.findByParentId"/>
     </resultMap>
 </mapper>

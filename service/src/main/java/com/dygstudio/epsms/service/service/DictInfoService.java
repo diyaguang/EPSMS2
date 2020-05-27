@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface DictInfoService extends IService<DictInfo> {
     DictInfo findObjectAndChildByValue(String value);
+    List<DictInfo> findByParentId(String value);
 }

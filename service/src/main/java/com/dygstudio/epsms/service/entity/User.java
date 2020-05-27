@@ -53,7 +53,7 @@ public class User {
     private String email;
     private String userName;
     private String PostCode;
-    private Integer department;
+    private String department;
 
     @TableField(exist = false)
     private DictInfo departmentVo;
@@ -63,7 +63,7 @@ public class User {
     @TableField(exist = false)
     private DictInfo typeVo;
 
-    private Integer position;
+    private String position;
 
     @TableField(exist = false)
     private DictInfo positionVo;
@@ -134,11 +134,11 @@ public class User {
         PostCode = postCode;
     }
 
-    public Integer getDepartment() {
+    public String getDepartment() {
         return department;
     }
 
-    public void setDepartment(Integer department) {
+    public void setDepartment(String department) {
         this.department = department;
     }
 
@@ -150,11 +150,11 @@ public class User {
         this.type = type;
     }
 
-    public Integer getPosition() {
+    public String getPosition() {
         return position;
     }
 
-    public void setPosition(Integer position) {
+    public void setPosition(String position) {
         this.position = position;
     }
 
