@@ -16,7 +16,7 @@ public interface UserService extends IService<User> {
     User findUserById(String userId);
     User findUserByName(String name);
     IPage<User> findAllUser(Integer page, Integer pageSize);
-    IPage<User> findAllUserForShow(Integer page, Integer pageSize);
+    IPage<User> findAllUserForShow(Integer page, Integer pageSize,User queryItem);
     Integer countUser();
     IPage<User> findUserByObject(User queryItem,Integer page,Integer pageSize);
     Integer insert(User user);

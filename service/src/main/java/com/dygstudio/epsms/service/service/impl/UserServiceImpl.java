@@ -53,9 +53,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
         IPage queryPage = new Page(page,pageSize);
         return userMapper.selectPage(queryPage,new QueryWrapper<User>());
     }
-    public IPage<User> findAllUserForShow(Integer page, Integer pageSize){
+    public IPage<User> findAllUserForShow(Integer page, Integer pageSize,User queryItem){
         Page<User> queryPage = new Page(page,pageSize);
-        List<User> result = userMapper.findAllUserForShow(queryPage);
+        List<User> result = userMapper.findAllUserForShow(queryPage,queryItem);
         queryPage.setRecords(result);
         return queryPage;
     }

@@ -14,5 +14,5 @@ import java.util.Set;
 
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
-    List<User> findAllUserForShow(Page<User> page);
+    List<User> findAllUserForShow(Page<User> page,User queryItem);
 }

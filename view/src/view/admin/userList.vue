@@ -3,6 +3,9 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix" style="line-height: 39px;">
         <span>用户列表</span>
+        <el-button type="text" icon="el-icon-search" style="margin-left: 35%" @click="handleShowQueryItem" size="mini">
+          {{searchTitle}}
+        </el-button>
         <el-button-group style="float: right; padding: 5px 0; margin-right: 10px">
           <el-button type="primary" icon="el-icon-document-add" @click="handleAdd"></el-button>
           <el-button type="primary" icon="el-icon-document-delete" @click="handleBatchDelete"></el-button>
@@ -10,49 +13,51 @@
           <el-button type="primary" icon="el-icon-printer"></el-button>
         </el-button-group>
       </div>
-      <div style="height: 30px; margin-bottom: 15px; margin-left: 20px">
-        <el-form :inline="true" :model="queryUserInfo" size="mini">
-          <el-form-item label="用户名称">
-            <el-input v-model="queryUserInfo.name" placeholder="用户名称" style="width: 100px"></el-input>
-          </el-form-item>
-          <el-form-item label="姓名">
-            <el-input v-model="queryUserInfo.userName" placeholder="姓名" style="width: 100px"></el-input>
-          </el-form-item>
-          <el-form-item label="电话">
-            <el-input v-model="queryUserInfo.phone" placeholder="电话" style="width: 120px"></el-input>
-          </el-form-item>
-          <el-form-item label="部门">
-            <el-select v-model="queryUserInfo.department" placeholder="请选择" style="width: 100px" clearable>
-              <el-option
-                v-for="item in dictDepartment"
-                :key="item.key"
-                :label="item.label"
-                :value="item.key">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="职位">
-            <el-select v-model="queryUserInfo.position" placeholder="请选择" style="width: 100px" clearable>
-              <el-option
-                v-for="item in dictPosition"
-                :key="item.key"
-                :label="item.label"
-                :value="item.key">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item >
-            <el-button type="primary" icon="el-icon-search">查询</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
+      <transition name="fade">
+        <div v-if="showSearch" id="showSearch" transiton="fade" style="margin-left: 10px">
+          <el-form :inline="true" :model="queryUserInfo" size="mini">
+            <el-form-item label="用户名称">
+              <el-input v-model="queryUserInfo.name" placeholder="用户名称" style="width: 100px"></el-input>
+            </el-form-item>
+            <el-form-item label="姓名">
+              <el-input v-model="queryUserInfo.userName" placeholder="姓名" style="width: 100px"></el-input>
+            </el-form-item>
+            <el-form-item label="电话">
+              <el-input v-model="queryUserInfo.phone" placeholder="电话" style="width: 120px"></el-input>
+            </el-form-item>
+            <el-form-item label="部门">
+              <el-select v-model="queryUserInfo.department" placeholder="请选择" style="width: 100px" clearable>
+                <el-option
+                  v-for="item in dictDepartment"
+                  :key="item.key"
+                  :label="item.label"
+                  :value="item.key">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="职位">
+              <el-select v-model="queryUserInfo.position" placeholder="请选择" style="width: 100px" clearable>
+                <el-option
+                  v-for="item in dictPosition"
+                  :key="item.key"
+                  :label="item.label"
+                  :value="item.key">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" icon="el-icon-search" @click="handleQueryData">查询</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </transition>
       <el-table size="mini"
-        ref="multipleTable"
-        @selection-change="handleSelectionChange"
-        v-loading="loading"
-        :data="userData"
-        style="width: 100%"
-        :height="tableHeight">
+                ref="multipleTable"
+                @selection-change="handleSelectionChange"
+                v-loading="loading"
+                :data="userData"
+                style="width: 100%"
+                :height="tableHeight">
         <el-table-column
           type="selection"
           width="55">
@@ -274,23 +279,47 @@
         currentOpUserId: '',
         formLabelWidth: '100px',
         multipleSelection: [],
-        tableHeight: 250,
+        tableHeight:250,
         dictDepartment: [],
         dictPosition: [],
-        queryUserInfo:{}
+        queryUserInfo: {},
+        showSearch: false,
+        searchTitle:'条件查询'
       }
     },
     created: function () {
       this.initData();
+
     },
     mounted: function () {
+
       setTimeout(() => {
         this.tableHeight = window.innerHeight - this.$refs.multipleTable.$el.offsetTop - 150;
       }, 100)
       //此处需要通过延迟方法来设置值，不然会出现值已更新，但页面没更新的问题
       //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
+
+
     },
     methods: {
+      handleShowQueryItem() {
+        //this.showSearch = !this.showSearch;
+        console.log(this.tableHeight);
+        if(this.showSearch){
+          this.showSearch = false;
+          this.searchTitle = "条件查询"
+          this.tableHeight = this.tableHeight+48;
+        }else{
+          this.showSearch = true;
+          this.searchTitle = "关闭查询"
+          this.tableHeight = this.tableHeight-48;
+        }
+        console.log(this.tableHeight);
+        //this.reSizeTableHeight();
+      },
+      handleQueryData() {
+        this.initData();
+      },
       handleSizeChange(val) {
         this.currentPageSize = val;
         this.initData();
@@ -302,8 +331,9 @@
       initData() {
         this.loading = true;
         var _this = this;
+        console.log(this.queryUserInfo);
         var getMainDataUrl = "/user/listShow?page=" + this.currentPage + "&pageSize=" + this.currentPageSize;
-        this.$ajax.get(getMainDataUrl)
+        this.$ajax.post(getMainDataUrl, this.queryUserInfo)
           .then(function (response) {
             _this.userData = response.data.data;
             _this.currentTotal = response.data.count;
@@ -596,5 +626,13 @@
   .el-card /deep/ .el-card__body {
     padding: 10px 10px 10px 20px;
 
+  }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s
+  }
+
+  .fade-enter, .fade-leave-active {
+    opacity: 0
   }
 </style>

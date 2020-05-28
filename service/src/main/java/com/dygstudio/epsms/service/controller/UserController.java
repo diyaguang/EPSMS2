@@ -79,8 +79,8 @@ public class UserController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/listShow")
-    public PageResult<User> getUserListShow(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize){
-        IPage<User> result = userService.findAllUserForShow(page,pageSize);
+    public PageResult<User> getUserListShow(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize,@RequestBody User queryUser){
+        IPage<User> result = userService.findAllUserForShow(page,pageSize,queryUser);
         return new PageResult<User>(result.getTotal(),result.getRecords());
     }
 

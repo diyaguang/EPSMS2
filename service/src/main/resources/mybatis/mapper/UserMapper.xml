@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dygstudio.epsms.service.mapper.UserMapper">
-    <select id="findAllUserForShow" resultMap="UserResultMap">
-        select * from User  where isDel=0
+    <select id="findAllUserForShow" resultMap="UserResultMap" parameterType="User">
+        select * from User
+        where isDel=0
+            <if test="queryItem.name != null and queryItem.name != '' ">
+                AND name like concat('%',#{queryItem.name},'%')
+            </if>
+            <if test="queryItem.userName != null and queryItem.userName != '' ">
+                AND userName like concat('%',#{queryItem.userName},'%')
+            </if>
+            <if test="queryItem.phone != null and queryItem.phone != ''" >
+                AND phone = #{queryItem.phone}
+            </if>
+            <if test="queryItem.department != null and queryItem.department != ''">
+                AND department = #{queryItem.department}
+            </if>
+            <if test="queryItem.position != null and queryItem.position != ''">
+                AND position = #{queryItem.position}
+            </if>
     </select>
 
     <resultMap id="UserResultMap" type="User">
