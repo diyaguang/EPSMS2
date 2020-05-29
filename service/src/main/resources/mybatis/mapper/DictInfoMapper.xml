@@ -7,6 +7,9 @@
     <select id="findByParentId"  resultType="DictInfo">
         select * from DictInfo p where p.parentId=#{value}
     </select>
+    <select id="findByTopObject" resultMap="ObjectAndChildMap">
+        select * from DictInfo p where p.parentId is null
+    </select>
 
     <select id="findObjectAndChildByValue" resultMap="ObjectAndChildMap" parameterType="String">
         select * from DictInfo p where p.value=#{value}

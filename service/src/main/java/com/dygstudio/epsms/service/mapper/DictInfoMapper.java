@@ -11,4 +11,5 @@ public interface DictInfoMapper extends BaseMapper<DictInfo> {
     DictInfo findByValue(String value);
     DictInfo findObjectAndChildByValue(String value);
     List<DictInfo> findByParentId(String value);
+    List<DictInfo> findByTopObject();
 }

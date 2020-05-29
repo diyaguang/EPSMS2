@@ -13,11 +13,20 @@ import java.util.List;
 public class DictVo {
     private String key;
     private String label;
+    private String value;
     private boolean disabled;
     private List<DictVo> children;
 
     public String getKey() {
         return key;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public void setKey(String key) {

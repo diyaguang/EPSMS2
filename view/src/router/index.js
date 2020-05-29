@@ -39,6 +39,14 @@ export default new Router({
       component:(resolve)=>require(['../view/admin/functionList.vue'],resolve)
     },
     {
+      name:'dictOption',
+      path:'/admin/sys/dictOption',
+      meta:{
+        title:'字典管理'
+      },
+      component:(resolve)=>require(['../view/admin/dictOption.vue'],resolve)
+    },
+    {
       name:'404',
       path:'/404',
       meta:{

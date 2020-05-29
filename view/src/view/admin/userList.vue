@@ -14,7 +14,7 @@
         </el-button-group>
       </div>
       <transition name="fade">
-        <div v-if="showSearch" id="showSearch" transiton="fade" style="margin-left: 10px">
+        <div v-show="showSearch" id="showSearch" transiton="fade" style="margin-left: 10px">
           <el-form :inline="true" :model="queryUserInfo" size="mini">
             <el-form-item label="用户名称">
               <el-input v-model="queryUserInfo.name" placeholder="用户名称" style="width: 100px"></el-input>
@@ -280,6 +280,7 @@
         formLabelWidth: '100px',
         multipleSelection: [],
         tableHeight:250,
+
         dictDepartment: [],
         dictPosition: [],
         queryUserInfo: {},
@@ -289,7 +290,6 @@
     },
     created: function () {
       this.initData();
-
     },
     mounted: function () {
 

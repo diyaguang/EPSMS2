@@ -364,9 +364,26 @@ public class SystemController {
                 dictInfoVo.setKey(childItem.getValue());
                 dictInfoVo.setLabel(childItem.getName());
                 dictInfoVo.setDisabled(false);
+                dictInfoVo.setValue(childItem.getValue());
                 dictInfoVo.setChildren(buildDictChild(childItem));
                 result.add(dictInfoVo);
             }
+        }
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/dict/dictForTop")
+    public List<DictVo> getDictForTop(){
+        List<DictVo> result = new ArrayList<>();
+        List<DictInfo> dictInfoList = dictInfoService.findByTopObject();
+        for(DictInfo info : dictInfoList){
+            DictVo dictInfoVo = new DictVo();
+            dictInfoVo.setKey(info.getId());
+            dictInfoVo.setLabel(info.getName());
+            dictInfoVo.setValue(info.getValue());
+            dictInfoVo.setChildren(buildDictChild(info));
+            result.add(dictInfoVo);
         }
         return result;
     }
