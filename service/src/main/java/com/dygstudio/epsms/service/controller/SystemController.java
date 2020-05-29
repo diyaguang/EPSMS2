@@ -361,7 +361,7 @@ public class SystemController {
             result = new ArrayList<>();
             for (DictInfo childItem : dictInfo.getChilds()) {
                 DictVo dictInfoVo = new DictVo();
-                dictInfoVo.setKey(childItem.getValue());
+                dictInfoVo.setKey(childItem.getId());
                 dictInfoVo.setLabel(childItem.getName());
                 dictInfoVo.setDisabled(false);
                 dictInfoVo.setValue(childItem.getValue());
@@ -388,4 +388,8 @@ public class SystemController {
         return result;
     }
 
+    public PageResult<DictInfo> insertDictInfo(@RequestParam DictVo dictVo){
+        PageResult<DictInfo> result = new PageResult<>();
+        return result;
+    }
 }

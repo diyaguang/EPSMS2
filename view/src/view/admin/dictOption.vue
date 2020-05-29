@@ -7,14 +7,15 @@
       <div style=" padding: 5px 0; margin-left: 50px">
         <el-form :inline="true" :model="dictBase" size="mini" >
           <el-form-item label="名称">
-            <el-input v-model="dictBase.name" placeholder="项目名称" style="width: 150px"></el-input>
+            <el-input v-model="dictBase.label" placeholder="项目名称" style="width: 150px"></el-input>
           </el-form-item>
           <el-form-item label="数值">
             <el-input v-model="dictBase.value" placeholder="项目数值" style="width: 150px"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon="el-icon-circle-plus-outline" >添加</el-button>
-            <el-button type="primary" icon="el-icon-delete" >删除</el-button>
+            <el-button type="primary" icon="el-icon-circle-plus-outline" @click="handleAdd">添加</el-button>
+            <el-button type="primary" icon="el-icon-edit" @click="handleUpdate">更新</el-button>
+            <el-button type="primary" icon="el-icon-delete" @click="handleDel">删除</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -22,8 +23,9 @@
         <el-tree
           ref="tree"
           :data="dictData"
-          :default-expand-all="true"
-          :props="defaultProps"
+          accordion
+          :default-expand-all="false"
+          @node-click="handleNodeClick"
           node-key="key">
         </el-tree>
       </div>
@@ -39,7 +41,11 @@
     data() {
       return {
         dictData:[],
-        dictBase:{}
+        dictBase:{
+          key:'',
+          label:'',
+          value:''
+        }
       }
     },
     created: function () {
@@ -49,6 +55,20 @@
 
     },
     methods: {
+      handleAdd(){
+
+      },
+      handleUpdate(){
+
+      },
+      handleDel(){
+        
+      },
+      handleNodeClick(data){
+        this.dictBase.key = data.key;
+        this.dictBase.label=data.label;
+        this.dictBase.value = data.value;
+      },
       initData() {
         this.loading = true;
         var _this = this;

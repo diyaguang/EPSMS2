@@ -31,7 +31,7 @@
                   v-for="item in dictDepartment"
                   :key="item.key"
                   :label="item.label"
-                  :value="item.key">
+                  :value="item.value">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -41,7 +41,7 @@
                   v-for="item in dictPosition"
                   :key="item.key"
                   :label="item.label"
-                  :value="item.key">
+                  :value="item.value">
                 </el-option>
               </el-select>
             </el-form-item>
