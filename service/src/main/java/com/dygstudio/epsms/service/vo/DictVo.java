@@ -14,6 +14,7 @@ public class DictVo {
     private String key;
     private String label;
     private String value;
+    private String parentId;
     private boolean disabled;
     private List<DictVo> children;
 
@@ -55,5 +56,13 @@ public class DictVo {
 
     public void setChildren(List<DictVo> children) {
         this.children = children;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 }

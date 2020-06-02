@@ -350,6 +350,7 @@ public class SystemController {
         DictVo dictInfoVo = new DictVo();
         dictInfoVo.setKey(dictInfo.getValue());
         dictInfoVo.setLabel(dictInfo.getName());
+        dictInfoVo.setParentId(dictInfo.getParentId());
         dictInfoVo.setDisabled(false);
         dictInfoVo.setChildren(buildDictChild(dictInfo));
         return dictInfoVo;
@@ -363,6 +364,7 @@ public class SystemController {
                 DictVo dictInfoVo = new DictVo();
                 dictInfoVo.setKey(childItem.getId());
                 dictInfoVo.setLabel(childItem.getName());
+                dictInfoVo.setParentId(childItem.getParentId());
                 dictInfoVo.setDisabled(false);
                 dictInfoVo.setValue(childItem.getValue());
                 dictInfoVo.setChildren(buildDictChild(childItem));
@@ -382,14 +384,73 @@ public class SystemController {
             dictInfoVo.setKey(info.getId());
             dictInfoVo.setLabel(info.getName());
             dictInfoVo.setValue(info.getValue());
+            dictInfoVo.setParentId(info.getParentId());
             dictInfoVo.setChildren(buildDictChild(info));
             result.add(dictInfoVo);
         }
         return result;
     }
 
-    public PageResult<DictInfo> insertDictInfo(@RequestParam DictVo dictVo){
+    public PageResult<DictInfo> insertDictInfo(@RequestBody DictVo dictVo){
         PageResult<DictInfo> result = new PageResult<>();
+        DictInfo tmpDictInfo = new DictInfo();
+        tmpDictInfo.setId(CommonUtils.GenerateId());
+        tmpDictInfo.setName(dictVo.getLabel());
+        tmpDictInfo.setValue(dictVo.getValue());
+        tmpDictInfo.setParentId(dictVo.getParentId());
+        boolean opResult = dictInfoService.saveOrUpdate(tmpDictInfo);
+        if(opResult){
+            result.setCode(SysConstant.RESULT_CODE_SUCCESSFUL);
+            result.setMsg(tmpDictInfo.getId()); //插入比较特殊，返回新对象的 ID作为成功的返回值
+            result.setData(null);
+            result.setCount(1);
+        }else{
+            result.setCode(SysConstant.RESULT_CODE_FAILURE);
+            result.setMsg(SysConstant.RESULT_MSG_FAILURE);
+            result.setData(null);
+            result.setCount(0);
+        }
+        return result;
+    }
+    public PageResult<DictInfo> updateDictInfo(@RequestBody DictVo dictVo){
+        PageResult<DictInfo> result = new PageResult<>();
+        DictInfo tmpDictInfo = dictInfoService.getById(dictVo.getKey());
+        if(tmpDictInfo!=null){
+            tmpDictInfo.setName(dictVo.getLabel());
+            boolean opResult = dictInfoService.updateById(tmpDictInfo);
+            if(opResult){
+                result.setCode(SysConstant.RESULT_CODE_SUCCESSFUL);
+                result.setMsg(SysConstant.RESULT_MSG_SUCCESSFUL);
+                result.setData(null);
+                result.setCount(1);
+            }else {
+                result.setCode(SysConstant.RESULT_CODE_FAILURE);
+                result.setMsg(SysConstant.RESULT_MSG_FAILURE);
+                result.setData(null);
+                result.setCount(0);
+            }
+        }else {
+            result.setCode(SysConstant.RESULT_CODE_FAILURE);
+            result.setMsg(SysConstant.RESULT_MSG_FAILURE);
+            result.setData(null);
+            result.setCount(0);
+        }
+        return result;
+    }
+    public PageResult<DictInfo> deleteDictInfo(@RequestParam("dictId") String dictId){
+        PageResult<DictInfo> result = new PageResult<>();
+        boolean opResult = dictInfoService.removeById(dictId);
+        if(opResult){
+            result.setCode(SysConstant.RESULT_CODE_SUCCESSFUL);
+            result.setMsg(SysConstant.RESULT_MSG_SUCCESSFUL);
+            result.setData(null);
+            result.setCount(1);
+        }else {
+            result.setCode(SysConstant.RESULT_CODE_FAILURE);
+            result.setMsg(SysConstant.RESULT_MSG_FAILURE);
+            result.setData(null);
+            result.setCount(0);
+        }
         return result;
     }
 }
