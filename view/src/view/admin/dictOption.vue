@@ -13,8 +13,8 @@
             <el-input v-model="dictBase.value" placeholder="项目数值" style="width: 150px"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon="el-icon-circle-plus-outline" @click="handleAdd">添加</el-button>
-            <el-button type="primary" icon="el-icon-edit" @click="handleUpdate">更新</el-button>
+            <el-button type="primary" icon="el-icon-circle-plus-outline" @click="handleAdd">下级新增</el-button>
+            <el-button type="primary" icon="el-icon-edit" @click="handleUpdate">更新(名称)</el-button>
             <el-button type="primary" icon="el-icon-delete" @click="handleDel">删除</el-button>
           </el-form-item>
         </el-form>
@@ -23,11 +23,19 @@
         <el-tree
           ref="tree"
           :data="dictData"
+          :default-expanded-keys="defaultExpandedKeys"
           accordion
           :default-expand-all="false"
           @node-click="handleNodeClick"
           node-key="key">
         </el-tree>
+      </div>
+      <div class="bottom clearfix">
+        <span style="font-size: 9pt; line-height: 20px">
+        说明：<br>
+        1.新增下级时，需要在 Tree控件上选择需要操作的 父级项，编辑名称和数值后，点击【下级新增】按钮。<br>
+        2.更新元素，只能操作 名称修改，其他数值不能够修改，如需调整顺序，请删除原有项后，再新增信息项。
+          </span>
       </div>
     </el-card>
   </div>
@@ -44,8 +52,10 @@
         dictBase:{
           key:'',
           label:'',
-          value:''
-        }
+          value:'',
+          parentId:''
+        },
+        defaultExpandedKeys:[]
       }
     },
     created: function () {
@@ -56,18 +66,93 @@
     },
     methods: {
       handleAdd(){
+        var _this = this;
+        var insertDataUrl = "/system/dictInfo/insert";
+        this.$ajax.post(insertDataUrl, this.dictBase)
+          .then(function (response) {
+            if (response.data.code == "200") {
+              _this.$message({
+                message: '数据新增成功!',
+                type: 'success'
+              });
+              _this.initData();
+            } else {
+              _this.$message({
+                message: '数据新增失败!' + response.data.msg,
+                type: 'error'
+              });
+            }
 
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       },
       handleUpdate(){
+        var _this = this;
+        var updateDataUrl = "/system/dictInfo/update";
+        /*this.dictBase.opUserId = Vue.prototype.CurrentUser.id;
+        this.currentRole.isDel = 0
+        this.currentRole.companyId = Vue.prototype.CurrentUser.companyId;*/
+        this.$ajax.post(updateDataUrl, this.dictBase)
+          .then(function (response) {
+            if (response.data.code == "200") {
+              _this.$message({
+                message: '数据更新成功!',
+                type: 'success'
+              });
+              _this.initData();
+            } else {
+              _this.$message({
+                message: '数据更新失败!' + response.data.msg,
+                type: 'error'
+              });
+            }
 
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       },
       handleDel(){
-        
+        var _this = this;
+        var deleteDataUrl = "/system/dictInfo/delete?dictId=" + this.dictBase.key;
+        /*this.dictBase.opUserId = Vue.prototype.CurrentUser.id;
+        this.currentRole.isDel = 0
+        this.currentRole.companyId = Vue.prototype.CurrentUser.companyId;*/
+        this.$ajax.get(deleteDataUrl)
+          .then(function (response) {
+            if (response.data.code == "200") {
+              _this.$message({
+                message: '数据删除成功!',
+                type: 'success'
+              });
+              _this.initData();
+            } else {
+              _this.$message({
+                message: '数据删除失败!' + response.data.msg,
+                type: 'error'
+              });
+            }
+
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       },
       handleNodeClick(data){
         this.dictBase.key = data.key;
         this.dictBase.label=data.label;
         this.dictBase.value = data.value;
+        this.dictBase.parentId = data.parentId;
+        this.defaultExpandedKeys = [];
+        //设置树空间默认打开状态，如果有 parent，则选择，否则选择 自身节点
+        if(data.parentId==null || data.parentId == undefined){
+          this.defaultExpandedKeys.push(data.key);
+        }else{
+          this.defaultExpandedKeys.push(data.parentId);
+        }
+
       },
       initData() {
         this.loading = true;
@@ -125,5 +210,11 @@
     height: 300px;
     overflow-x: hidden;
     overflow-y: scroll;
+  }
+  .bottom {
+    border-top: solid 1px #D3DCE6;
+    margin-top: 13px;
+    line-height: 12px;
+    padding-top: 5px;
   }
 </style>

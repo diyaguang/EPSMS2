@@ -391,13 +391,15 @@ public class SystemController {
         return result;
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/dictInfo/insert",method = RequestMethod.POST)
     public PageResult<DictInfo> insertDictInfo(@RequestBody DictVo dictVo){
         PageResult<DictInfo> result = new PageResult<>();
         DictInfo tmpDictInfo = new DictInfo();
         tmpDictInfo.setId(CommonUtils.GenerateId());
         tmpDictInfo.setName(dictVo.getLabel());
         tmpDictInfo.setValue(dictVo.getValue());
-        tmpDictInfo.setParentId(dictVo.getParentId());
+        tmpDictInfo.setParentId(dictVo.getKey());  //新增node，parent为当前选择的对象
         boolean opResult = dictInfoService.saveOrUpdate(tmpDictInfo);
         if(opResult){
             result.setCode(SysConstant.RESULT_CODE_SUCCESSFUL);
@@ -412,6 +414,9 @@ public class SystemController {
         }
         return result;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/dictInfo/update",method = RequestMethod.POST)
     public PageResult<DictInfo> updateDictInfo(@RequestBody DictVo dictVo){
         PageResult<DictInfo> result = new PageResult<>();
         DictInfo tmpDictInfo = dictInfoService.getById(dictVo.getKey());
@@ -437,6 +442,9 @@ public class SystemController {
         }
         return result;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/dictInfo/delete",method = RequestMethod.GET)
     public PageResult<DictInfo> deleteDictInfo(@RequestParam("dictId") String dictId){
         PageResult<DictInfo> result = new PageResult<>();
         boolean opResult = dictInfoService.removeById(dictId);
