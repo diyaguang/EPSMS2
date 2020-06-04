@@ -75,7 +75,6 @@
                      :total="currentTotal">
       </el-pagination>
     </el-card>
-
     <el-dialog :title="roleInfoOpTitle" :visible.sync="roleInfoFormVisible" width="500px">
       <el-form :model="currentRole">
         <el-form-item label="编号" :label-width="formLabelWidth">
@@ -120,313 +119,332 @@
 </template>
 
 <script>
-  import Vue from "vue";
+    import Vue from "vue";
 
-  export default {
-    name: "roleList.vue",
-    data() {
-      return {
-        roleInfoOpType: '',
-        roleInfoOpTitle: '',
-        roleInfoFormVisible: false,
-        roleFunctionFormVisible: false,
-        loading: true,
-        currentPage: 1,
-        currentPageSize: 10,
-        currentTotal: 0,
-        baseFunctionData: [],
-        currentRoleFunctions: [],
-        currentRole: {},
-        formLabelWidth: '50px',
-        multipleSelection: [],
-        tableHeight: 250,
-        currentOpRoleId: '',
-        roleData: [],
-        defaultProps: {
-          children: 'children',
-          label: 'label'
-        }
-      }
-    },
-    created: function () {
-      this.initData();
-    },
-    mounted: function () {
-      setTimeout(() => {
-        this.tableHeight = window.innerHeight - this.$refs.multipleTable.$el.offsetTop - 150;
-      }, 100)
-      //此处需要通过延迟方法来设置值，不然会出现值已更新，但页面没更新的问题
-      //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
-    },
-    methods: {
-      handleRoleFunctionSave() {
-        //获取选择的子节点
-        var dataNode = this.$refs.tree.getCheckedKeys(true);
-        //获取选中（半选中）的父节点
-        /*var dataHalfNode = this.$refs.tree.getHalfCheckedKeys();
-        dataNode = dataNode.concat(dataHalfNode);*/
-        console.log(dataNode);
-
-        if (dataNode.length == 0){
-          this.$confirm('已选功能为空, 是否继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.updateRoleFunctionLink(dataNode);
-          }).catch(() => {
-
-          });
-        }else {
-          this.updateRoleFunctionLink(dataNode);
-        }
-
-      },
-      updateRoleFunctionLink(data) {
-        var that = this;
-        var saveLinkUrl = "/system/role/roleFunctionLink/modify?roleId=" + that.currentOpRoleId;
-        /*     var data = {
-               funcIds: data
-             };*/
-
-        this.$ajax.post(saveLinkUrl, data)
-          .then(function (response) {
-            if (response.data.code == 200) {
-              that.$message({
-                message: '配置功能成功!',
-                type: 'success'
-              });
-              that.initData();
-              that.userRoleFormVisible = false;
-            } else {
-              that.$message({
-                message: '配置功能失败!' + response.data.msg,
-                type: 'error'
-              });
+    export default {
+        name: "roleList.vue",
+        data() {
+            return {
+                roleInfoOpType: '',
+                roleInfoOpTitle: '',
+                roleInfoFormVisible: false,
+                roleFunctionFormVisible: false,
+                loading: true,
+                currentPage: 1,
+                currentPageSize: 10,
+                currentTotal: 0,
+                baseFunctionData: [],
+                currentRoleFunctions: [],
+                currentRole: {},
+                formLabelWidth: '50px',
+                multipleSelection: [],
+                tableHeight: window.innerHeight - 220,
+                currentOpRoleId: '',
+                roleData: [],
+                defaultProps: {
+                    children: 'children',
+                    label: 'label'
+                }
             }
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-        this.roleFunctionFormVisible = false;
-      },
-      handleRoleInfoOp() {
-        if (this.roleInfoOpType == "add") {
-          this.handleInsert();
-        } else if (this.roleInfoOpType == "update") {
-          this.handleUpdate();
-        }
-      },
-      handleFunctionEdit(index, row) {
-        var _this = this;
-        //获取功能菜单基础数据
-        var getFunctionDataUrl = "/system/function/listForOp";
-        this.$ajax.get(getFunctionDataUrl)
-          .then(function (response) {
-            _this.baseFunctionData = response.data;
-
-            //获取当前用户的角色列表，循环key 为 数组，表示已选
-            _this.currentOpRoleId = row.id;
-            _this.currentRoleFunctions = [];
-            row.functions.forEach((item, index, array) => {
-              _this.currentRoleFunctions.push(item.id);
-            });
-            /*
-            说明：以后this.$refs为undefined的时候，不妨考虑下是不是真实dom还没有形成
-            可以用 this.$nextTick包裹一下试试，这也是 this.$nextTick我目前使用到的地方，
-            大致来说就是一个虚拟dom变成真实之后的一个回调，只有在回调里面才能获取到$refs，问题自然就解决了
-            */
-            _this.$nextTick(() => {
-              _this.$refs.tree.setCheckedKeys(_this.currentRoleFunctions);
-            })
-            _this.roleFunctionFormVisible = true;
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      },
-      handleSizeChange(val) {
-        this.currentPageSize = val;
-        this.initData();
-      },
-      handleCurrentChange(val) {
-        this.currentPage = val;
-        this.initData();
-      },
-      initData() {
-        this.loading = true;
-        var _this = this;
-        var getMainDataUrl = "/system/role/listShow?page=" + this.currentPage + "&pageSize=" + this.currentPageSize;
-        this.$ajax.get(getMainDataUrl)
-          .then(function (response) {
-            _this.roleData = response.data.data;
-            _this.currentTotal = response.data.count;
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-        this.loading = false;
-      },
-      handleRoleInfoOp() {
-        if (this.roleInfoOpType == "add") {
-          this.handleInsert();
-        } else if (this.roleInfoOpType == "update") {
-          this.handleUpdate();
-        }
-      },
-      handleAdd() {
-        this.roleInfoFormVisible = true;
-        this.currentRole = {};
-        this.roleInfoOpType = "add";
-        this.roleInfoOpTitle = "添加角色";
-      },
-      handleEdit(index, row) {
-        this.roleInfoFormVisible = true;
-        //this.currentUser = row;
-        //this.currentUser = Object.assign({}, row);  //对象进行浅复制(只复制属性和值) 这个处理对于嵌套的对象是不起作用的
-        this.currentRole = JSON.parse(JSON.stringify(row));  //对象进行浅复制(只复制属性和值)
-        this.roleInfoOpType = "update";
-        this.roleInfoOpTitle = "编辑角色信息";
-      },
-      handleDelete(index, row) {
-        this.$confirm('删除该记录, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          var that = this;
-          var deleteDataUrl = "/system/role/delete?roleId=" + row.id;
-          this.$ajax.get(deleteDataUrl)
-            .then(function (response) {
-              if (response.data.code == "200") {
-                that.$message({
-                  message: '数据删除成功!',
-                  type: 'success'
-                });
-                that.initData();
-              } else {
-                that.$message({
-                  message: '数据删除失败!' + response.data.msg,
-                  type: 'error'
-                });
-              }
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
-        });
-      },
-      handleSelectionChange(val) {
-        this.multipleSelection = val;
-      },
-      handleBatchDelete() {
-        let size = this.multipleSelection.length;
-        if (size > 0) {
-          this.$confirm('将删除选中的 ' + size + ' 条记录, 是否继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            //循环删除
-            this.multipleSelection.forEach((item, index, array) => {
-              var that = this;
-              var deleteDataUrl = "/system/role/delete?roleId=" + item.id;
-              this.$ajax.get(deleteDataUrl)
-                .then(function (response) {
-                  if (response.data.code == 1) {
-                  } else {
-
-                  }
-                })
-                .catch(function (error) {
-                  console.log(error);
-                });
-            });
-
-            //删除完成，清空选中的记录，刷新数据
-
-            this.$message({
-              message: '数据删除成功!',
-              type: 'success'
-            });
+        },
+        created: function () {
             this.initData();
-            this.multipleSelection = [];
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除'
-            });
-          });
-        } else {
-          this.$message({
-            type: 'info',
-            message: '请先选择要删除的记录'
-          });
+        },
+        mounted: function () {
+            /*setTimeout(() => {
+              this.tableHeight = window.innerHeight - this.$refs.multipleTable.$el.offsetTop - 150;
+            }, 100)*/
+            //此处需要通过延迟方法来设置值，不然会出现值已更新，但页面没更新的问题
+            //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
+            const that = this
+            window.onresize = () => {
+                return (() => {
+                    window.tableHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+                    that.tableHeight = window.tableHeight - that.$refs.multipleTable.$el.offsetTop - 150;
+                })()
+            }
+        },
+        methods: {
+            handleRoleFunctionSave() {
+                //获取选择的子节点
+                var dataNode = this.$refs.tree.getCheckedKeys(true);
+                //获取选中（半选中）的父节点
+                /*var dataHalfNode = this.$refs.tree.getHalfCheckedKeys();
+                dataNode = dataNode.concat(dataHalfNode);*/
+                console.log(dataNode);
+
+                if (dataNode.length == 0) {
+                    this.$confirm('已选功能为空, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.updateRoleFunctionLink(dataNode);
+                    }).catch(() => {
+
+                    });
+                } else {
+                    this.updateRoleFunctionLink(dataNode);
+                }
+
+            },
+            updateRoleFunctionLink(data) {
+                var that = this;
+                var saveLinkUrl = "/system/role/roleFunctionLink/modify?roleId=" + that.currentOpRoleId;
+                /*     var data = {
+                       funcIds: data
+                     };*/
+
+                this.$ajax.post(saveLinkUrl, data)
+                    .then(function (response) {
+                        if (response.data.code == 200) {
+                            that.$message({
+                                message: '配置功能成功!',
+                                type: 'success'
+                            });
+                            that.initData();
+                            that.userRoleFormVisible = false;
+                        } else {
+                            that.$message({
+                                message: '配置功能失败!' + response.data.msg,
+                                type: 'error'
+                            });
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                this.roleFunctionFormVisible = false;
+            },
+            handleRoleInfoOp() {
+                if (this.roleInfoOpType == "add") {
+                    this.handleInsert();
+                } else if (this.roleInfoOpType == "update") {
+                    this.handleUpdate();
+                }
+            },
+            handleFunctionEdit(index, row) {
+                var _this = this;
+                //获取功能菜单基础数据
+                var getFunctionDataUrl = "/system/function/listForOp";
+                this.$ajax.get(getFunctionDataUrl)
+                    .then(function (response) {
+                        _this.baseFunctionData = response.data;
+
+                        //获取当前用户的角色列表，循环key 为 数组，表示已选
+                        _this.currentOpRoleId = row.id;
+                        _this.currentRoleFunctions = [];
+                        row.functions.forEach((item, index, array) => {
+                            _this.currentRoleFunctions.push(item.id);
+                        });
+                        /*
+                        说明：以后this.$refs为undefined的时候，不妨考虑下是不是真实dom还没有形成
+                        可以用 this.$nextTick包裹一下试试，这也是 this.$nextTick我目前使用到的地方，
+                        大致来说就是一个虚拟dom变成真实之后的一个回调，只有在回调里面才能获取到$refs，问题自然就解决了
+                        */
+                        _this.$nextTick(() => {
+                            _this.$refs.tree.setCheckedKeys(_this.currentRoleFunctions);
+                        })
+                        _this.roleFunctionFormVisible = true;
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            handleSizeChange(val) {
+                this.currentPageSize = val;
+                this.initData();
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.initData();
+            },
+            initData() {
+                this.loading = true;
+                var _this = this;
+                var getMainDataUrl = "/system/role/listShow?page=" + this.currentPage + "&pageSize=" + this.currentPageSize;
+                this.$ajax.get(getMainDataUrl)
+                    .then(function (response) {
+                        _this.roleData = response.data.data;
+                        _this.currentTotal = response.data.count;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                this.loading = false;
+            },
+            handleRoleInfoOp() {
+                if (this.roleInfoOpType == "add") {
+                    this.handleInsert();
+                } else if (this.roleInfoOpType == "update") {
+                    this.handleUpdate();
+                }
+            },
+            handleAdd() {
+                this.roleInfoFormVisible = true;
+                this.currentRole = {};
+                this.roleInfoOpType = "add";
+                this.roleInfoOpTitle = "添加角色";
+            },
+            handleEdit(index, row) {
+                this.roleInfoFormVisible = true;
+                //this.currentUser = row;
+                //this.currentUser = Object.assign({}, row);  //对象进行浅复制(只复制属性和值) 这个处理对于嵌套的对象是不起作用的
+                this.currentRole = JSON.parse(JSON.stringify(row));  //对象进行浅复制(只复制属性和值)
+                this.roleInfoOpType = "update";
+                this.roleInfoOpTitle = "编辑角色信息";
+            },
+            handleDelete(index, row) {
+                this.$confirm('删除该记录, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    var that = this;
+                    var deleteDataUrl = "/system/role/delete?roleId=" + row.id;
+                    this.$ajax.get(deleteDataUrl)
+                        .then(function (response) {
+                            if (response.data.code == "200") {
+                                that.$message({
+                                    message: '数据删除成功!',
+                                    type: 'success'
+                                });
+                                that.initData();
+                            } else {
+                                that.$message({
+                                    message: '数据删除失败!' + response.data.msg,
+                                    type: 'error'
+                                });
+                            }
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+            },
+            handleBatchDelete() {
+                let size = this.multipleSelection.length;
+                if (size > 0) {
+                    this.$confirm('将删除选中的 ' + size + ' 条记录, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        //循环删除
+                        this.multipleSelection.forEach((item, index, array) => {
+                            var that = this;
+                            var deleteDataUrl = "/system/role/delete?roleId=" + item.id;
+                            this.$ajax.get(deleteDataUrl)
+                                .then(function (response) {
+                                    if (response.data.code == 1) {
+                                    } else {
+
+                                    }
+                                })
+                                .catch(function (error) {
+                                    console.log(error);
+                                });
+                        });
+
+                        //删除完成，清空选中的记录，刷新数据
+
+                        this.$message({
+                            message: '数据删除成功!',
+                            type: 'success'
+                        });
+                        this.initData();
+                        this.multipleSelection = [];
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                } else {
+                    this.$message({
+                        type: 'info',
+                        message: '请先选择要删除的记录'
+                    });
+                }
+            },
+            handleUpdate() {
+                var _this = this;
+                var updateDataUrl = "/system/role/update";
+                //添加更新信息
+                this.currentRole.opUserId = Vue.prototype.CurrentUser.id;
+                this.currentRole.companyId = Vue.prototype.CurrentUser.companyId;
+                this.$ajax.post(updateDataUrl, this.currentRole)
+                    .then(function (response) {
+                        console.log(response.data);
+                        if (response.data.code == "200") {
+                            _this.$message({
+                                message: '数据更新成功!',
+                                type: 'success'
+                            });
+                            _this.roleInfoFormVisible = false;
+                            _this.initData();
+                        } else {
+                            _this.$message({
+                                message: '数据更新失败!' + response.data.msg,
+                                type: 'error'
+                            });
+                        }
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            handleInsert() {
+                var _this = this;
+                var insertDataUrl = "/system/role/insert";
+                this.currentRole.opUserId = Vue.prototype.CurrentUser.id;
+                this.currentRole.isDel = 0
+                this.currentRole.companyId = Vue.prototype.CurrentUser.companyId;
+                this.$ajax.post(insertDataUrl, this.currentRole)
+                    .then(function (response) {
+                        if (response.data.code == "200") {
+                            _this.$message({
+                                message: '数据新增成功!',
+                                type: 'success'
+                            });
+                            _this.roleInfoFormVisible = false;
+                            _this.initData();
+                        } else {
+                            _this.$message({
+                                message: '数据新增失败!' + response.data.msg,
+                                type: 'error'
+                            });
+                        }
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        },
+        watch: {
+            tableHeight(val){
+                if(!this.timer){
+                    this.tableHeight = val;
+                    this.timer = true;
+                    const that = this;
+                    setTimeout(function () {
+                        that.timer = false;
+                    },400)
+                }
+            }
         }
-      },
-      handleUpdate() {
-        var _this = this;
-        var updateDataUrl = "/system/role/update";
-        //添加更新信息
-        this.currentRole.opUserId = Vue.prototype.CurrentUser.id;
-        this.currentRole.companyId = Vue.prototype.CurrentUser.companyId;
-        this.$ajax.post(updateDataUrl, this.currentRole)
-          .then(function (response) {
-            console.log(response.data);
-            if (response.data.code == "200") {
-              _this.$message({
-                message: '数据更新成功!',
-                type: 'success'
-              });
-              _this.roleInfoFormVisible = false;
-              _this.initData();
-            } else {
-              _this.$message({
-                message: '数据更新失败!' + response.data.msg,
-                type: 'error'
-              });
-            }
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      },
-      handleInsert() {
-        var _this = this;
-        var insertDataUrl = "/system/role/insert";
-        this.currentRole.opUserId = Vue.prototype.CurrentUser.id;
-        this.currentRole.isDel = 0
-        this.currentRole.companyId = Vue.prototype.CurrentUser.companyId;
-        this.$ajax.post(insertDataUrl, this.currentRole)
-          .then(function (response) {
-            if (response.data.code == "200") {
-              _this.$message({
-                message: '数据新增成功!',
-                type: 'success'
-              });
-              _this.roleInfoFormVisible = false;
-              _this.initData();
-            } else {
-              _this.$message({
-                message: '数据新增失败!' + response.data.msg,
-                type: 'error'
-              });
-            }
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
     }
-  }
 </script>
 
 <style scoped>

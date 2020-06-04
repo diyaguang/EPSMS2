@@ -74,8 +74,7 @@
         </el-table-column>
         <el-table-column
           prop="description"
-          label="描述"
-          width="120">
+          label="描述">
         </el-table-column>
         <el-table-column label="操作" width="180" fixed="right">
           <template slot-scope="scope">
@@ -101,7 +100,6 @@
                      :total="currentTotal">
       </el-pagination>
     </el-card>
-
     <el-dialog :title="functionInfoOpTitle" :visible.sync="functionInfoFormVisible" width="800px">
       <el-form :model="currentFunction">
         <el-row>
@@ -195,229 +193,243 @@
 </template>
 
 <script>
-  import Vue from "vue";
+    import Vue from "vue";
 
-  export default {
-    name: "functionList.vue",
-    data() {
-      return {
-        functionInfoOpType: '',
-        functionInfoOpTitle: '',
-        functionInfoFormVisible: false,
-        functionData: [],
-        baseFunctionData:[],
-        loading: true,
-        currentPage: 1,
-        currentPageSize: 10,
-        currentTotal: 0,
-        formLabelWidth: '70px',
-        multipleSelection: [],
-        currentOpFunctionId: '',
-        currentFunction: {},
-        tableHeight: 250
-      }
-    },
-    created: function () {
-      this.initData();
-    },
-    mounted: function () {
-      setTimeout(() => {
-        this.tableHeight = window.innerHeight - this.$refs.multipleTable.$el.offsetTop - 150;
-      }, 100)
-      //此处需要通过延迟方法来设置值，不然会出现值已更新，但页面没更新的问题
-      //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
-    },
-    methods: {
-      handleSizeChange(val) {
-        this.currentPageSize = val;
-        this.initData();
-      },
-      handleCurrentChange(val) {
-        this.currentPage = val;
-        this.initData();
-      },
-      handleSelectionChange(val) {
-        this.multipleSelection = val;
-      },
-      initData() {
-        this.loading = true;
-        var _this = this;
-        var getMainDataUrl = "/system/function/listShow?page=" + this.currentPage + "&pageSize=" + this.currentPageSize;
-        this.$ajax.get(getMainDataUrl)
-          .then(function (response) {
-            _this.functionData = response.data.data;
-            _this.currentTotal = response.data.count;
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-        this.loading = false;
-        //baseFunctionData 并操作数据是
-        var getFunctionDataUrl = "/system/function/listForList";
-        this.$ajax.get(getFunctionDataUrl)
-          .then(function (response) {
-            _this.baseFunctionData = response.data;
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      },
-      handleFunctionInfoOp() {
-        if (this.functionInfoOpType == "add") {
-          this.handleInsert();
-        } else if (this.functionInfoOpType == "update") {
-          this.handleUpdate();
-        }
-      },
-      handleAdd() {
-        this.functionInfoFormVisible = true;
-        this.currentFunction = {};
-        this.functionInfoOpType = "add";
-        this.functionInfoOpTitle = "添加功能";
-      },
-      handleEdit(index, row) {
-        this.functionInfoFormVisible = true;
-        //this.currentUser = row;
-        //this.currentUser = Object.assign({}, row);  //对象进行浅复制(只复制属性和值) 这个处理对于嵌套的对象是不起作用的
-        this.currentFunction = JSON.parse(JSON.stringify(row));  //对象进行浅复制(只复制属性和值)
-        this.functionInfoOpType = "update";
-        this.functionInfoOpTitle = "编辑功能信息";
-      },
-      handleDelete(index, row) {
-        this.$confirm('删除该记录, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          var that = this;
-          var deleteDataUrl = "/system/function/delete?functionId=" + row.id;
-          this.$ajax.get(deleteDataUrl)
-            .then(function (response) {
-              if (response.data.code == "200") {
-                that.$message({
-                  message: '数据删除成功!',
-                  type: 'success'
-                });
-                that.initData();
-              } else {
-                that.$message({
-                  message: '数据删除失败!' + response.data.msg,
-                  type: 'error'
-                });
-              }
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
-        });
-      },
-      handleBatchDelete() {
-        let size = this.multipleSelection.length;
-        if (size > 0) {
-          this.$confirm('将删除选中的 ' + size + ' 条记录, 是否继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            //循环删除
-            this.multipleSelection.forEach((item, index, array) => {
-              var that = this;
-              var deleteDataUrl = "/system/function/delete?functionId=" + item.id;
-              this.$ajax.get(deleteDataUrl)
-                .then(function (response) {
-                  if (response.data.code == 1) {
-                  } else {
-
-                  }
-                })
-                .catch(function (error) {
-                  console.log(error);
-                });
-            });
-
-            //删除完成，清空选中的记录，刷新数据
-
-            this.$message({
-              message: '数据删除成功!',
-              type: 'success'
-            });
+    export default {
+        name: "functionList.vue",
+        data() {
+            return {
+                functionInfoOpType: '',
+                functionInfoOpTitle: '',
+                functionInfoFormVisible: false,
+                functionData: [],
+                baseFunctionData: [],
+                loading: true,
+                currentPage: 1,
+                currentPageSize: 10,
+                currentTotal: 0,
+                formLabelWidth: '70px',
+                multipleSelection: [],
+                currentOpFunctionId: '',
+                currentFunction: {},
+                tableHeight: window.innerHeight - 220
+            }
+        },
+        created: function () {
             this.initData();
-            this.multipleSelection = [];
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除'
-            });
-          });
-        } else {
-          this.$message({
-            type: 'info',
-            message: '请先选择要删除的记录'
-          });
+        },
+        mounted: function () {
+            const that = this
+            window.onresize = () => {
+                return (() => {
+                    window.tableHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+                    that.tableHeight = window.tableHeight - that.$refs.multipleTable.$el.offsetTop - 150;
+                })()
+            }
+        },
+        methods: {
+            handleSizeChange(val) {
+                this.currentPageSize = val;
+                this.initData();
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.initData();
+            },
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+            },
+            initData() {
+                this.loading = true;
+                var _this = this;
+                var getMainDataUrl = "/system/function/listShow?page=" + this.currentPage + "&pageSize=" + this.currentPageSize;
+                this.$ajax.get(getMainDataUrl)
+                    .then(function (response) {
+                        _this.functionData = response.data.data;
+                        _this.currentTotal = response.data.count;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                this.loading = false;
+                //baseFunctionData 并操作数据是
+                var getFunctionDataUrl = "/system/function/listForList";
+                this.$ajax.get(getFunctionDataUrl)
+                    .then(function (response) {
+                        _this.baseFunctionData = response.data;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            handleFunctionInfoOp() {
+                if (this.functionInfoOpType == "add") {
+                    this.handleInsert();
+                } else if (this.functionInfoOpType == "update") {
+                    this.handleUpdate();
+                }
+            },
+            handleAdd() {
+                this.functionInfoFormVisible = true;
+                this.currentFunction = {};
+                this.functionInfoOpType = "add";
+                this.functionInfoOpTitle = "添加功能";
+            },
+            handleEdit(index, row) {
+                this.functionInfoFormVisible = true;
+                //this.currentUser = row;
+                //this.currentUser = Object.assign({}, row);  //对象进行浅复制(只复制属性和值) 这个处理对于嵌套的对象是不起作用的
+                this.currentFunction = JSON.parse(JSON.stringify(row));  //对象进行浅复制(只复制属性和值)
+                this.functionInfoOpType = "update";
+                this.functionInfoOpTitle = "编辑功能信息";
+            },
+            handleDelete(index, row) {
+                this.$confirm('删除该记录, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    var that = this;
+                    var deleteDataUrl = "/system/function/delete?functionId=" + row.id;
+                    this.$ajax.get(deleteDataUrl)
+                        .then(function (response) {
+                            if (response.data.code == "200") {
+                                that.$message({
+                                    message: '数据删除成功!',
+                                    type: 'success'
+                                });
+                                that.initData();
+                            } else {
+                                that.$message({
+                                    message: '数据删除失败!' + response.data.msg,
+                                    type: 'error'
+                                });
+                            }
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            handleBatchDelete() {
+                let size = this.multipleSelection.length;
+                if (size > 0) {
+                    this.$confirm('将删除选中的 ' + size + ' 条记录, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        //循环删除
+                        this.multipleSelection.forEach((item, index, array) => {
+                            var that = this;
+                            var deleteDataUrl = "/system/function/delete?functionId=" + item.id;
+                            this.$ajax.get(deleteDataUrl)
+                                .then(function (response) {
+                                    if (response.data.code == 1) {
+                                    } else {
+
+                                    }
+                                })
+                                .catch(function (error) {
+                                    console.log(error);
+                                });
+                        });
+
+                        //删除完成，清空选中的记录，刷新数据
+
+                        this.$message({
+                            message: '数据删除成功!',
+                            type: 'success'
+                        });
+                        this.initData();
+                        this.multipleSelection = [];
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                } else {
+                    this.$message({
+                        type: 'info',
+                        message: '请先选择要删除的记录'
+                    });
+                }
+            },
+            handleUpdate() {
+                var _this = this;
+                var updateDataUrl = "/system/function/update";
+                //添加更新信息
+                this.currentFunction.opUserId = Vue.prototype.CurrentUser.id;
+                this.currentFunction.companyId = Vue.prototype.CurrentUser.companyId;
+                this.$ajax.post(updateDataUrl, this.currentFunction)
+                    .then(function (response) {
+                        console.log(response.data);
+                        if (response.data.code == "200") {
+                            _this.$message({
+                                message: '数据更新成功!',
+                                type: 'success'
+                            });
+                            _this.functionInfoFormVisible = false;
+                            _this.initData();
+                        } else {
+                            _this.$message({
+                                message: '数据更新失败!' + response.data.msg,
+                                type: 'error'
+                            });
+                        }
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            handleInsert() {
+                var _this = this;
+                var insertDataUrl = "/system/function/insert";
+                this.currentFunction.opUserId = Vue.prototype.CurrentUser.id;
+                this.currentFunction.isDel = 0;
+                this.currentFunction.companyId = Vue.prototype.CurrentUser.companyId;
+                this.$ajax.post(insertDataUrl, this.currentFunction)
+                    .then(function (response) {
+                        if (response.data.code == "200") {
+                            _this.$message({
+                                message: '数据新增成功!',
+                                type: 'success'
+                            });
+                            _this.functionInfoFormVisible = false;
+                            _this.initData();
+                        } else {
+                            _this.$message({
+                                message: '数据新增失败!' + response.data.msg,
+                                type: 'error'
+                            });
+                        }
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        },
+        watch: {
+            tableHeight(val){
+                if(!this.timer){
+                    this.tableHeight = val;
+                    this.timer = true;
+                    const that = this;
+                    setTimeout(function () {
+                        that.timer = false;
+                    },400)
+                }
+            }
         }
-      },
-      handleUpdate() {
-        var _this = this;
-        var updateDataUrl = "/system/function/update";
-        //添加更新信息
-        this.currentFunction.opUserId = Vue.prototype.CurrentUser.id;
-        this.currentFunction.companyId = Vue.prototype.CurrentUser.companyId;
-        this.$ajax.post(updateDataUrl, this.currentFunction)
-          .then(function (response) {
-            console.log(response.data);
-            if (response.data.code == "200") {
-              _this.$message({
-                message: '数据更新成功!',
-                type: 'success'
-              });
-              _this.functionInfoFormVisible = false;
-              _this.initData();
-            } else {
-              _this.$message({
-                message: '数据更新失败!' + response.data.msg,
-                type: 'error'
-              });
-            }
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      },
-      handleInsert() {
-        var _this = this;
-        var insertDataUrl = "/system/function/insert";
-        this.currentFunction.opUserId = Vue.prototype.CurrentUser.id;
-        this.currentFunction.isDel = 0;
-        this.currentFunction.companyId = Vue.prototype.CurrentUser.companyId;
-        this.$ajax.post(insertDataUrl, this.currentFunction)
-          .then(function (response) {
-            if (response.data.code == "200") {
-              _this.$message({
-                message: '数据新增成功!',
-                type: 'success'
-              });
-              _this.functionInfoFormVisible = false;
-              _this.initData();
-            } else {
-              _this.$message({
-                message: '数据新增失败!' + response.data.msg,
-                type: 'error'
-              });
-            }
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
     }
-  }
 
 </script>
 

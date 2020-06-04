@@ -73,14 +73,28 @@
           width="120">
         </el-table-column>
         <el-table-column
-          prop="password"
-          label="密码"
+          prop="userName"
+          label="姓名"
+          width="120">
+        </el-table-column>
+        <el-table-column
+          prop="phone"
+          label="电话"
+          width="120">
+        </el-table-column>
+        <el-table-column
+          prop="departmentVo.name"
+          label="部门"
+          width="120">
+        </el-table-column>
+        <el-table-column
+          prop="positionVo.name"
+          label="职位"
           width="120">
         </el-table-column>
         <el-table-column
           prop="description"
-          label="描述"
-          width="120">
+          label="描述">
         </el-table-column>
         <el-table-column
           prop="sort"
@@ -100,7 +114,7 @@
             </el-button>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="180" fixed="right">
           <template slot-scope="scope">
             <el-button
               size="mini" type="text"
@@ -258,340 +272,350 @@
 </template>
 
 <script>
-  import Vue from 'vue';
+    import Vue from 'vue';
 
-  export default {
-    name: "userList.vue",
-    data() {
-      return {
-        userInfoOpType: '',
-        userInfoOpTitle: '',
-        userInfoFormVisible: false,
-        userRoleFormVisible: false,
-        loading: true,
-        currentPage: 1,
-        currentPageSize: 10,
-        currentTotal: 0,
-        userData: [],
-        currentUser: {},
-        baseRoles: [],
-        currentUserRoles: [],
-        currentOpUserId: '',
-        formLabelWidth: '100px',
-        multipleSelection: [],
-        tableHeight:250,
-
-        dictDepartment: [],
-        dictPosition: [],
-        queryUserInfo: {},
-        showSearch: false,
-        searchTitle:'条件查询'
-      }
-    },
-    created: function () {
-      this.initData();
-    },
-    mounted: function () {
-
-      setTimeout(() => {
-        this.tableHeight = window.innerHeight - this.$refs.multipleTable.$el.offsetTop - 150;
-      }, 100)
-      //此处需要通过延迟方法来设置值，不然会出现值已更新，但页面没更新的问题
-      //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
-
-
-    },
-    methods: {
-      handleShowQueryItem() {
-        //this.showSearch = !this.showSearch;
-        console.log(this.tableHeight);
-        if(this.showSearch){
-          this.showSearch = false;
-          this.searchTitle = "条件查询"
-          this.tableHeight = this.tableHeight+48;
-        }else{
-          this.showSearch = true;
-          this.searchTitle = "关闭查询"
-          this.tableHeight = this.tableHeight-48;
-        }
-        console.log(this.tableHeight);
-        //this.reSizeTableHeight();
-      },
-      handleQueryData() {
-        this.initData();
-      },
-      handleSizeChange(val) {
-        this.currentPageSize = val;
-        this.initData();
-      },
-      handleCurrentChange(val) {
-        this.currentPage = val;
-        this.initData();
-      },
-      initData() {
-        this.loading = true;
-        var _this = this;
-        console.log(this.queryUserInfo);
-        var getMainDataUrl = "/user/listShow?page=" + this.currentPage + "&pageSize=" + this.currentPageSize;
-        this.$ajax.post(getMainDataUrl, this.queryUserInfo)
-          .then(function (response) {
-            _this.userData = response.data.data;
-            _this.currentTotal = response.data.count;
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-
-        //获取下拉列表数据(部门)
-        var getDictDeprmentDataUrl = "/system/dict/objectAndChildForValue?value=200";
-        this.$ajax.get(getDictDeprmentDataUrl)
-          .then(function (response) {
-            _this.dictDepartment = response.data.children;
-            //获取下拉列表数据（职位）
-            var getDictPositionDataUrl = "/system/dict/objectAndChildForValue?value=300";
-            _this.$ajax.get(getDictPositionDataUrl)
-              .then(function (response) {
-                _this.dictPosition = response.data.children;
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-
-        this.loading = false;
-      },
-      handleUserInfoOp() {
-        if (this.userInfoOpType == "add") {
-          this.handleInsert();
-        } else if (this.userInfoOpType == "update") {
-          this.handleUpdate();
-        }
-      },
-      handleRoleUpdate(row) {
-        if (this.currentUserRoles.length == 0) {
-          this.$confirm('已选角色为空, 是否继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.updateRole();
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消保存'
-            });
-          });
-        } else {
-          this.updateRole();
-        }
-      },
-      updateRole() {
-        var that = this;
-        var saveRoleUrl = "/user/userRoleLink/modify?userId=" + that.currentOpUserId;
-        var data = {
-          roleIds: that.currentUserRoles
-        };
-        this.$ajax.post(saveRoleUrl, that.currentUserRoles)
-          .then(function (response) {
-            if (response.data.code == 200) {
-              that.$message({
-                message: '角色保存成功!',
-                type: 'success'
-              });
-              that.initData();
-              that.userRoleFormVisible = false;
-            } else {
-              that.$message({
-                message: '角色保存失败!' + response.data.msg,
-                type: 'error'
-              });
+    export default {
+        name: "userList.vue",
+        data() {
+            return {
+                userInfoOpType: '',
+                userInfoOpTitle: '',
+                userInfoFormVisible: false,
+                userRoleFormVisible: false,
+                loading: true,
+                currentPage: 1,
+                currentPageSize: 10,
+                currentTotal: 0,
+                userData: [],
+                currentUser: {},
+                baseRoles: [],
+                currentUserRoles: [],
+                currentOpUserId: '',
+                formLabelWidth: '100px',
+                multipleSelection: [],
+                tableHeight: window.innerHeight - 220,
+                dictDepartment: [],
+                dictPosition: [],
+                queryUserInfo: {},
+                showSearch: false,
+                searchTitle: '条件查询'
             }
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      },
-      handleRoleEdit(index, row) {
-        //获取角色数据
-        var _this = this;
-        var getRoleDataUrl = "/system/role/listForOp";
-        this.$ajax.get(getRoleDataUrl)
-          .then(function (response) {
-            _this.baseRoles = response.data;
-            //获取完成后，更新状态
-            _this.userRoleFormVisible = true;
-            //获取当前用户的角色列表，循环key 为 数组，表示已选
-            _this.currentOpUserId = row.id;
-            _this.currentUserRoles = [];
-            row.roles.forEach((item, index, array) => {
-              _this.currentUserRoles.push(item.id);
-            });
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      },
-      handleAdd() {
-        this.userInfoFormVisible = true;
-        this.currentUser = {};
-        this.userInfoOpType = "add";
-        this.userInfoOpTitle = "添加用户";
-      },
-      handleEdit(index, row) {
-
-        //this.currentUser = row;
-        //this.currentUser = Object.assign({}, row);  //对象进行浅复制(只复制属性和值) 这个处理对于嵌套的对象是不起作用的
-        //this.currentUser = JSON.parse(JSON.stringify(row));  //对象进行浅复制(只复制属性和值)
-        //从数组中根据条件查找对象
-        this.currentUser = this.userData.find(function (x) {
-          return x.id = row.id;
-        });
-        //准备好数据后执行显示
-        this.userInfoFormVisible = true;
-        this.userInfoOpType = "update";
-        this.userInfoOpTitle = "编辑用户信息";
-      },
-      handleDelete(index, row) {
-        this.$confirm('删除该记录, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          var that = this;
-          var deleteDataUrl = "/user/delete?userId=" + row.id;
-          this.$ajax.get(deleteDataUrl)
-            .then(function (response) {
-              if (response.data.code == 200) {
-                that.$message({
-                  message: '数据删除成功!',
-                  type: 'success'
-                });
-                that.initData();
-              } else {
-                that.$message({
-                  message: '数据删除失败!' + response.data.msg,
-                  type: 'error'
-                });
-              }
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
-        });
-      },
-      handleSelectionChange(val) {
-        this.multipleSelection = val;
-      },
-      handleBatchDelete() {
-        let size = this.multipleSelection.length;
-        if (size > 0) {
-          this.$confirm('将删除选中的 ' + size + ' 条记录, 是否继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            //循环删除
-            this.multipleSelection.forEach((item, index, array) => {
-              var that = this;
-              var deleteDataUrl = "/user/delete?userId=" + item.id;
-              this.$ajax.get(deleteDataUrl)
-                .then(function (response) {
-                  if (response.data.code == 1) {
-                  } else {
-
-                  }
-                })
-                .catch(function (error) {
-                  console.log(error);
-                });
-            });
-
-            //删除完成，清空选中的记录，刷新数据
-            this.$message({
-              message: '数据删除成功!',
-              type: 'success'
-            });
-
+        },
+        created: function () {
             this.initData();
-            this.multipleSelection = [];
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除'
-            });
-          });
-        } else {
-          this.$message({
-            type: 'info',
-            message: '请先选择要删除的记录'
-          });
+        },
+        mounted: function () {
+            const that = this
+            window.onresize = () => {
+                return (() => {
+                    window.tableHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+                    that.tableHeight = window.tableHeight - that.$refs.multipleTable.$el.offsetTop - 150;
+                })()
+            }
+        },
+        methods: {
+            handleShowQueryItem() {
+                //this.showSearch = !this.showSearch;
+                console.log(this.tableHeight);
+                if (this.showSearch) {
+                    this.showSearch = false;
+                    this.searchTitle = "条件查询"
+                    this.tableHeight = this.tableHeight + 48;
+                } else {
+                    this.showSearch = true;
+                    this.searchTitle = "关闭查询"
+                    this.tableHeight = this.tableHeight - 48;
+                }
+                console.log(this.tableHeight);
+                //this.reSizeTableHeight();
+            },
+            handleQueryData() {
+                this.initData();
+            },
+            handleSizeChange(val) {
+                this.currentPageSize = val;
+                this.initData();
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.initData();
+            },
+            initData() {
+                this.loading = true;
+                var _this = this;
+                console.log(this.queryUserInfo);
+                var getMainDataUrl = "/user/listShow?page=" + this.currentPage + "&pageSize=" + this.currentPageSize;
+                this.$ajax.post(getMainDataUrl, this.queryUserInfo)
+                    .then(function (response) {
+                        _this.userData = response.data.data;
+                        _this.currentTotal = response.data.count;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+                //获取下拉列表数据(部门)
+                var getDictDeprmentDataUrl = "/system/dict/objectAndChildForValue?value=200";
+                this.$ajax.get(getDictDeprmentDataUrl)
+                    .then(function (response) {
+                        _this.dictDepartment = response.data.children;
+                        //获取下拉列表数据（职位）
+                        var getDictPositionDataUrl = "/system/dict/objectAndChildForValue?value=300";
+                        _this.$ajax.get(getDictPositionDataUrl)
+                            .then(function (response) {
+                                _this.dictPosition = response.data.children;
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+                this.loading = false;
+            },
+            handleUserInfoOp() {
+                if (this.userInfoOpType == "add") {
+                    this.handleInsert();
+                } else if (this.userInfoOpType == "update") {
+                    this.handleUpdate();
+                }
+            },
+            handleRoleUpdate(row) {
+                if (this.currentUserRoles.length == 0) {
+                    this.$confirm('已选角色为空, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.updateRole();
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消保存'
+                        });
+                    });
+                } else {
+                    this.updateRole();
+                }
+            },
+            updateRole() {
+                var that = this;
+                var saveRoleUrl = "/user/userRoleLink/modify?userId=" + that.currentOpUserId;
+                var data = {
+                    roleIds: that.currentUserRoles
+                };
+                this.$ajax.post(saveRoleUrl, that.currentUserRoles)
+                    .then(function (response) {
+                        if (response.data.code == 200) {
+                            that.$message({
+                                message: '角色保存成功!',
+                                type: 'success'
+                            });
+                            that.initData();
+                            that.userRoleFormVisible = false;
+                        } else {
+                            that.$message({
+                                message: '角色保存失败!' + response.data.msg,
+                                type: 'error'
+                            });
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            handleRoleEdit(index, row) {
+                //获取角色数据
+                var _this = this;
+                var getRoleDataUrl = "/system/role/listForOp";
+                this.$ajax.get(getRoleDataUrl)
+                    .then(function (response) {
+                        _this.baseRoles = response.data;
+                        //获取完成后，更新状态
+                        _this.userRoleFormVisible = true;
+                        //获取当前用户的角色列表，循环key 为 数组，表示已选
+                        _this.currentOpUserId = row.id;
+                        _this.currentUserRoles = [];
+                        row.roles.forEach((item, index, array) => {
+                            _this.currentUserRoles.push(item.id);
+                        });
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            handleAdd() {
+                this.userInfoFormVisible = true;
+                this.currentUser = {};
+                this.userInfoOpType = "add";
+                this.userInfoOpTitle = "添加用户";
+            },
+            handleEdit(index, row) {
+
+                //this.currentUser = row;
+                //this.currentUser = Object.assign({}, row);  //对象进行浅复制(只复制属性和值) 这个处理对于嵌套的对象是不起作用的
+                //this.currentUser = JSON.parse(JSON.stringify(row));  //对象进行浅复制(只复制属性和值)
+                //从数组中根据条件查找对象
+                this.currentUser = this.userData.find(function (x) {
+                    return x.id = row.id;
+                });
+                //准备好数据后执行显示
+                this.userInfoFormVisible = true;
+                this.userInfoOpType = "update";
+                this.userInfoOpTitle = "编辑用户信息";
+            },
+            handleDelete(index, row) {
+                this.$confirm('删除该记录, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    var that = this;
+                    var deleteDataUrl = "/user/delete?userId=" + row.id;
+                    this.$ajax.get(deleteDataUrl)
+                        .then(function (response) {
+                            if (response.data.code == 200) {
+                                that.$message({
+                                    message: '数据删除成功!',
+                                    type: 'success'
+                                });
+                                that.initData();
+                            } else {
+                                that.$message({
+                                    message: '数据删除失败!' + response.data.msg,
+                                    type: 'error'
+                                });
+                            }
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+            },
+            handleBatchDelete() {
+                let size = this.multipleSelection.length;
+                if (size > 0) {
+                    this.$confirm('将删除选中的 ' + size + ' 条记录, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        //循环删除
+                        this.multipleSelection.forEach((item, index, array) => {
+                            var that = this;
+                            var deleteDataUrl = "/user/delete?userId=" + item.id;
+                            this.$ajax.get(deleteDataUrl)
+                                .then(function (response) {
+                                    if (response.data.code == 1) {
+                                    } else {
+
+                                    }
+                                })
+                                .catch(function (error) {
+                                    console.log(error);
+                                });
+                        });
+
+                        //删除完成，清空选中的记录，刷新数据
+                        this.$message({
+                            message: '数据删除成功!',
+                            type: 'success'
+                        });
+
+                        this.initData();
+                        this.multipleSelection = [];
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                } else {
+                    this.$message({
+                        type: 'info',
+                        message: '请先选择要删除的记录'
+                    });
+                }
+            },
+            handleUpdate() {
+                var _this = this;
+                var updateDataUrl = "/user/update";
+                //添加更新信息
+                this.currentUser.opUserId = Vue.prototype.CurrentUser.id;
+                this.currentUser.companyId = Vue.prototype.CurrentUser.companyId;
+                this.$ajax.post(updateDataUrl, this.currentUser)
+                    .then(function (response) {
+                        console.log(response.data);
+                        if (response.data.code == 200) {
+                            _this.$message({
+                                message: '数据更新成功!',
+                                type: 'success'
+                            });
+                            _this.userInfoFormVisible = false;
+                            _this.initData();
+                        } else {
+                            _this.$message({
+                                message: '数据更新失败!' + response.data.msg,
+                                type: 'error'
+                            });
+                        }
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            handleInsert() {
+                var _this = this;
+                var insertDataUrl = "/user/insert";
+                this.currentUser.opUserId = Vue.prototype.CurrentUser.id;
+                this.currentUser.isDel = 0
+                this.currentUser.companyId = Vue.prototype.CurrentUser.companyId;
+                this.$ajax.post(insertDataUrl, this.currentUser)
+                    .then(function (response) {
+                        if (response.data.code == 200) {
+                            _this.$message({
+                                message: '数据新增成功!',
+                                type: 'success'
+                            });
+                            _this.userInfoFormVisible = false;
+                            _this.initData();
+                        } else {
+                            _this.$message({
+                                message: '数据新增失败!' + response.data.msg,
+                                type: 'error'
+                            });
+                        }
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        },
+        watch: {
+            tableHeight(val){
+                if(!this.timer){
+                    this.tableHeight = val;
+                    this.timer = true;
+                    const that = this;
+                    setTimeout(function () {
+                        that.timer = false;
+                    },400)
+                }
+            }
         }
-      },
-      handleUpdate() {
-        var _this = this;
-        var updateDataUrl = "/user/update";
-        //添加更新信息
-        this.currentUser.opUserId = Vue.prototype.CurrentUser.id;
-        this.currentUser.companyId = Vue.prototype.CurrentUser.companyId;
-        this.$ajax.post(updateDataUrl, this.currentUser)
-          .then(function (response) {
-            console.log(response.data);
-            if (response.data.code == 200) {
-              _this.$message({
-                message: '数据更新成功!',
-                type: 'success'
-              });
-              _this.userInfoFormVisible = false;
-              _this.initData();
-            } else {
-              _this.$message({
-                message: '数据更新失败!' + response.data.msg,
-                type: 'error'
-              });
-            }
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      },
-      handleInsert() {
-        var _this = this;
-        var insertDataUrl = "/user/insert";
-        this.currentUser.opUserId = Vue.prototype.CurrentUser.id;
-        this.currentUser.isDel = 0
-        this.currentUser.companyId = Vue.prototype.CurrentUser.companyId;
-        this.$ajax.post(insertDataUrl, this.currentUser)
-          .then(function (response) {
-            if (response.data.code == 200) {
-              _this.$message({
-                message: '数据新增成功!',
-                type: 'success'
-              });
-              _this.userInfoFormVisible = false;
-              _this.initData();
-            } else {
-              _this.$message({
-                message: '数据新增失败!' + response.data.msg,
-                type: 'error'
-              });
-            }
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
     }
-  }
 </script>
 
 <style scoped>
