@@ -187,7 +187,7 @@
                   v-for="item in dictPosition"
                   :key="item.key"
                   :label="item.label"
-                  :value="item.key">
+                  :value="item.value">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -216,7 +216,7 @@
                   v-for="item in dictDepartment"
                   :key="item.key"
                   :label="item.label"
-                  :value="item.key">
+                  :value="item.value">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -287,7 +287,10 @@
                 currentPageSize: 10,
                 currentTotal: 0,
                 userData: [],
-                currentUser: {},
+                currentUser: {
+                  department:'',
+                  position:''
+                },
                 baseRoles: [],
                 currentUserRoles: [],
                 currentOpUserId: '',
@@ -458,6 +461,7 @@
                 //this.currentUser = Object.assign({}, row);  //对象进行浅复制(只复制属性和值) 这个处理对于嵌套的对象是不起作用的
                 //this.currentUser = JSON.parse(JSON.stringify(row));  //对象进行浅复制(只复制属性和值)
                 //从数组中根据条件查找对象
+
                 this.currentUser = this.userData.find(function (x) {
                     return x.id = row.id;
                 });
@@ -465,6 +469,8 @@
                 this.userInfoFormVisible = true;
                 this.userInfoOpType = "update";
                 this.userInfoOpTitle = "编辑用户信息";
+              console.log(this.currentUser);
+              console.log(this.dictPosition);
             },
             handleDelete(index, row) {
                 this.$confirm('删除该记录, 是否继续?', '提示', {
