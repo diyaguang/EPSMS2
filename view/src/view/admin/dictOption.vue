@@ -19,7 +19,7 @@
           </el-form-item>
         </el-form>
       </div>
-      <div id="div">
+      <div id="div" :style="conheight">
         <el-tree
           ref="tree"
           :data="dictData"
@@ -55,14 +55,24 @@
           value:'',
           parentId:''
         },
-        defaultExpandedKeys:[]
+        defaultExpandedKeys:[],
+        conheight:{
+          height:window.tableHeight-315+'px'
+        }
       }
     },
     created: function () {
       this.initData();
     },
     mounted: function () {
-
+      const that = this
+      window.onresize = () => {
+        return (() => {
+          window.tableHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+          that.conheight.height = window.tableHeight-315+'px';
+        })()
+      }
+      console.log(this.conheight.height)
     },
     methods: {
       handleAdd(){
@@ -207,7 +217,7 @@
   }
 
   #div {
-    height: 300px;
+
     overflow-x: hidden;
     overflow-y: scroll;
   }
