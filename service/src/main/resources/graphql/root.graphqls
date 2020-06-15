@@ -1,0 +1,5 @@
+type Query{
+    findAllUser: [User]!
+    countUsers: String!
+    findOneUser(id: String!): User
+}
