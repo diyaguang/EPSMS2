@@ -37,7 +37,6 @@
           this.userList = res.data.findAllUser;
         })
         .catch(err=>{
-          console.log("错了")
           console.log(err)
         })
       }
