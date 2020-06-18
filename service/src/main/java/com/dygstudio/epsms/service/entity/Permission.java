@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import java.io.Serializable;
+
 /**
  * 〈功能概述〉
  *
@@ -13,7 +15,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
  * @date: 2020/1/2 20:49
  */
 @TableName("Permission")
-public class Permission {
+public class Permission implements Serializable {
     @TableId()
     private String id;
     private String permissionName;

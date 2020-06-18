@@ -3,6 +3,8 @@ package com.dygstudio.epsms.service.entity;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import java.io.Serializable;
+
 /**
  * 〈功能概述〉
  *
@@ -12,7 +14,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
  * @date: 2020/4/25 11:32
  */
 @TableName("FuncRoleLink")
-public class RoleFunctionLink {
+public class RoleFunctionLink  implements Serializable {
     @TableId()
     private String id;
     private String roleId;

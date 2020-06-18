@@ -3,6 +3,7 @@ package com.dygstudio.epsms.service.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ import java.util.List;
  * @date: 2020/1/2 20:34
  */
 @TableName("DictInfo")
-public class DictInfo {
+public class DictInfo implements Serializable {
     public String getId() {
         return id;
     }

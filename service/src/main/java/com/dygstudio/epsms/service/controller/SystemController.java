@@ -14,6 +14,7 @@ import com.dygstudio.epsms.service.vo.DictVo;
 import com.dygstudio.epsms.service.vo.FunctionVo;
 import com.dygstudio.epsms.service.vo.RoleVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,6 +45,9 @@ public class SystemController {
     RoleFunctionLinkService roleFunctionLinkService;
     @Resource
     DictInfoService dictInfoService;
+
+    @Resource
+    RedisTemplate<String,Object> redisTemplate;
 
 
     /**
@@ -377,6 +381,7 @@ public class SystemController {
     @ResponseBody
     @RequestMapping(value = "/dict/dictForTop")
     public List<DictVo> getDictForTop(){
+        redisTemplate.afterPropertiesSet();
         List<DictVo> result = new ArrayList<>();
         List<DictInfo> dictInfoList = dictInfoService.findByTopObject();
         for(DictInfo info : dictInfoList){

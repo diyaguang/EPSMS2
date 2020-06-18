@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dygstudio.epsms.service.entity.DictInfo;
 import com.dygstudio.epsms.service.mapper.DictInfoMapper;
 import com.dygstudio.epsms.service.service.DictInfoService;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,6 +30,8 @@ public class DictInfoServiceImpl extends ServiceImpl<DictInfoMapper, DictInfo> i
     public List<DictInfo> findByParentId(String value){
         return dictInfoMapper.findByParentId(value);
     }
+
+    @Cacheable(value = "dictInfo")
     public List<DictInfo> findByTopObject(){
         return dictInfoMapper.findByTopObject();
     }

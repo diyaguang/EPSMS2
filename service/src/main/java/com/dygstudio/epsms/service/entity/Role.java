@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
  * @date: 2020/1/2 20:50
  */
 @TableName("Role")
-public class Role {
+public class Role implements Serializable {
     @TableId()
     private String id;
     private String code;
