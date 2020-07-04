@@ -1,6 +1,7 @@
 package com.dygstudio.epsms.service.resolver;
 
 import com.coxautodev.graphql.tools.GraphQLQueryResolver;
+import com.dygstudio.epsms.service.entity.Client;
 import com.dygstudio.epsms.service.entity.User;
 import com.dygstudio.epsms.service.service.UserService;
 import org.springframework.stereotype.Component;
@@ -30,5 +31,10 @@ public class Query implements GraphQLQueryResolver {
     }
     public User findOneUser(String id){
         return userService.findUserById(id);
+    }
+
+
+    public Client client(String id){
+        return null;
     }
 }

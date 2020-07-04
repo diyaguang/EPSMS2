@@ -1,3 +1,5 @@
+#默认查询根文件，定义给客户端的查询Query API
+
 type Query{
     findAllUser: [User]!
     countUsers: String!

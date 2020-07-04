@@ -1,0 +1,11 @@
+schema {
+    query: ClientQuery
+}
+type ClientQuery {
+    client(id:String!):Client
+}
+type Client{
+    id:String!
+    name:String!
+    age:Int
+}

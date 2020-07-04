@@ -1,3 +1,5 @@
+#定义 GraphQL类型
+
 type User {
     id: String
     name: String
