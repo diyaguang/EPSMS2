@@ -13,6 +13,9 @@
     <select id="findObjectAndChildByValue" resultMap="ObjectAndChildMap" parameterType="String">
         select * from DictInfo p where p.value=#{value}
     </select>
+    <select id="findObjectAndChildById" resultMap="ObjectAndChildMap" parameterType="String">
+        select * from DictInfo p where p.id=#{id}
+    </select>
     <resultMap id="ObjectAndChildMap" type="DictInfo">
         <id property="id" column="id"/>
         <result property="name" column="name"/>

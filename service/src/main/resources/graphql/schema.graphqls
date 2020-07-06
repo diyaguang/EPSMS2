@@ -1,8 +1,24 @@
 #定义 GraphQL类型
-
-type User {
-    id: String
+interface iName{
     name: String
+}
+
+type User implements iName{
+    id: String
+    name:String
     password: String
     phone: String
 }
+
+type DictInfo implements iName{
+    id: String
+    name: String
+    value: String
+    parentId: String
+    childs: [DictInfo]
+}
+
+union queryUnion = User | DictInfo
+
+
+

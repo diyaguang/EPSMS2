@@ -10,6 +10,7 @@ import java.util.List;
 public interface DictInfoMapper extends BaseMapper<DictInfo> {
     DictInfo findByValue(String value);
     DictInfo findObjectAndChildByValue(String value);
+    DictInfo findObjectAndChildById(String id);
     List<DictInfo> findByParentId(String value);
     List<DictInfo> findByTopObject();
 

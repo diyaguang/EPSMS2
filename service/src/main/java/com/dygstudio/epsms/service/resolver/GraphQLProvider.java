@@ -31,7 +31,7 @@ public class GraphQLProvider {
 
     @PostConstruct
     public void init() throws FileNotFoundException {
-        File file = ResourceUtils.getFile("classpath:Client.graphqls");
+        File file = ResourceUtils.getFile("classpath:Client.graphql");
         GraphQLSchema graphQLSchema = createGraphQLSchema(file);
         this.graphQL = GraphQL.newGraphQL(graphQLSchema).build();
     }

@@ -27,6 +27,9 @@ public class DictInfoServiceImpl extends ServiceImpl<DictInfoMapper, DictInfo> i
     public DictInfo findObjectAndChildByValue(String value){
         return dictInfoMapper.findObjectAndChildByValue(value);
     }
+    public DictInfo findObjectAndChildById(String id){
+        return dictInfoMapper.findObjectAndChildById(id);
+    }
     public List<DictInfo> findByParentId(String value){
         return dictInfoMapper.findByParentId(value);
     }
