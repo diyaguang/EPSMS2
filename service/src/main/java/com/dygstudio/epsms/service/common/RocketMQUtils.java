@@ -5,6 +5,7 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.message.Message;
@@ -30,7 +31,24 @@ public class RocketMQUtils {
         producer.setNamesrvAddr("111.229.51.186:9876");
         producer.start();  //启动实例
         Message msg = new Message("TopicTest", (message).getBytes(RemotingHelper.DEFAULT_CHARSET));
-        SendResult sendResult = producer.send(msg);
+        SendResult sendResult = producer.send(msg);  //同步的方式发送消息
+        //异步的方式发送消息
+        /*try {
+            producer.send(msg, new SendCallback() {
+                @Override
+                public void onSuccess(SendResult sendResult) {
+                    sendResult.getSendStatus();
+                }
+
+                @Override
+                public void onException(Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }*/
+
         System.out.printf("%s%n", sendResult);
         producer.shutdown();
     }
